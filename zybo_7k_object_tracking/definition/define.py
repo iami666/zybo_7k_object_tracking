@@ -2,10 +2,11 @@
 
 """
 import sys
-
 import mmap
 import ctypes
 import struct
+import collections
+
 
 VDMA_MAP_SIZE = 0x100  # UIO - VDMA
 VDMA_ADDR = 0x43C00000
@@ -26,10 +27,11 @@ N_BUFFERS = 2
 
 ## platform_init #######################################################################################################
 def platform_init():
+    """"""
     all_disp_address = HORIZONTAL_PIXELS * VERTICAL_LINES * PIXEL_NUM_OF_BYTES
     all_disp_small = HORIZ_PIXELS_SMALL * VERT_LINES_SMALL * PIXEL_NUM_OF_BYTES
 
-    """ file_mmap """  ###############################################################################
+    """ file_mmap """
 
     def file_mmap(file_path, len, inval=0, mode="rb+"):
         try:
@@ -57,7 +59,6 @@ def platform_init():
         return fd_frbuf, ptr_frbuf
 
     #  frame buffer check
-    mode = "rb+"
     fb0_path = "/dev/fb0"
     fd_frbuf_1_obj, fd_frbuf_1 = file_mmap(fb0_path, len=all_disp_address, inval=50)
 
@@ -70,8 +71,10 @@ def platform_init():
     fb3_path = "/dev/fb3"
     fd_frbuf_4_obj, fd_frbuf_4 = file_mmap(fb3_path, len=all_disp_small)
 
+
     """ vdm memory check """
 
+    mode = "rb+"
     fd_vdm_path = "/dev/mem"
 
     try:
@@ -83,6 +86,7 @@ def platform_init():
     except Exception as error:
         print("{}".format(error))
         sys.exit(-1)
+
 
     """ mmap the VDMA device for VDM access """
 
@@ -101,7 +105,9 @@ def platform_init():
 
     print("[INFO] VDMA configuration end.....\n")
 
+
     """ 2nd VDMA config """
+
     vdma_buf_2 = mmap.mmap(fd_vdm.fileno(), VDMA_MAP_SIZE, mmap.MAP_SHARED, mmap.PROT_READ | mmap.PROT_WRITE,
                            offset=VDMA_ADDR_2)
 
@@ -118,6 +124,7 @@ def platform_init():
     vdma_buf_2[6 * 4:7 * 4] = struct.pack("I", 0x00010300)  # no. FIFO threshhol ..max.. 240
     print("[INFO] RTC configuration end.....\n")
 
+
     """ config VDMA bypass """
 
     vdma_buf_4 = mmap.mmap(fd_vdm.fileno(), VDMA_MAP_SIZE, mmap.MAP_SHARED, mmap.PROT_READ | mmap.PROT_WRITE,
@@ -131,7 +138,9 @@ def platform_init():
 
     print("[INFO] DMA_RTC_BYPASS configuration end....\n")
 
+
     """ config for child window size """
+
     vdma_buf_3 = mmap.mmap(fd_vdm.fileno(), VDMA_MAP_SIZE, mmap.MAP_SHARED, mmap.PROT_READ | mmap.PROT_WRITE,
                            offset=VDMA_INSERT)
 
@@ -139,11 +148,31 @@ def platform_init():
 
     print("[INFO] RTC_small window allocated virtual address : " + hex(ctypes.addressof(ptr_vdm_3)))
 
+    # small windows adjustment
     vdma_buf_3[6 * 4:7 * 4] = struct.pack("I", ((75 << 16) + (HORIZ_PIXELS_SMALL + 75)))
     vdma_buf_3[7 * 4:8 * 4] = struct.pack("I", ((150 << 16) + (VERT_LINES_SMALL + 150)))
     vdma_buf_3[5 * 4:6 * 4] = struct.pack("I", 0x70B)
 
     print("[INFO] RTC_small window configuration end....\n")
+
+
+    """ USB CAM check """
+    cam_path  = "/dev/video0"
+    try:
+        with open(cam_path, 'r') as _:
+            print("[INFO] Camera checked")
+
+    except Exception as error:
+        print(error)
+        sys.exit(-1)
+
+
+    frame_buffers = collections.namedtuple("frame_buffers", ["fd_frbuf_1", "fd_frbuf_2", "fd_frbuf_3", "fd_frbuf_4"])
+    vdma_buffers = collections.namedtuple("vdma_buffers", ["vdma_buf", "vdma_buf_1", "vdma_buf_2", "vdma_buf_3"])
+
+    fram_bfs = frame_buffers(fd_frbuf_1, fd_frbuf_2, fd_frbuf_3, fd_frbuf_4)
+    vdma_bfs = vdma_buffers(vdma_buf, vdma_buf_2, vdma_buf_3, vdma_buf_4)
+
 
     fd_frbuf_1_obj.close()
     fd_frbuf_2_obj.close()
@@ -152,6 +181,8 @@ def platform_init():
 
 
     # vdma_buf.close()
+
+    return fram_bfs, vdma_bfs
 
 def main():
     platform_init()
