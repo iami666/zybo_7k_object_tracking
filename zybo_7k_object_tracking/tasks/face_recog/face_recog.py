@@ -3,7 +3,18 @@
 Created on Fri Jul 20 12:53:33 2018
 
 @author: patelviv
+
+This face recognistion script contains all the code for face recognitions.
+It uses opencv haarcascade for recognition of faces.
+The haarcascade file name is "haarcascade_frontalface_default.xml" (provided by opencv)
+The trainner file is trained from some hollywood actors (from game of thrones TV series) faces. Those actor names are following
+   1. Emilia Clarke
+   2. Kit harington
+   3. Nikolaj Coster Waldau
+   4. Peter Dinklage
+
 """
+
 import sys
 import numpy as np
 import cv2
@@ -11,26 +22,23 @@ import pickle
 import pygame
 import os
 
-
-
-
-
+""" Modules """
 from definition import define
 from lib.vision.vision import Vision
 from lib.display import display
 from lib.display import display_gui
 import globals
 
-
-TASK_INFO = "Vivek, John Snow"
+TASK_INFO = " FACE RECOGNITION FACES INFO : Vivek, Emilia Clarke, Kit harington, Nikolaj Coster Waldau, Peter Dinklage"
 TASK_TITLE = "Face Recognition"
 
-TASK_TITLE_POS = (define.VID_FRAME_CENTER - (len(TASK_TITLE)*4), 100)
+TASK_TITLE_POS = (define.VID_FRAME_CENTER - (len(TASK_TITLE) * 4), 100)
 
 """ file_path_check """  ####################################################
 
 
 def file_path_check(file_name_fm_same_dir):
+    """ file_path_check """
     script_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(script_dir, file_name_fm_same_dir)
     if not os.path.exists(file_path):
@@ -45,6 +53,11 @@ def file_path_check(file_name_fm_same_dir):
 
 
 def face_recog_pygm(screen, disply_obj, fbs):
+    """
+    Face Recognition pygame function read info from haarcascade_frontalface_defualt.xml, trainner.yml
+    (for predicting trained faces), labels.pickle (to get label of faces ) and predict name of the face.
+
+    """
     print("[INFO] face_recog_pygm start")
 
     # objected created for cascadeclassifer
@@ -126,9 +139,12 @@ def face_recog_pygm(screen, disply_obj, fbs):
 
         image_title.Render(to=screen, pos=TASK_TITLE_POS)
 
+        # check if TASK_INDEX is not 1 then it means another buttons has pressed
         if not globals.TASK_INDEX == 1:
             print("[INOF] TASK_INDEX is not 1 but {}".format(globals.TASK_INDEX))
             break
+
+        # framerate control
         if cv2.waitKey(fbs) & 0xff == ord('q'):
             break
 

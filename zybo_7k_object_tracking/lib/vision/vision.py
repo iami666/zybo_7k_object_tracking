@@ -1,5 +1,6 @@
-import os
+""" The vision script contains all the function regarding video capture form wabcam"""
 
+import os
 import numpy as np
 import cv2
 import sys
@@ -17,6 +18,7 @@ CAM_NUM = 0
 
 
 class Vision:
+    """ Vision class capture image for video and process it """
     def __init__(self, cam_num=0):
 
         print("[INFO] setting up the video capture ......")
@@ -27,12 +29,13 @@ class Vision:
     """ is_camera_connected """  #####################################
 
     def is_camera_connected(self):
+        """ check camera is connected or not """
         return self.cap.isOpened()
 
     """ get_video """  ###############################################
 
     def get_video(self):
-
+        """ capture video form cam object """
         ret, frame = self.cap.read()
 
         try:  # check if it is really a frame
@@ -49,7 +52,7 @@ class Vision:
     """ frame_resize """  #############################################
 
     def resize_frame(self, frame, size=define.VID_FRAME_SIZE):
-
+        """ resize the frame from given size parameter """
         resize_frame = cv2.resize(frame, size)
 
         return resize_frame
@@ -57,7 +60,7 @@ class Vision:
     """ display """  ##################################################
 
     def img_read(self, image_path, mode=1):
-
+        """ reading image from image path """
         if not os.path.isfile(image_path):
             print("[ERROR] image does not exist {}".format(image_path))
             sys.exit(-1)
@@ -69,11 +72,13 @@ class Vision:
     """ display """  ##################################################
 
     def display(self, window, frame):
+        """ display image on window """
         cv2.imshow(window, frame)
 
     """ video_cleanUp """  #############################################
 
     def video_cleanUp(self):
+        """ clean up video object and windows """
         self.cap.release()
         cv2.destroyAllWindows()
 

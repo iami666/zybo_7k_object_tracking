@@ -5,12 +5,12 @@
 # @Last Modified time: 2018-10-06 16:43:29
 
 """
+The main script calls functions from all the modules
 
-ptr_frbuf, ptr_frbuf_2, ptr_frbuf_3, ptr_frbuf_4, ptr_vdma, ptr_vdma_2, ptr_vdma_3, ptr_vdma_4
 """
+
 import os
 import sys
-import _thread
 import pygame
 from pygame.locals import *
 
@@ -21,6 +21,7 @@ from pygame.locals import *
 from definition import define
 from tasks.face_recog import face_recog
 import globals
+
 sys.path.append("/lib/display")
 from lib.display import display_gui
 from lib.display import display
