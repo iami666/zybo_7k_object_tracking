@@ -13,6 +13,7 @@ import cv2
 import ctypes.util
 import ctypes
 import time
+import def
 # from PyQt5.QtWidgets import QApplication
 #
 # from lib._Time import timecount
@@ -20,10 +21,10 @@ import time
 # from lib._logger import logging
 # from gui import gui
 import os
-script_dir = os.path.abspath(os.path.dirname(__file__))
-lib_path = os.path.join(script_dir, 'def.so')
-
-_lib_pform_init = ctypes.cdll.LoadLibrary(ctypes.util.find_library(lib_path))
+# script_dir = os.path.abspath(os.path.dirname(__file__))
+# lib_path = os.path.join(script_dir, 'def.so')
+#
+# _lib_pform_init = ctypes.cdll.LoadLibrary(ctypes.util.find_library(lib_path))
 
 def ctypes_plateform_Init():
     # _lib_pform_init.platform_Init.retype= POINTER(POINTER(c_uint))
@@ -55,7 +56,7 @@ if __name__ == '__main__':
     # print("{:#08x}".format(255))
     # main()
 
-    ctypes_plateform_Init()
+    # ctypes_plateform_Init()
     # app = QApplication(sys.argv)
     # a_winow = gui.Window()
     # sys.exit(app.exec_())

@@ -12,6 +12,9 @@ gcc define.cpp -o def.out
 g++ -fPIC -O2 -c def.cpp
 g++ -shared define.o -o define.so
 
+swig -python def.i
+g++ -fPIC -O2 -c def.cpp def_wrap.c -I/usr/local/lib/python3.4/
+
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,15 +22,15 @@ g++ -shared define.o -o define.so
 #include <sys/mman.h>
 #include <fcntl.h>
 
-#include <iostream>
+//#include <iostream>
 #include <linux/ioctl.h>
 #include <linux/types.h>
 #include <sys/ioctl.h>
 #include <string.h>
-#include <fstream>
-#include <string>
+//#include <fstream>
+//#include <string>
 
-#include <png.h>
+//#include <png.h>
 
 #include "define.h"
 
@@ -35,7 +38,6 @@ unsigned int  *ptr_vdma_3;
 
 
 /*****************************************************************************/
-extern "C" {
 void platform_Init()
 {
 
@@ -79,7 +81,7 @@ void platform_Init()
              memset(ptr_frbuf_4, 0, ALL_DISP_SMALL);
     /******************************vdma config********************************************/
 
-    int fd_vdma = open("/dev/mem", O_RDWR|O_SYNC);	// open uiox device for vdma access
+ /*   int fd_vdma = open("/dev/mem", O_RDWR|O_SYNC);	// open uiox device for vdma access
     if (fd_vdma < 1) {
         printf("Invalid mem device file\n");
     }
@@ -95,12 +97,12 @@ void platform_Init()
     *(ptr_vdma+6) = 0x10300;  // turn vesa master xfer on
     *(ptr_vdma+0x0D) = 200;  // no. FIFO threshhold .. max.. 240
 
-   printf("vdma_configuration end .... \n");
+   printf("vdma_configuration end .... \n");*/
 
    /********************************2nd vdma config************************************/
 
 
-    ptr_vdma_2 = (unsigned int*)mmap(NULL, VDMA_MAP_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED, fd_vdma, VDMA_ADDR_2);
+  /*  ptr_vdma_2 = (unsigned int*)mmap(NULL, VDMA_MAP_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED, fd_vdma, VDMA_ADDR_2);
     printf("RTC virtual address: 0x%08x \n",ptr_vdma_2);
 
     *(ptr_vdma_2+5) = FRBUF_ADDR_1;
@@ -109,18 +111,18 @@ void platform_Init()
     *(ptr_vdma_2+8) = ((ALL_DISP_SMALL/128)-1);  // ring buffer size
     *(ptr_vdma_2+6) = 0x00010300;     // enable read transfers, continuous mode
 
-    printf("RTC_configuration end .... \n");
+    printf("RTC_configuration end .... \n");*/
 
     /******************************** config DMA bypass************************************/
-    unsigned int *ptr_vdma_4;
+    /*unsigned int *ptr_vdma_4;
     ptr_vdma_4 = (unsigned int*)mmap(NULL, VDMA_MAP_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED, fd_vdma, VDMA_BYPASS);
     printf("DMA_RTC_bypass virtual address: 0x%08x \n",ptr_vdma_4);
     *(ptr_vdma_4+0x0E) = (1<<30); //DMA_RTC_bypass
-    printf("DMA_RTC_bypass configuration end .... \n");
+    printf("DMA_RTC_bypass configuration end .... \n");*/
    /******************************** config for child window size ************************************/
 
    // unsigned int *ptr_vdma_3;
-    ptr_vdma_3 = (unsigned int*)mmap(NULL, VDMA_MAP_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED, fd_vdma, VDMA_INSERT);
+    /*ptr_vdma_3 = (unsigned int*)mmap(NULL, VDMA_MAP_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED, fd_vdma, VDMA_INSERT);
     printf("RTC_small window virtual address: 0x%08x \n",ptr_vdma_3);
 
     //*(ptr_vdma_3+9) = (100 << 16) + ( 640+100); // x0<<16 +  x1
@@ -129,7 +131,7 @@ void platform_Init()
     *(ptr_vdma_3+6) = (75 << 16) + (HORIZ_PIXELS_SMALL+75); // x0<<16 +  x1
     *(ptr_vdma_3+7) = (150 << 16)+  (VERT_LINES_SMALL+150); // y0<<16 +  y1
     *(ptr_vdma_3+5) = 0x70B;//rgb565 and insertion enable
-    printf("RTC_small window configuration end .... \n");
+    printf("RTC_small window configuration end .... \n");*/
 
         /******* usb cam device *************/
     fd_usb_cam = open("/dev/video0",O_RDWR);
@@ -143,6 +145,9 @@ void platform_Init()
    // int close(fd_frbuf_3);
 //return ptr_frbuf, ptr_frbuf_2, ptr_frbuf_3, ptr_frbuf_4, ptr_vdma, ptr_vdma_2, ptr_vdma_3, ptr_vdma_4;
 }
+
+int main(){
+platform_Init();
 }
 
 

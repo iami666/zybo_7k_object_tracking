@@ -29,44 +29,61 @@ def platform_init():
     all_disp_address = HORIZONTAL_PIXELS * VERTICAL_LINES * PIXEL_NUM_OF_BYTES
     all_disp_small = HORIZ_PIXELS_SMALL * VERT_LINES_SMALL * PIXEL_NUM_OF_BYTES
 
+    """ file_mmap """ ###############################################################################
+    def file_mmap(file_path, mode="rb+"):
+        try:
+            with open(file_path, mode) as fd_frbuf:
+                 # print(fd_frbuf.fileno())
 
-    def file_mmap(file_path, mode = "rb+"):
-        # try:
-        with open(file_path, mode) as fd_frbuf:
-             print(fd_frbuf.fileno())
-             # mmap.mmap(fileno, length[, flags[, prot[, access[, offset]]]])
+                 # mmap.mmap(fileno, length[, flags[, prot[, access[, offset]]]])
+                 frbuf = mmap.mmap(fd_frbuf.fileno(),
+                                       all_disp_address,
+                                       mmap.MAP_SHARED,
+                                       mmap.PROT_READ|mmap.PROT_WRITE,
+                                       0
+                                       )
+                 ptr_frbuf = ctypes.c_uint32.from_buffer(frbuf)
+                 print("[INFO] " + file_path + " has allocated memory address : " +  hex(ctypes.addressof(ptr_frbuf)))
 
-             ptr_frbuf = mmap.mmap(fileno=fd_frbuf.fileno(), length=all_disp_address, access=mmap.ACCESS_WRITE, offset=0)
-             print(file_path, "has allocated memory address :", ptr_frbuf)
-             for cont in range(0, all_disp_address):
-                 ptr_frbuf[cont] = '0'
-
-             print(ptr_frbuf.readline())
-
-             ptr_frbuf.close()
-             # buf = 'kjasifdubasd'
-             #
-             #
-             # n = id(ptr_frbuf) * 0xFFFFFFFFFFFFFFFF
-             # signed = ctypes.c_long(n).value
-             # print("-------",(hex(signed)),"-------")
-             # print(type(ptr_frbuf))
-             #
-             #
-             # ctypes.memset(hex(signed), 0,all_disp_address)
+                 # cdef int cont
+                 # for cont in range(0, all_disp_address):
+                 #     ptr_frbuf[cont] = 0
 
 
+        except Exception as error:
+            print("{}".format(error))
 
 
+        return ptr_frbuf
 
-
-        # except Exception as error:
-        #     print("{}".format(error))
-
-        return fd_frbuf
-
+    # frame buffer check
     fb0_path = "/dev/fb0"
-    fd_frbuf_0 = file_mmap(fb0_path)
+    fd_frbuf = file_mmap(fb0_path)
+
+    fb1_path = "/dev/fb1"
+    fd_frbuf_2 = file_mmap(fb1_path)
+
+    fb2_path = "/dev/fb2"
+    fd_frbuf_3 = file_mmap(fb2_path)
+
+    fb3_path = "/dev/fb3"
+    fd_frbuf_4 = file_mmap(fb3_path)
+
+    # vdm memory check
+    try:
+        fd_vdm_path = "/dev/mem"
+        mode = "rb+"
+        with open(fd_vdm_path, mode) as fd_vdm:
+            print("[INFO] " + fd_vdm_path + " checked")
+
+    except Exception as error:
+        print("{}".format(error))
 
 
-platform_init()
+def main():
+    platform_init()
+
+
+if __name__ == "__main__":
+    main()
+

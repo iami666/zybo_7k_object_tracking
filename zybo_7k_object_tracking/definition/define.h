@@ -1,5 +1,5 @@
 
-#include <linux/videodev2.h>
+//#include <linux/videodev2.h>
 
 
 extern unsigned int  *ptr_vdma_3;
@@ -25,4 +25,4 @@ int fd_usb_cam;
 unsigned char *ptr_frbuf,*ptr_frbuf_2,*ptr_frbuf_3,*ptr_frbuf_4,FB_no,*RGB565_buf,*RGB888_buf;
 unsigned int ALL_DISP_SMALL;
 unsigned int *ptr_vdma_2;//*ptr_vdma_3; // to change the frame buffer
-v4l2_buffer bufferinfo;
+//v4l2_buffer bufferinfo;
