@@ -7,8 +7,11 @@ import sys
 from imutils.video import VideoStream
 import imutils
 import time
+import logging
 
 from definition import define
+
+log = logging.getLogger("__main__." + __name__)
 
 # minimum size (in pixel) for a region of image to be considered actual "motion"
 MIN_AREA = 500
@@ -19,9 +22,11 @@ CAM_NUM = 0
 
 class Vision:
     """ Vision class capture image for video and process it """
-    def __init__(self, cam_num=0):
 
-        print("[INFO] setting up the video capture ......")
+    def __init__(self, cam_num=CAM_NUM):
+
+        log.info("setting up the video capture ......")
+        # print("[INFO] setting up the video capture ......")
 
         self.cam_num = cam_num
         self.cap = cv2.VideoCapture(cam_num)
@@ -62,7 +67,8 @@ class Vision:
     def img_read(self, image_path, mode=1):
         """ reading image from image path """
         if not os.path.isfile(image_path):
-            print("[ERROR] image does not exist {}".format(image_path))
+            log.error("image does not exist {}".format(image_path))
+            # print("[ERROR] image does not exist {}".format(image_path))
             sys.exit(-1)
 
         image = cv2.imshow(image_path, mode)

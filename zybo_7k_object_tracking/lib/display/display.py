@@ -4,6 +4,7 @@
 import os
 import cv2
 import collections
+import logging
 import numpy as np
 
 from tkinter import *
@@ -18,6 +19,8 @@ sys.path.append("../../")
 from definition import define
 
 from lib.display import colors
+
+log = logging.getLogger("__main__." + __name__)
 
 # Frames per second
 FPS = 60
@@ -41,34 +44,34 @@ VID_FRAME_POS = (50, 150) # x, y
 
 def start_btn_action():
     """ start_button_action """
-    print("start bnt click")
+    log.info("start bnt click")
 
 
 def stop_btn_action():
     """ stop_button_action """
     global btn_done
-    print("stop bnt click")
+    log.info("stop bnt click")
     btn_done = True
 
 
 def forward_btn_action():
     """ forward_button_action """
-    print("forward bnt click")
+    log.info("forward bnt click")
 
 
 def backward_btn_action():
     """ backward_button_action """
-    print("backward bnt click")
+    log.info("backward bnt click")
 
 
 def face_recog_btn_action():
     """ face_recognition_button_action """
-    print("face_recog bnt click")
+    log.info("face_recog bnt click")
 
 
 def object_tracking_btn_action():
     """ object_tracking_button_action """
-    print("object tracking bnt click")
+    log.info("object tracking bnt click")
 
 
 def display_menu_init(screen):
@@ -187,7 +190,7 @@ def test_loop():
     btn_done = False
     img_path = "1.jpg"
     if not os.path.isfile(img_path):
-        print("[ERROR] image does not exist {}".format(img_path))
+        log.error("image does not exist {}".format(img_path))
     img = cv2.imread(img_path, 1)
     # size = (define.HORIZ_PIXELS_SMALL, define.VERT_LINES_SMALL)
     resize_frame = cv2.resize(img, define.VID_FRAME_SIZE)

@@ -25,9 +25,8 @@ import globals
 sys.path.append("/lib/display")
 from lib.display import display_gui
 from lib.display import display
+from lib._logger import _logging
 
-
-# from lib._logger import logging
 
 
 PROJECT_TITLE = 'Closed Loop Object Tracking based on Image Recognition'
@@ -99,17 +98,27 @@ def main_():
 def main():
     """
     """
+    # set up audio driver to avoid alisa lib erros
+    os.environ['SDL_AUDIODRIVER'] = "dsp"
 
-    # env_setup()
+    log = _logging.logger_init(log_filepath="obj_track_img_recog.log", project_name = __name__)
+    log.info("main script starts")
 
+    log.info("calling  define.platform_init()")
     define.platform_init()
 
+    log.info("calling  display_gui.Menu()")
     disply = display_gui.Menu()
+
+    log.info("calling  disply.display_init()")
     screen = disply.display_init()
+
+    log.info("calling  disply.display_color()")
     disply.display_color()
 
+    log.info("calling  display.display_menu_init()")
     disply_obj = display.display_menu_init(screen)
-    print(globals.TASK_INDEX)
+
     while True:
 
         if globals.TASK_INDEX is 0:

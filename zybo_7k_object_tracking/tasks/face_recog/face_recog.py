@@ -21,6 +21,8 @@ import cv2
 import pickle
 import pygame
 import os
+import logging
+
 
 """ Modules """
 from definition import define
@@ -29,7 +31,10 @@ from lib.display import display
 from lib.display import display_gui
 import globals
 
-TASK_INFO = " FACE RECOGNITION FACES INFO : Vivek, Emilia Clarke, Kit harington, Nikolaj Coster Waldau, Peter Dinklage"
+
+log = logging.getLogger("__main__." + __name__)
+
+TASK_INFO = " Face Names : Vivek, Emilia Clarke, Kit harington, Nikolaj Coster Waldau, Peter Dinklage"
 TASK_TITLE = "Face Recognition"
 
 TASK_TITLE_POS = (define.VID_FRAME_CENTER - (len(TASK_TITLE) * 4), 100)
@@ -42,10 +47,10 @@ def file_path_check(file_name_fm_same_dir):
     script_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(script_dir, file_name_fm_same_dir)
     if not os.path.exists(file_path):
-        print("[ERROR] does not exist path  {} ".format(file_path))
+        log.info("does not exist path  {} ".format(file_path))
         sys.exit(-1)
     else:
-        print("[INFO] checked path {} ".format(file_path))
+        log.info("checked path {} ".format(file_path))
         return file_path
 
 
@@ -58,7 +63,8 @@ def face_recog_pygm(screen, disply_obj, fbs):
     (for predicting trained faces), labels.pickle (to get label of faces ) and predict name of the face.
 
     """
-    print("[INFO] face_recog_pygm start")
+    log.info("face_recog_pygm start")
+    # print("[INFO] face_recog_pygm start")
 
     # objected created for cascadeclassifer
     face_cascade_name = "haarcascade_frontalface_default.xml"
@@ -81,13 +87,10 @@ def face_recog_pygm(screen, disply_obj, fbs):
             og_labels = pickle.load(f)
             labels = {v: k for k, v in og_labels.items()}
     except Exception as error:
-        print(error)
+        log.error(error)
         raise
 
     image_title = display_gui.Menu.Text(text=TASK_TITLE, font=display_gui.Font.Medium)
-
-    # info = "INFO"
-    # info = display_gui.Menu.Text(text=TASK_INFO, font=display_gui.Font.Medium)
 
     vid = Vision()
 
@@ -97,6 +100,7 @@ def face_recog_pygm(screen, disply_obj, fbs):
     # width of text
     stroke = 2
 
+    log.info("frame reading starts ")
     while vid.is_camera_connected():
 
         ret, frame = vid.get_video()
@@ -115,6 +119,8 @@ def face_recog_pygm(screen, disply_obj, fbs):
         faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
 
         for (x, y, w, h) in faces:
+
+            # create rectangle around face
             frame = cv2.rectangle(frame, (x, y), (x + w, y + w), (255, 0, 0), 2)  # RGB
             roi_gray = gray[y:y + h, x:x + w]
             # roi_color = frame[y:y+h, x:x+w]
@@ -122,26 +128,16 @@ def face_recog_pygm(screen, disply_obj, fbs):
             id_ = recognizer.predict(roi_gray)
             name = labels[id_]
 
-            # id_, conf = recognizer.predict(roi_gray) # no confidence because opencv 3.1
-            # if conf >= 30 or conf<= 85:
-
             cv2.putText(frame, name[::-1], (x, y), front, 1.0, color, stroke, cv2.LINE_AA)
 
         # Display the frame
         display.display_render(screen, frame, disply_obj, TASK_INFO)
-        # frame = np.rot90(frame)
-        # frame = pygame.surfarray.make_surface(frame)
-        #
-        # # screen.blit(title, (200, 25))
-        # screen.blit(frame, globals.VID_FRAME_POS)
-
-        # pygame.display.flip()
 
         image_title.Render(to=screen, pos=TASK_TITLE_POS)
 
         # check if TASK_INDEX is not 1 then it means another buttons has pressed
         if not globals.TASK_INDEX == 1:
-            print("[INOF] TASK_INDEX is not 1 but {}".format(globals.TASK_INDEX))
+            log.info("TASK_INDEX is not 1 but {}".format(globals.TASK_INDEX))
             break
 
         # framerate control
@@ -149,7 +145,7 @@ def face_recog_pygm(screen, disply_obj, fbs):
             break
 
     vid.video_cleanUp()
-    print("[INOF] closing face recognition")
+    log.info("closing face recognition")
 
     # pygame.quit()
 
@@ -161,10 +157,8 @@ def main():
     # objected created for cascade classifer
     face_cascade = cv2.CascadeClassifier(r'haarcascade_frontalface_default.xml')
     recognizer = cv2.face.createLBPHFaceRecognizer()
-
     recognizer.load("trainner.yml")
 
-    print("hre")
     labels = {"person_name": 1}
     with open("labels.pickle", 'rb') as f:
         og_labels = pickle.load(f)

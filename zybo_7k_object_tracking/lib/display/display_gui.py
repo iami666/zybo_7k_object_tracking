@@ -1,19 +1,27 @@
 # Created by viv at 14.10.18
 
 """
+The display_gui contains classes and function for display gui.
+This script contains following classes
+ - main display initialisation such as font, text, buttons and image
 
 """
-
 
 import os
 import sys
 import time
 import pygame
+import logging
 
 sys.path.append(os.path.dirname(__file__))
 from colors import *
+
 sys.path.append("../../")
 from definition import define
+
+log = logging.getLogger("__main__." + __name__)
+
+""" pygame initialisation """
 pygame.init()
 
 # path = os.path.abspath(os.path.join("../../", "definition"))
@@ -22,14 +30,6 @@ pygame.init()
 #     print("[ERROR] define module can not import, path does not exist")
 # sys.path.append(path)
 # import define
-
-""" Font """###################################################################
-class Font:
-    Default = pygame.font.SysFont("Comic Sans MS", 20)
-    Small = pygame.font.SysFont("Verdana", 15)
-    Medium = pygame.font.SysFont("Verdana", 40)
-    Large = pygame.font.SysFont("Verdana", 60)
-    Scanner = pygame.font.SysFont("Verdana", 30)
 
 
 """ constants declaration  """
@@ -41,56 +41,22 @@ TITLE_POSTION = (200, 25)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
-
-""" display """###################################################################
-# class display:
-#     """
-#
-#     """
-#     def __init__(self):
-#         "Initializes a new pygame screeen using the frambuffer"
-#
-#         # check which frame buffer drivers are availabel
-#         # start with fbcon since dirtectfb hangs with composite output
-#         fb3 = "/dev/fb1"
-#         os.putenv("SDL_FBDEV", fb3)
-#         os.environ["SDL_FBDEV"] = fb3
-#         try:
-#             pygame.display.init()
-#         except Exception as error:
-#             print(error)
-#
-#
-#         size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
-#
-#         print("Framebuffer size set {} x {}".format(size[0],size[1]))
-#
-#         self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
-#
-#         # clean the screen to start
-#         self.screen.fill((0 , 0, 0))
-#
-#         # initialise fron support
-#         pygame.font.init()
-#
-#         # render the screen
-#         pygame.display.update()
-#
-#     def __def__(self):
-#         "Destructor to make sure pygame shutdown "
-#
-#
-#     def test(self):
-#         "fill the screen with red"
-#         red = (255,255, 255)
-#         self.screen.fill(red)
-#
-#         pygame.display.update()
+""" Font """  ###################################################################
 
 
+class Font:
+    Default = pygame.font.SysFont("Comic Sans MS", 20)
+    Small = pygame.font.SysFont("Verdana", 30)
+    Medium = pygame.font.SysFont("Verdana", 40)
+    Large = pygame.font.SysFont("Verdana", 60)
+    Scanner = pygame.font.SysFont("Verdana", 30)
 
-""" MouseOver """###############################################################
+
+""" MouseOver """  ###############################################################
+
+
 def MouseOver(rect):
+    """ """
     mouse_pos = pygame.mouse.get_pos()
     if mouse_pos[0] > rect[0] and mouse_pos[0] < rect[0] + rect[2] and mouse_pos[1] > rect[1] and mouse_pos[1] < rect[
         1] + rect[3]:
@@ -99,45 +65,56 @@ def MouseOver(rect):
         return False
 
 
+""" display """  ######################################################################################
 
 
-""" display """######################################################################################
 class Menu:
+    """ Menu class """
+    
+    # set up audio driver to avoid alisa lib errors
+    os.environ['SDL_AUDIODRIVER'] = "dsp"
 
-    def __init__(self, framebuffer = "/dev/fb1"):
-
-        self.screen = None
-
+    def __init__(self, framebuffer="/dev/fb1"):
+        """ """
         os.putenv("SDL_FBDEV", framebuffer)
         # os.environ["SDL_FBDEV"] = fb3
 
-        # set up audio driver to avoid alisa lib errors
-        os.environ['SDL_AUDIODRIVER'] = "dsp"
+        self.screen = None
 
         try:
             pygame.init()
-            print("[INFO] pygame initialisation done ")
+            log.info("pygame initialisation done ")
+            # print("pygame initialisation done ")
+
         except Exception as error:
-            print(error)
+            log.info(error)
 
     def display_init(self, size=SCREEN_SIZE, flags=pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF):
-        print("[INFO] display initialisation done ")
+        """ display initialisation function will initialise pygame display with given size and flags """
+
+        log.info("display initialisation done ")
+        # print("display initialisation done ")
         self.screen = pygame.display.set_mode(size, flags)
 
         return self.screen
 
     def display_color(self, color=WHITE):
+        """ display_color will fill the color on display, default color is white"""
+
         self.screen.fill(color)
 
     def render(self):
+        """ render display """
         pygame.display.update()
 
     """ Button """  #########################################################
-    class Button:
 
+    class Button:
+        """ Button class will inisilise button with fonts and render it """
         All = []
 
-        def __init__(self, text, rect, bg=Color.Gray, fg=Color.White, bgr=Color.CornflowerBlue, font=Font.Default, tag=("menu", None)):
+        def __init__(self, text, rect, bg=Color.Gray, fg=Color.White, bgr=Color.CornflowerBlue, font=Font.Default,
+                     tag=("menu", None)):
             self.Text = text
             self.Left = rect[0]
             self.Top = rect[1]
@@ -150,7 +127,7 @@ class Menu:
             # NORMAL BUTTON
             self.Normal = pygame.Surface((self.Width, self.Height), pygame.HWSURFACE | pygame.SRCALPHA)
             self.Normal.fill(bg)
-            RText = font.render(text, True, fg)  # text, antialiasing, color
+            RText = font.render(text, True, fg)  # text, actualising, color
             txt_rect = RText.get_rect()
             self.Normal.blit(RText, (self.Width / 2 - txt_rect[2] / 2, self.Height / 2 - txt_rect[3] / 2))
 
@@ -163,7 +140,9 @@ class Menu:
             Menu.Button.All.append(self)
 
         """ Render """  ##################################
-        def Render(self, to, pos=(0, 0)): # pos = x, y
+
+        def Render(self, to, pos=(0, 0)):  # pos = x, y
+            """ Render function """
             if MouseOver((self.Left + pos[0], self.Top + pos[1], self.Width, self.Height)):
                 to.blit(self.High, (self.Left + pos[0], self.Top + pos[1]))
                 self.Rolling = True
@@ -172,11 +151,12 @@ class Menu:
                 self.Rolling = False
 
     """ Text """  ###################################################################
-    class Text:
 
+    class Text:
+        """ Text class will initilise input text and render it """
         All = []
 
-        def __init__(self, text, font=Font.Default, color= Color.Black, bg=None):
+        def __init__(self, text, font=Font.Default, color=Color.Black, bg=None):
             self.Text = text
             self.LastText = text
             self.Font = font
@@ -195,6 +175,7 @@ class Menu:
             self.Height = self.Bitmap.get_height()
 
         """ Render """  ####################################
+
         def Render(self, to, pos=(0, 0)):
             if self.Text != self.LastText:
                 # TEXT HAS BEEN CHANGED
@@ -213,7 +194,9 @@ class Menu:
             to.blit(self.Bitmap, (self.Left + pos[0], self.Top + pos[1]))
 
     """ display """  ########################################################################
+
     class Image:
+        """ Image class initialise input image and render it """
 
         def __init__(self, bitmap, pos=(0, 0)):
             self.Bitmap = bitmap
@@ -223,33 +206,35 @@ class Menu:
             self.Width = bitmap.get_width()
 
         def Render(self, to, pos=(0, 0)):
+            """ """
             to.blit(self.Bitmap, (self.Left + pos[0], self.Top + pos[1]))
 
-
-
     """ FrameText """  ########################################################################
+
     class FrameText:
+        """ FrameText class will initialise frame on display and text and render it"""
         rect_x = 50
-        rect_y = define.HORIZ_PIXELS_SMALL + 10 # 10 pixel down from frame
-        rect_width = SCREEN_WIDTH - 100 # reduce distance from edge of the screen width
+        rect_y = define.HORIZ_PIXELS_SMALL + 10  # 10 pixel down from frame
+        rect_width = SCREEN_WIDTH - 100  # reduce distance from edge of the screen width
         rect_height = 330
 
         text_x = rect_x + 5
         text_y = rect_y + 5
 
-        def __init__(self, screen,  font=Font.Medium):
+        def __init__(self, screen, font=Font.Small):
             self.font = font
             # self.font = pygame.font.SysFont("Verdana", 15)
             self.screen = screen
             self.Left = 0
             self.Top = 0
 
-
-        def add_frame(self, color=Color.CornflowerBlue,  rect=(rect_x, rect_y, rect_width, rect_height)):
+        def add_frame(self, color=Color.CornflowerBlue, rect=(rect_x, rect_y, rect_width, rect_height)):
+            """ """
             self.rect = rect
             self.rect = pygame.draw.rect(self.screen, color, rect, 2)
 
         def add_text(self, text, text_color=Color.Black, flag=True, pos=(text_x, text_y)):
+            """ """
             self.screen.blit(self.font.render(text, flag, text_color), pos)
 
             # bitmap = self.font.render(text, flag, text_color)
@@ -261,16 +246,14 @@ class Menu:
         #     to.blit(self.screen, (self.Left + pos[0], self.Top + pos[1]))
 
 
+""" main """  ############################################################################################################
 
 
-""" main """############################################################################################################
 def main():
     pass
     # scope = display()
     # scope.test()
     # time.sleep(10)
-
-
 
 
 if __name__ == "__main__":

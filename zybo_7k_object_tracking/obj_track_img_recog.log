@@ -1,0 +1,32 @@
+__main__ - INFO - main script starts
+__main__ - INFO - calling  define.platform_init()
+__main__.definition.define - INFO - framebuffer checking...
+__main__.definition.define - INFO - /dev/fb0 has allocated memory address : 0xacae6000
+__main__.definition.define - INFO - /dev/fb1 has allocated memory address : 0xaca50000
+__main__.definition.define - INFO - /dev/fb2 has allocated memory address : 0xac9ba000
+__main__.definition.define - INFO - /dev/fb3 has allocated memory address : 0xac924000
+__main__.definition.define - INFO - VDMA memory checking...
+__main__.definition.define - INFO - /dev/mem checked...
+__main__.definition.define - INFO - /dev/mem has allocated virtual address : 0xb68e7000
+__main__.definition.define - INFO - VDMA configuration end...
+__main__.definition.define - INFO - RTC has virtual address : 0xb5e12000
+__main__.definition.define - INFO - RTC configuration end...
+__main__.definition.define - INFO - VDMA_BYPASS has virtual address : 0xb5b97000
+__main__.definition.define - INFO - DMA_RTC_BYPASS configuration end...
+__main__.definition.define - INFO - RTC_small window allocated virtual address : 0xb5b96000
+__main__.definition.define - INFO - RTC_small window configuration end...
+__main__.definition.define - INFO - Camera checked...
+__main__.definition.define - INFO - platform_init ends
+__main__ - INFO - calling  display_gui.Menu()
+__main__.lib.display.display_gui - INFO - pygame initialisation done 
+__main__ - INFO - calling  disply.display_init()
+__main__.lib.display.display_gui - INFO - display initialisation done 
+__main__ - INFO - calling  disply.display_color()
+__main__ - INFO - calling  display.display_menu_init()
+__main__.tasks.face_recog.face_recog - INFO - [INFO] face_recog_pygm start
+__main__.tasks.face_recog.face_recog - INFO - checked path /home/debian/zybo_project/zybo_7k_object_tracking/tasks/face_recog/haarcascade_frontalface_default.xml 
+__main__.tasks.face_recog.face_recog - INFO - checked path /home/debian/zybo_project/zybo_7k_object_tracking/tasks/face_recog/trainner.yml 
+__main__.tasks.face_recog.face_recog - INFO - checked path /home/debian/zybo_project/zybo_7k_object_tracking/tasks/face_recog/trainner.yml 
+__main__.tasks.face_recog.face_recog - INFO - checked path /home/debian/zybo_project/zybo_7k_object_tracking/tasks/face_recog/labels.pickle 
+__main__.lib.vision.vision - INFO - setting up the video capture ......
+__main__.tasks.face_recog.face_recog - INFO - frame reading starts 
