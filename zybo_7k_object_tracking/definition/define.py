@@ -166,7 +166,7 @@ def platform_init():
 
     except Exception as error:
         print(error)
-        sys.exit(-1)
+        # sys.exit(-1)
 
 
     # creating  namedtupled to return mupltiple arguments

@@ -10,28 +10,24 @@ ptr_frbuf, ptr_frbuf_2, ptr_frbuf_3, ptr_frbuf_4, ptr_vdma, ptr_vdma_2, ptr_vdma
 """
 import os
 import sys
-# from concurrent.futures import thread
-import _thread
-import cv2
-
-import numpy as np
-# from tkinter import *
-# import tkinter as tk
-
 import pygame
 from pygame.locals import *
 
+
+""" modules """
+
+
 from definition import define
 from tasks.face_recog import face_recog
+sys.path.append("/lib/display")
+from lib.display import display_gui
 
-# from gui import gui
-from lib.display import display
-# from lib._Time import timecount
-from lib.vision.vision import Vision
+
+
 # from lib._logger import logging
-from gui import gui
 
 
+PROJECT_TITLE = 'Closed Loop Object Tracking based on Image Recognition'
 """ constants declaration  """
 
 SCREEN_SIZE = (1265, 1015) # width, height
@@ -41,6 +37,8 @@ BLACK = (0, 0, 0)
 # Frames per second
 FPS = 30
 
+
+TASK_INDEX = 0
 
 """ env_setup """ ############################################################
 def env_setup(fbpath="/dev/fb0"):
@@ -56,9 +54,13 @@ def env_setup(fbpath="/dev/fb0"):
 
 
 """ main """ ###########################################################################################################
-def main():
+def main_():
     """
     """
+    global TASK_INDEX
+
+    TASK_INDEX = 0
+
     env_setup()
 
     define.platform_init()
@@ -71,11 +73,10 @@ def main():
 
     # title fonts
     fonts = pygame.font.SysFont("Comic Sans MS", 40)
-    title = fonts.render('Closed Loop Object Tracking based on Image Recognition', False, (0, 0, 255))
+    title = fonts.render(PROJECT_TITLE, False, (0, 0, 255))
     print("[INFO] title set up done...")
 
-    fps_clock = pygame.time.Clock()
-
+  
     # making mouse invisible
     pygame.mouse.set_visible(False)
 
@@ -83,7 +84,38 @@ def main():
 
     screen.fill(WHITE)
 
-    face_recog.face_recog_pygm(screen, FPS,  title)
+    while True:
+
+        if TASK_INDEX is 0:
+            # cam_test.main()
+            pass
+        if TASK_INDEX is 1:
+            face_recog.face_recog_pygm(screen, FPS,  title)
+
+
+""" main """  ###########################################################################################################
+
+
+def main():
+    """
+    """
+    global TASK_INDEX
+
+    TASK_INDEX = 0
+
+    env_setup()
+
+    define.platform_init()
+
+    disp = display_gui.Menu()
+    disp.display_init()
+    disp.screen()
+    while True:
+        disp.render()
+    # title fonts
+    # fonts = pygame.font.SysFont("Comic Sans MS", 40)
+    # title = fonts.render('Closed Loop Object Tracking based on Image Recognition', False, (0, 0, 255))
+    # print("[INFO] title set up done...")
 
 if __name__ == '__main__':
 

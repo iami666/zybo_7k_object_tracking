@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 import cv2
 import sys
@@ -51,6 +53,18 @@ class Vision:
         resize_frame = cv2.resize(frame, size)
 
         return resize_frame
+
+    """ display """  ##################################################
+
+    def img_read(self, image_path, mode=1):
+
+        if not os.path.isfile(image_path):
+            print("[ERROR] image does not exist {}".format(image_path))
+            sys.exit(-1)
+
+        image = cv2.imshow(image_path, mode)
+
+        return image
 
     """ display """  ##################################################
 
