@@ -17,13 +17,15 @@ log = logging.getLogger("__main__." + __name__)
 MIN_AREA = 500
 CAM_NUM = 0
 
-""" Vision """  ##########################################################################
 
-
+# ------------------------------------------------------------------------------
+# """ Vision """
+# ------------------------------------------------------------------------------
 class Vision:
     """ Vision class capture image for video and process it """
 
     def __init__(self, cam_num=CAM_NUM):
+        """ """
 
         log.info("setting up the video capture ......")
         # print("[INFO] setting up the video capture ......")
@@ -31,16 +33,20 @@ class Vision:
         self.cam_num = cam_num
         self.cap = cv2.VideoCapture(cam_num)
 
-    """ is_camera_connected """  #####################################
+    # -----------------------------------------------
+    """ is_camera_connected """
 
     def is_camera_connected(self):
         """ check camera is connected or not """
+
         return self.cap.isOpened()
 
-    """ get_video """  ###############################################
+    # -----------------------------------------------
+    """ get_video """
 
     def get_video(self):
         """ capture video form cam object """
+
         ret, frame = self.cap.read()
 
         try:  # check if it is really a frame
@@ -54,18 +60,22 @@ class Vision:
 
         return ret, frame
 
-    """ frame_resize """  #############################################
+    # -----------------------------------------------
+    """ frame_resize """
 
     def resize_frame(self, frame, size=define.VID_FRAME_SIZE):
         """ resize the frame from given size parameter """
+
         resize_frame = cv2.resize(frame, size)
 
         return resize_frame
 
-    """ display """  ##################################################
+    # -----------------------------------------------
+    """ img_read """
 
     def img_read(self, image_path, mode=1):
         """ reading image from image path """
+
         if not os.path.isfile(image_path):
             log.error("image does not exist {}".format(image_path))
             # print("[ERROR] image does not exist {}".format(image_path))
@@ -75,23 +85,27 @@ class Vision:
 
         return image
 
-    """ display """  ##################################################
+    # -----------------------------------------------
+    """ display """
 
     def display(self, window, frame):
         """ display image on window """
+
         cv2.imshow(window, frame)
 
-    """ video_cleanUp """  #############################################
+    # -----------------------------------------------
+    """ video_cleanUp """
 
     def video_cleanUp(self):
         """ clean up video object and windows """
+
         self.cap.release()
         cv2.destroyAllWindows()
 
 
-""" frame_resize """  ##################################################################################################
-
-
+# ----------------------------------------------------------------------------------------------------------------------
+# """ frame_resize """
+# ----------------------------------------------------------------------------------------------------------------------
 def test():
     vid = Vision()
     vid.isCameraConnected()

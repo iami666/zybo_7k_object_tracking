@@ -23,24 +23,29 @@ import pygame
 import os
 import logging
 
-
+# -----------------------------------------------
 """ Modules """
+
 from definition import define
 from lib.vision.vision import Vision
 from lib.display import display
 from lib.display import display_gui
 import globals
 
-
 log = logging.getLogger("__main__." + __name__)
+
+# -----------------------------------------------
+""" globals """
 
 TASK_INFO = " Face Names : Vivek, Emilia Clarke, Kit harington, Nikolaj Coster Waldau, Peter Dinklage"
 TASK_TITLE = "Face Recognition"
 
 TASK_TITLE_POS = (define.VID_FRAME_CENTER - (len(TASK_TITLE) * 4), 100)
 
-""" file_path_check """  ####################################################
 
+# ------------------------------------------------------------------------------
+# """ file_path_check """
+# ------------------------------------------------------------------------------
 
 def file_path_check(file_name_fm_same_dir):
     """ file_path_check """
@@ -54,8 +59,9 @@ def file_path_check(file_name_fm_same_dir):
         return file_path
 
 
-""" face_recog_pygm """  ####################################################
-
+# ------------------------------------------------------------------------------
+# """ face_recog_pygm """
+# ------------------------------------------------------------------------------
 
 def face_recog_pygm(screen, disply_obj, fbs):
     """
@@ -63,6 +69,7 @@ def face_recog_pygm(screen, disply_obj, fbs):
     (for predicting trained faces), labels.pickle (to get label of faces ) and predict name of the face.
 
     """
+
     log.info("face_recog_pygm start")
     # print("[INFO] face_recog_pygm start")
 
@@ -101,6 +108,7 @@ def face_recog_pygm(screen, disply_obj, fbs):
     stroke = 2
 
     log.info("frame reading starts ")
+
     while vid.is_camera_connected():
 
         ret, frame = vid.get_video()
@@ -119,7 +127,6 @@ def face_recog_pygm(screen, disply_obj, fbs):
         faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
 
         for (x, y, w, h) in faces:
-
             # create rectangle around face
             frame = cv2.rectangle(frame, (x, y), (x + w, y + w), (255, 0, 0), 2)  # RGB
             roi_gray = gray[y:y + h, x:x + w]
@@ -150,9 +157,9 @@ def face_recog_pygm(screen, disply_obj, fbs):
     # pygame.quit()
 
 
-""" main """  ###########################################################################################################
-
-
+# ----------------------------------------------------------------------------------------------------------------------
+# """ main """
+# ----------------------------------------------------------------------------------------------------------------------
 def main():
     # objected created for cascade classifer
     face_cascade = cv2.CascadeClassifier(r'haarcascade_frontalface_default.xml')

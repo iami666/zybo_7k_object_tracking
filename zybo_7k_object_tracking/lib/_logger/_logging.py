@@ -11,7 +11,9 @@ This script intializes the logger and contains all the info and functions for lo
 
 import logging
 
-
+# ------------------------------------------------------------------------------
+# """ logger_init """
+# ------------------------------------------------------------------------------
 
 def logger_init(log_filepath, project_name):
 

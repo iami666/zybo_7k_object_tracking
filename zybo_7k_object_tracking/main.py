@@ -14,9 +14,7 @@ import sys
 import pygame
 from pygame.locals import *
 
-
 """ modules """
-
 
 from definition import define
 from tasks.face_recog import face_recog
@@ -28,23 +26,28 @@ from lib.display import display
 from lib._logger import _logging
 
 
-
+# -----------------------------------------------
 PROJECT_TITLE = 'Closed Loop Object Tracking based on Image Recognition'
+
+
+# -----------------------------------------------
 """ constants declaration  """
 
-SCREEN_SIZE = (1265, 1015) # width, height
+SCREEN_SIZE = (1265, 1015)  # width, height
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
 # Frames per second
 FPS = 60
 
-
 TASK_INDEX = 0
 
-""" env_setup """ ############################################################
-def env_setup(fbpath="/dev/fb0"):
 
+# ------------------------------------------------------------------------------
+# """ env_setup """
+# ------------------------------------------------------------------------------
+
+def env_setup(fbpath="/dev/fb0"):
     # os.putenv("SDL_FBDEV", fbpath)
     os.environ["SDL_FBDEV"] = fbpath
 
@@ -54,8 +57,10 @@ def env_setup(fbpath="/dev/fb0"):
     # os.putenv['SDL_VIDEODRIVER'] = "fbcon"
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+# """ main """
+# ----------------------------------------------------------------------------------------------------------------------
 
-""" main """ ###########################################################################################################
 def main_():
     """
     """
@@ -63,7 +68,6 @@ def main_():
     env_setup()
 
     define.platform_init()
-
 
     try:
         pygame.init()
@@ -75,7 +79,6 @@ def main_():
     title = fonts.render(PROJECT_TITLE, False, (0, 0, 255))
     print("[INFO] title set up done...")
 
-  
     # making mouse invisible
     pygame.mouse.set_visible(False)
 
@@ -92,8 +95,9 @@ def main_():
             face_recog.face_recog_pygm(screen, FPS)
 
 
-""" main """  ###########################################################################################################
-
+# ----------------------------------------------------------------------------------------------------------------------
+# """ main """
+# ----------------------------------------------------------------------------------------------------------------------
 
 def main():
     """
@@ -101,7 +105,7 @@ def main():
     # set up audio driver to avoid alisa lib erros
     os.environ['SDL_AUDIODRIVER'] = "dsp"
 
-    log = _logging.logger_init(log_filepath="obj_track_img_recog.log", project_name = __name__)
+    log = _logging.logger_init(log_filepath="obj_track_img_recog.log", project_name=__name__)
     log.info("main script starts")
 
     log.info("calling  define.platform_init()")
@@ -127,7 +131,6 @@ def main():
         if globals.TASK_INDEX is 1:
             face_recog.face_recog_pygm(screen, disply_obj, FPS)
 
+
 if __name__ == '__main__':
-
     main()
-

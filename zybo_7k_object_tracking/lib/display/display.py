@@ -22,6 +22,10 @@ from lib.display import colors
 
 log = logging.getLogger("__main__." + __name__)
 
+# -----------------------------------------------
+""" globals """
+
+
 # Frames per second
 FPS = 60
 
@@ -42,36 +46,77 @@ btn_done = None
 # video frame position on the display in pixel values
 VID_FRAME_POS = (50, 150) # x, y
 
+
+# ------------------------------------------------------------------------------
+# """ start_btn_action """
+# ------------------------------------------------------------------------------
+
+
 def start_btn_action():
     """ start_button_action """
+
     log.info("start bnt click")
+
+
+# ------------------------------------------------------------------------------
+# """ stop_btn_action """
+# ------------------------------------------------------------------------------
 
 
 def stop_btn_action():
     """ stop_button_action """
+
     global btn_done
+
     log.info("stop bnt click")
     btn_done = True
 
 
+# ------------------------------------------------------------------------------
+# """ forward_btn_action """
+# ------------------------------------------------------------------------------
+
+
 def forward_btn_action():
     """ forward_button_action """
+
     log.info("forward bnt click")
+
+
+# ------------------------------------------------------------------------------
+# """ backward_btn_action """
+# ------------------------------------------------------------------------------
 
 
 def backward_btn_action():
     """ backward_button_action """
+
     log.info("backward bnt click")
 
 
+# ------------------------------------------------------------------------------
+# """ face_recog_btn_action """
+# ------------------------------------------------------------------------------
+
 def face_recog_btn_action():
     """ face_recognition_button_action """
+
     log.info("face_recog bnt click")
 
 
+# ------------------------------------------------------------------------------
+# """ object_tracking_btn_action """
+# ------------------------------------------------------------------------------
+
 def object_tracking_btn_action():
     """ object_tracking_button_action """
+
     log.info("object tracking bnt click")
+
+
+# ------------------------------------------------------------------------------
+# """ display_menu_init """
+# ------------------------------------------------------------------------------
 
 
 def display_menu_init(screen):
@@ -123,6 +168,12 @@ def display_menu_init(screen):
                                 obj_tracking_btn)
 
     return disply_obj
+
+
+# ------------------------------------------------------------------------------
+# """ display_render """
+# ------------------------------------------------------------------------------
+
 
 def display_render(screen, frame, dsply_obj, task_info):
     """
@@ -182,6 +233,9 @@ def display_render(screen, frame, dsply_obj, task_info):
     pygame.display.flip()
 
 
+# ------------------------------------------------------------------------------
+# """ test_loop """
+# ------------------------------------------------------------------------------
 
 
 def test_loop():
@@ -277,6 +331,11 @@ def test_loop():
         title.Render(to=screen, pos=display_gui.TITLE_POSTION)
         image_title.Render(to=screen, pos=(frame_center, 100))
         pygame.display.flip()
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# """ main """
+# ----------------------------------------------------------------------------------------------------------------------
 
 
 def main():

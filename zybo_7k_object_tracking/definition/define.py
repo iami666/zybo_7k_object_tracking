@@ -14,7 +14,7 @@ import logging
 
 log = logging.getLogger("__main__." + __name__)
 
-
+# -----------------------------------------------
 # registers addresses
 VDMA_ADDR = 0x43C00000
 VDMA_ADDR_2 = 0x43c40000
@@ -25,6 +25,7 @@ FRBUF_ADDR_1 = 0x1E280000
 FRBUF_ADDR_2 = 0x1E500000
 FRBUF_ADDR_3 = 0x1E780000
 
+# -----------------------------------------------
 # display pixels info
 VDMA_MAP_SIZE = 0x100  # UIO - VDMA
 PIXEL_NUM_OF_BYTES = 2
@@ -34,6 +35,7 @@ HORIZ_PIXELS_SMALL = 640
 VERT_LINES_SMALL = 480
 N_BUFFERS = 2
 
+# -----------------------------------------------
 ALL_DISP_ADDRESS = HORIZONTAL_PIXELS * VERTICAL_LINES * PIXEL_NUM_OF_BYTES
 ALL_DISP_SMALL = HORIZ_PIXELS_SMALL * VERT_LINES_SMALL * PIXEL_NUM_OF_BYTES
 
@@ -41,9 +43,9 @@ VID_FRAME_SIZE = (HORIZ_PIXELS_SMALL, VERT_LINES_SMALL)
 VID_FRAME_CENTER = (50 + HORIZ_PIXELS_SMALL) / 2
 
 
-
-""" platform_init """  ###############################################################################
-
+# ------------------------------------------------------------------------------
+# """ platform_init """
+# ------------------------------------------------------------------------------
 
 def platform_init():
     """ This platform_init function will initialise framebuffer , VDMA register  and wabcam check  """
@@ -211,7 +213,9 @@ def platform_init():
     # return fram_bfs, vdma_bfs
 
 
-""" main """  ############################################################################################################
+# ----------------------------------------------------------------------------------------------------------------------
+# """ main """
+# ----------------------------------------------------------------------------------------------------------------------
 
 
 def main():

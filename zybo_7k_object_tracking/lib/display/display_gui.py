@@ -21,7 +21,9 @@ from definition import define
 
 log = logging.getLogger("__main__." + __name__)
 
+# -----------------------------------------------
 """ pygame initialisation """
+
 pygame.init()
 
 # path = os.path.abspath(os.path.join("../../", "definition"))
@@ -31,8 +33,9 @@ pygame.init()
 # sys.path.append(path)
 # import define
 
-
+# -----------------------------------------------
 """ constants declaration  """
+
 SCREEN_WIDTH = 1265
 SCREEN_HEIGHT = 1015
 SCREEN_SIZE = (SCREEN_WIDTH, SCREEN_HEIGHT)  # width, height
@@ -41,7 +44,9 @@ TITLE_POSTION = (200, 25)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
-""" Font """  ###################################################################
+# ------------------------------------------------------------------------------
+# """ Font """
+# ------------------------------------------------------------------------------
 
 
 class Font:
@@ -52,25 +57,29 @@ class Font:
     Scanner = pygame.font.SysFont("Verdana", 30)
 
 
-""" MouseOver """  ###############################################################
-
+# ------------------------------------------------------------------------------
+# """ MouseOver """
+# ------------------------------------------------------------------------------
 
 def MouseOver(rect):
     """ """
     mouse_pos = pygame.mouse.get_pos()
-    if mouse_pos[0] > rect[0] and mouse_pos[0] < rect[0] + rect[2] and mouse_pos[1] > rect[1] and mouse_pos[1] < rect[
-        1] + rect[3]:
+    # mouse_pos[0] > rect[0] and mouse_pos[0] < rect[0] + rect[2] and mouse_pos[1] > rect[1] and mouse_pos[1] < rect[
+    #     1] + rect[3]:
+    if rect[0] < mouse_pos[0] < rect[0] + rect[2] and rect[1] < mouse_pos[1] < rect[1] + rect[3]:
         return True
     else:
         return False
 
 
-""" display """  ######################################################################################
+# ------------------------------------------------------------------------------
+# """ Menu """
+# ------------------------------------------------------------------------------
 
 
 class Menu:
     """ Menu class """
-    
+
     # set up audio driver to avoid alisa lib errors
     os.environ['SDL_AUDIODRIVER'] = "dsp"
 
@@ -107,7 +116,9 @@ class Menu:
         """ render display """
         pygame.display.update()
 
-    """ Button """  #########################################################
+    # ------------------------------------------------------------------------------
+    # """ Button """
+    # ------------------------------------------------------------------------------
 
     class Button:
         """ Button class will inisilise button with fonts and render it """
@@ -139,10 +150,12 @@ class Menu:
             # SAVE BUTTON
             Menu.Button.All.append(self)
 
-        """ Render """  ##################################
+        # -----------------------------------------------
+        """ Render """
 
         def Render(self, to, pos=(0, 0)):  # pos = x, y
             """ Render function """
+
             if MouseOver((self.Left + pos[0], self.Top + pos[1], self.Width, self.Height)):
                 to.blit(self.High, (self.Left + pos[0], self.Top + pos[1]))
                 self.Rolling = True
@@ -150,10 +163,12 @@ class Menu:
                 to.blit(self.Normal, (self.Left + pos[0], self.Top + pos[1]))
                 self.Rolling = False
 
-    """ Text """  ###################################################################
+    # ------------------------------------------------------------------------------
+    # """ Text """
+    # ------------------------------------------------------------------------------
 
     class Text:
-        """ Text class will initilise input text and render it """
+        """ Text class will initialise input text and render it """
         All = []
 
         def __init__(self, text, font=Font.Default, color=Color.Black, bg=None):
@@ -174,7 +189,8 @@ class Menu:
             self.Width = self.Bitmap.get_width()
             self.Height = self.Bitmap.get_height()
 
-        """ Render """  ####################################
+        # -----------------------------------------------
+        """ Render """
 
         def Render(self, to, pos=(0, 0)):
             if self.Text != self.LastText:
@@ -193,7 +209,9 @@ class Menu:
 
             to.blit(self.Bitmap, (self.Left + pos[0], self.Top + pos[1]))
 
-    """ display """  ########################################################################
+    # ------------------------------------------------------------------------------
+    # """ display """
+    # ------------------------------------------------------------------------------
 
     class Image:
         """ Image class initialise input image and render it """
@@ -209,7 +227,9 @@ class Menu:
             """ """
             to.blit(self.Bitmap, (self.Left + pos[0], self.Top + pos[1]))
 
-    """ FrameText """  ########################################################################
+    # ------------------------------------------------------------------------------
+    # """ FrameText """
+    # ------------------------------------------------------------------------------
 
     class FrameText:
         """ FrameText class will initialise frame on display and text and render it"""
@@ -228,10 +248,16 @@ class Menu:
             self.Left = 0
             self.Top = 0
 
+        # -----------------------------------------------
+        """ add_frame """
+
         def add_frame(self, color=Color.CornflowerBlue, rect=(rect_x, rect_y, rect_width, rect_height)):
             """ """
             self.rect = rect
             self.rect = pygame.draw.rect(self.screen, color, rect, 2)
+
+        # -----------------------------------------------
+        """ add_text """
 
         def add_text(self, text, text_color=Color.Black, flag=True, pos=(text_x, text_y)):
             """ """
@@ -246,8 +272,9 @@ class Menu:
         #     to.blit(self.screen, (self.Left + pos[0], self.Top + pos[1]))
 
 
-""" main """  ############################################################################################################
-
+# ----------------------------------------------------------------------------------------------------------------------
+# """ main """
+# ----------------------------------------------------------------------------------------------------------------------
 
 def main():
     pass
