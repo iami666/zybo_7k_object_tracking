@@ -4,6 +4,8 @@
 This script will simply check that camera and pygame is working correctly or not by simply displying image of
 camera into display
 """
+import ctypes
+import mmap
 import os
 import sys
 import cv2
@@ -46,19 +48,23 @@ def env_setup(fbpath='/dev/fb1'):
 
 
     #os.environ["svgalic"] = fbpath
+    # os.putenv('SDL_FBDEV', '/dev/fb2')
 
     # set up audio driver to avoid alisa lib erros
     #os.environ['SDL_AUDIODRIVER'] = "dsp"
-    os.putenv('SDL_VIDEODRIVER', "fbcon")
-    os.putenv('SDL_FBDEV', fbpath)
-    os.environ['SDL_FBDEV'] = fbpath
+    # os.putenv('SDL_VIDEODRIVER', 'directfb')
+    # os.environ['SDL_VIDEODRIVER'] =  'directfb'
+    # os.putenv('SDL_FBDEV', fbpath)
+    # os.environ["SDL_FBDEV"] = "/dev/fb0"
+    # os.system("export SDL_FBDEV=/dev/fb1; echo $SDL_FBDEV")
     # os.putenv('SDL_FBDEV', fbpath)
     print("#########################")
-    print(os.getenv("SDL_FBDEV"))
+    # print(os.getenv("SDL_FBDEV"))
+    print(os.getenv('SDL_VIDEODRIVER'))
 
 """ cam_loop """ ##############################################################
 
-def cam_loop_pygm(screen, fps_clock):
+def cam_loop_pygm(screen, fram_bfs):
 
     print("[INFO] cam_loop starts...")
 
@@ -74,7 +80,7 @@ def cam_loop_pygm(screen, fps_clock):
         # frame = cam.get_image(screen)
         frame = cam.get_image()
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        screen.blit(frame, (0, 0)) # x, y
+        # screen.blit(frame, (0, 0)) # x, y
 
         pygame.display.update()
 
@@ -98,7 +104,7 @@ def cam_loop_pygm(screen, fps_clock):
 
 """ cam_loop """ ##############################################################
 
-def cam_loop(screen, fps_clock, title):
+def cam_loop(screen, title, fram_bfs):
 
     print("[INFO] cam_loop starts...")
 
@@ -110,37 +116,43 @@ def cam_loop(screen, fps_clock, title):
     fps = FPS().start()
     t = time.time()
     # try:
+    fb1_path = "/dev/fb1"
     while vid.is_camera_connected():
         # screen.fill(WHITE)
         ret, frame = vid.get_video()
         frame = cv2.resize(frame, (define.HORIZ_PIXELS_SMALL, define.VERT_LINES_SMALL))
-        # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        with open(fb1_path, "rb+") as fd_frbuf:
 
+            # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-        # front = cv2.FONT_HERSHEY_SIMPLEX
-        # name = "vivek"
-        # color = (255, 0, 0)
-        # # width of text
-        # stroke = 2
-        #
-        # cv2.putText(frame, name[::-1], (100, 100), front, 1.0, color, stroke)
-        # cv2.putText(frame, name, (100, 100), front, 1.0, color, stroke, cv2.LINE_AA)
-        frame = np.rot90(frame)
-        frame = pygame.surfarray.make_surface(frame)
+            # front = cv2.FONT_HERSHEY_SIMPLEX
+            # name = "vivek"
+            # color = (255, 0, 0)
+            # # width of text
+            # stroke = 2
+            #
+            # cv2.putText(frame, name[::-1], (100, 100), front, 1.0, color, stroke)
+            # cv2.putText(frame, name, (100, 100), front, 1.0, color, stroke, cv2.LINE_AA)
+            # frame = np.rot90(frame)
+            # frame = pygame.surfarray.make_surface(frame.swapaxes(0, 1))
 
-        # screen.blit(title, (200, 25))
-        # screen.blit(frame, (50, 100)) # x, y
-        screen.blit(frame, (0, 0)) # x, y
+            # screen.blit(title, (200, 25))
+            # screen.blit(frame, (50, 100)) # x, y
+
+            # fram_bfs.fd_frbuf_1[2:]= frame
+            # fram_bfs.fd_frbuf_1_obj.write(frame)
+            fd_frbuf.write(bytearray(frame))
+
+        # screen.blit(frame, (0, 0)) # x, y
 
         # pygame.display.flip()
         pygame.display.update()
 
-        if cv2.waitKey(1) & 0xFF == ord("q"):
-            break
+        # if cv2.waitKey(1) & 0xFF == ord("q"):
+        #     break
 
         # update the FPS  Counter
         fps.update()
-        fps_clock.tick(30)
         t2 = time.time()
         if int(t2-t) > 60:
             break
@@ -166,9 +178,8 @@ def main():
     """
     """
 
-    define.platform_init()
+    fram_bfs, vdma_bfs=define.platform_init()
     # env_setup()
-
     try:
         pygame.display.init()
         pygame.camera.init()
@@ -180,9 +191,6 @@ def main():
     title = fonts.render('Closed Loop Object Tracking based on Image Recognition', False, (0, 0, 255))
     print("[INFO] title set up done...")
 
-    fps_clock = pygame.time.Clock()
-
-
     # making mouse invisible
     pygame.mouse.set_visible(False)
 
@@ -190,8 +198,8 @@ def main():
     screen.set_alpha(None) # do not need transparency
     # screen.fill(WHITE)
 
-    cam_loop(screen, fps_clock, title)
-    # cam_loop_pygm(screen, fps_clock)
+    cam_loop(screen, title, fram_bfs)
+    # cam_loop_pygm(screen, fram_bfs)
 
 
 if __name__ == '__main__':

@@ -7,7 +7,13 @@
 """
 The main script calls functions from all the modules
 
+
+
 """
+# TODO : 1) write frame into framebuffer1 --working
+#       2) optimize pygame rendering
+#       3) reformat the code
+#
 
 import os
 import sys
@@ -40,8 +46,6 @@ SCREEN_SIZE = (1265, 1015)  # width, height
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
-# Frames per second
-FPS = 60
 
 TASK_INDEX = 0
 
@@ -55,10 +59,10 @@ def env_setup(fbpath="/dev/fb1"):
     # os.environ["SDL_FBDEV"] = fbpath
 
     # set up audio driver to avoid alisa lib erros
-    os.environ['SDL_AUDIODRIVER'] = "dsp"
-    os.environ['SDL_VIDEODRIVER'] = "svgalib"
+    #os.environ['SDL_AUDIODRIVER'] = "dsp"
+    #os.environ['SDL_VIDEODRIVER'] = "svgalib"
     #os.putenv('SDL_VIDEODRIVER', "fbcon")
-
+    pass
 
 # ----------------------------------------------------------------------------------------------------------------------
 # """ MAIN FUNCTION """
@@ -88,8 +92,6 @@ def main():
     log.info("calling  display.display_menu_init()")
     disply_obj = display.display_menu_init(screen)
 
-    all_sprites = pygame.sprite.RenderUpdates()
-
     while True:
             if not globals.CAM_START: # camera is off, picture will be displayed
                 screen.fill(WHITE) # clean up the display
@@ -102,11 +104,11 @@ def main():
 
                 if globals.TASK_INDEX is 1:
                     screen.fill(WHITE)
-                    face_recog.face_recog_pygm(screen, disply_obj, FPS)
+                    face_recog.face_recog_pygm(screen, disply_obj)
 
                 if globals.TASK_INDEX is 2:
                     screen.fill(WHITE)
-                    motion_detect.motion_detection_pygm(screen, disply_obj, FPS)
+                    motion_detect.motion_detection_pygm(screen, disply_obj)
 
                 if globals.TASK_INDEX is 3:
                     screen.fill(WHITE)
@@ -121,6 +123,7 @@ def main():
 
     pygame.quit()
     log.info("exiting from the main...")
+
 
 if __name__ == '__main__':
     main()

@@ -108,9 +108,9 @@ class Vision:
 # ----------------------------------------------------------------------------------------------------------------------
 def test():
     vid = Vision()
-    vid.isCameraConnected()
 
-    while True:
+
+    while vid.isCameraConnected():
         ret, frame = vid.getVideo()
         vid.display('img', frame)
 

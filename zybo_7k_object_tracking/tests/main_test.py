@@ -2,7 +2,7 @@
 
 import os
 import cv2
-
+import time
 import numpy as np
 
 from tkinter import *
@@ -10,6 +10,7 @@ import tkinter as tk
 
 import pygame
 from pygame.locals import *
+from imutils.video import FPS
 
 sys.path.append("../")
 from definition import define
@@ -20,7 +21,7 @@ import globals
 
 
 # Frames per second
-FPS = 60
+# FPS = 60
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -70,7 +71,8 @@ def setup_tkinter():
 # Main game loop
 def game_loop(screen, fps_clock, root=None):
     cam = cv2.VideoCapture(0)
-
+    fps = FPS().start()
+    t = time.time()
     # pygame.display.set_caption("opencv cam")
     # screen = pygame.display.set_mode([WIDTH - MARGIN, HEIGHT - MARGIN])
     screen.fill(WHITE)
@@ -145,6 +147,10 @@ def object_tracking_btn_action():
 
 
 def test_loop():
+
+    fps = FPS().start()
+    t = time.time()
+
     global btn_done
     btn_done = False
     img_path = "1.jpg"
@@ -227,25 +233,37 @@ def test_loop():
 
         title.Render(to=screen, pos=display_gui.TITLE_POSTION)
         image_title.Render(to=screen, pos=(frame_center , 100))
-        pygame.display.flip()
+        # pygame.display.flip()
+        pygame.display.update()
+
+        # update the FPS  Counter
+        fps.update()
+        # fps_clock.tick(30)
+        t2 = time.time()
+        if int(t2-t) > 60:
+            break
     else:
         print("done")
 
+    # stop the time and display FPS Information
+    fps.stop()
+    print("Elapsed Time: {: 2f}".format(fps.elapsed()))
+    print("Approx FPS: {: 2f}".format(fps.fps()))
 
 def main():
-    fb3 = "/dev/fb0"
-    os.putenv("SDL_FBDEV", fb3)
+    fb3 = "/dev/fb1"
+    # os.putenv("SDL_FBDEV", fb3)
     # set up audio driver to avoid alisa lib erros
     #os.environ['SDL_AUDIODRIVER'] = "dsp"
 
     #os.environ['SDL_VIDEODRIVER'] = fb3
-    os.environ["SDL_FBDEV"] = fb3
+    # os.environ["SDL_FBDEV"] = fb3
     define.platform_init()
 
 
     # pygame.init()
     # root = setup_tkinter()
-    fps_clock = pygame.time.Clock()
+    # fps_clock = pygame.time.Clock()
 
     # WIDTH =  define.VERTICAL_LINES
     # HEIGHT = define.HORIZONTAL_PIXELS
@@ -258,8 +276,8 @@ def main():
     # while True:
     #     screen.fill(BLACK)
 
-    game_loop(screen, fps_clock)
-    # test_loop()
+    # game_loop(screen)
+    test_loop()
 
 
 if __name__ == '__main__':

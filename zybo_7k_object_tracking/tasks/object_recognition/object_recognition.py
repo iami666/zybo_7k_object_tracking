@@ -16,8 +16,6 @@ import queue
 from multiprocessing import Process
 from multiprocessing import Queue
 
-
-
 # -----------------------------------------------
 """ Modules """
 
@@ -46,23 +44,25 @@ TASK_TITLE_POS = (define.VID_FRAME_CENTER - (len(TASK_TITLE) * 6), 100)
 def processed_frame(net, input_queue, output_queue):
     # keep looping
     while True:
+
+        try:
+            # the exit from the while loop during process terminate
+            if input_queue.get(0) == 'exit' or output_queue.get(0) == 'exit':
+                input_queue.close()
+                output_queue.close()
+                break
+
+        except queue.Empty:
+            break
+
         # check to see if there is a frame in our input queue
         if not input_queue.empty():
-            try:
-                # the exit from the while loop during process terminate
-                if input_queue.get(0) == 'exit' or output_queue.get(0) == 'exit':
-                    input_queue.close()
-                    output_queue.close()
-                    break
-            except queue.Empty:
-                pass
 
             # grab the frame from the input queue, resize it, and
             # construct a blob from it
             frame = input_queue.get()
             frame = cv2.resize(frame, (300, 300))
-            blob = cv2.dnn.blobFromImage(frame, 0.007843,
-                                         (300, 300), 127.5)
+            blob = cv2.dnn.blobFromImage(frame, 0.007843, (300, 300), 127.5)
 
             # set the blob as input to our deep learning object
             # detector and obtain the detections
@@ -73,11 +73,9 @@ def processed_frame(net, input_queue, output_queue):
             output_queue.put(detections)
 
 
-
 # ------------------------------------------------------------------------------
-# """ file_path_check """
+# """ fFUNCTION: will check path of the file and return full path  """
 # ------------------------------------------------------------------------------
-
 def file_path_check(file_name_fm_same_dir):
     """ file_path_check """
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -92,7 +90,7 @@ def file_path_check(file_name_fm_same_dir):
 
 
 # ------------------------------------------------------------------------------
-# """ object_recog """
+# """ FUNCTION: face recognition merge with pygame """
 # ------------------------------------------------------------------------------
 def object_recog_pygm(screen, disply_obj):
     """ """
@@ -116,18 +114,17 @@ def object_recog_pygm(screen, disply_obj):
 
     # initialize the list of class labels MobileNet SSD was trained to
     # detect, then generate a set of bounding box colors for each class
-    CLASSES = ["background", "aeroplane", "bicycle", "bird", "boat",
+    classes = ["background", "aeroplane", "bicycle", "bird", "boat",
                "bottle", "bus", "car", "cat", "chair", "cow", "diningtable",
                "dog", "horse", "motorbike", "person", "pottedplant", "sheep",
                "sofa", "train", "tvmonitor"]
 
-    COLORS = np.random.uniform(0, 255, size=(len(CLASSES), 3))
+    colors = np.random.uniform(0, 255, size=(len(classes), 3))
 
     # load our serialized model from disk
     net = cv2.dnn.readNetFromCaffe(prototxt_file_path, caffe_model_path)
 
-    # construct a child process *indepedent* from our main process of
-    # execution
+    # construct a child process *indepedent* from our main process of execution
     # print("[INFO] starting process...")
     log.info("starting process...")
     proc = Process(target=processed_frame, args=(net, input_queue, output_queue,))
@@ -144,17 +141,17 @@ def object_recog_pygm(screen, disply_obj):
 
         frame = vid.resize_frame(frame)
 
-        # grab the frame dimensions and convert it to a blob
+        # grab the frame dimensions
         (h, w) = frame.shape[:2]
 
-        # if the input queue *is* empty, give the current frame to
-        # classify
+        # if the input queue *is* empty, give the current frame to classify
         if input_queue.empty():
             input_queue.put(frame)
 
         # if the output queue *is not* empty, grab the detections
         if not output_queue.empty():
             detections = output_queue.get()
+
         # draw the detections on the frame)
         if detections is not None:
             # loop over the detections
@@ -174,10 +171,10 @@ def object_recog_pygm(screen, disply_obj):
                     (startX, startY, endX, endY) = box.astype("int")
 
                     # draw the prediction on the frame
-                    label = "{}: {:.2f}%".format(CLASSES[idx], confidence * 100)
-                    cv2.rectangle(frame, (startX, startY), (endX, endY), COLORS[idx], 2)
+                    label = "{}: {:.2f}%".format(classes[idx], confidence * 100)
+                    cv2.rectangle(frame, (startX, startY), (endX, endY), colors[idx], 2)
                     y = startY - 15 if startY - 15 > 15 else startY + 15
-                    cv2.putText(frame, label, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
+                    cv2.putText(frame, label, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, colors[idx], 2)
 
         if globals.VID_FRAME_INDEX == 0:
 
@@ -203,13 +200,6 @@ def object_recog_pygm(screen, disply_obj):
 
         if not globals.CAM_START or globals.EXIT:
             # print(f"face_recog globals.CAM_START {globals.CAM_START}")
-            break
-
-        # show the output frame
-        key = cv2.waitKey(1) & 0xFF
-
-        # if the `q` key was pressed, break from the loop
-        if key == ord("q"):
             break
 
     if proc.is_alive():
@@ -238,11 +228,11 @@ def main():
 
     # initialize the list of class labels MobileNet SSD was trained to
     # detect, then generate a set of bounding box colors for each class
-    CLASSES = ["background", "aeroplane", "bicycle", "bird", "boat",
+    classes = ["background", "aeroplane", "bicycle", "bird", "boat",
                "bottle", "bus", "car", "cat", "chair", "cow", "diningtable",
                "dog", "horse", "motorbike", "person", "pottedplant", "sheep",
                "sofa", "train", "tvmonitor"]
-    COLORS = np.random.uniform(0, 255, size=(len(CLASSES), 3))
+    colors = np.random.uniform(0, 255, size=(len(classes), 3))
 
     # load our serialized model from disk
     print("[INFO] loading model...")
@@ -290,13 +280,13 @@ def main():
                 (startX, startY, endX, endY) = box.astype("int")
 
                 # draw the prediction on the frame
-                label = "{}: {:.2f}%".format(CLASSES[idx],
+                label = "{}: {:.2f}%".format(classes[idx],
                                              confidence * 100)
                 cv2.rectangle(frame, (startX, startY), (endX, endY),
-                              COLORS[idx], 2)
+                              colors[idx], 2)
                 y = startY - 15 if startY - 15 > 15 else startY + 15
                 cv2.putText(frame, label, (startX, y),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, colors[idx], 2)
 
         # show the output frame
         cv2.imshow("Frame", frame)

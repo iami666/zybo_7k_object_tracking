@@ -53,18 +53,24 @@ def processed_frame(face_cascade, input_queue, output_queue):
     # keep looping
     while True:
 
+        try:
+            if input_queue.get(0) == 'exit' or output_queue.get(0) == 'exit':
+                input_queue.close()
+                output_queue.close()
+                # input_queue.join_thread()
+                # output_queue.join_thread()
+                break
+
+        except queue.Empty:
+            # pass
+            break
+
         # check if there is a frame in input_queue
         if not input_queue.empty():
-            try:
-                if input_queue.get(0) == 'exit' or output_queue.get(0) == 'exit':
-                    input_queue.close()
-                    output_queue.close()
-                    break
-            except queue.Empty:
-                pass
 
             # grab the frame form the input queue
             gray_frame = input_queue.get()
+
             # detect object of different size i nthe input image.
             # the detected objects are returned as a list of rectangles.
             faces = face_cascade.detectMultiScale(gray_frame, scaleFactor=1.3, minNeighbors=5)
@@ -94,7 +100,7 @@ def file_path_check(file_name_fm_same_dir):
 # """ face_recog_pygm """
 # ------------------------------------------------------------------------------
 
-def face_recog_pygm(screen, disply_obj, fbs):
+def face_recog_pygm(screen, disply_obj):
     """
     Face Recognition pygame function read info from haarcascade_frontalface_defualt.xml, trainner.yml
     (for predicting trained faces), labels.pickle (to get label of faces ) and predict name of the face.
@@ -151,8 +157,8 @@ def face_recog_pygm(screen, disply_obj, fbs):
 
     log.info("frame reading starts ")
 
-    fps = FPS().start()
-    t = time.time()
+    # fps = FPS().start()
+    # t = time.time()
     while vid.is_camera_connected():
 
         ret, frame = vid.get_video()
@@ -184,7 +190,7 @@ def face_recog_pygm(screen, disply_obj, fbs):
                 id_, confidence = recognizer.predict(roi_gray)
                 if confidence >= 20:
                     name = labels[id_]
-                    cv2.putText(frame, name[::-1], (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 0, 0), 2, cv2.LINE_AA)
+                    cv2.putText(frame, name, (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 0, 0), 2, cv2.LINE_AA)
 
         if globals.VID_FRAME_INDEX == 0:
 
@@ -212,26 +218,23 @@ def face_recog_pygm(screen, disply_obj, fbs):
         if not globals.CAM_START or globals.EXIT:
             break
 
-        # frame rate control
-        if cv2.waitKey(fbs) & 0xff == ord('q'):
-            break
-
-        # update the FPS  Counter
-        fps.update()
-        t2 = time.time()
-        if int(t2-t) > 60:
-            break
+        # # update the FPS  Counter
+        # fps.update()
+        # t2 = time.time()
+        # if int(t2-t) > 60:
+        #     break
     if proc.is_alive():
         input_queue.put('exit')
         output_queue.put('exit')
         proc.terminate()  # terminate the process
         log.info("Queue is closed...")
 
+
     # stop the time and display FPS Information
-    fps.stop()
+    # fps.stop()
     # log.info("Elapsed Time: {: 2f}".format(fps.elapsed()))
-    print("Elapsed Time: {: 2f}".format(fps.elapsed()))
-    print("Approx FPS: {: 2f}".format(fps.fps()))
+    # print("Elapsed Time: {: 2f}".format(fps.elapsed()))
+    # print("Approx FPS: {: 2f}".format(fps.fps()))
     # log.info("Approx FPS: {: 2f}".format(fps.fps()))
 
     # cleaning up the camera and destroying window

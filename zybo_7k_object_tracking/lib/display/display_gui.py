@@ -91,19 +91,19 @@ class Menu:
 
         self.screen = None
 
-        try:
-            if not pygame.init():
-                # set up audio driver to avoid alisa lib errors
-                # os.environ['SDL_AUDIODRIVER'] = "dsp"
-                # os.putenv("SDL_FBDEV", framebuffer)
-
-                pygame.init()
-
-                log.info("pygame initialisation done ")
-                # print("pygame initialisation done ")
-
-        except Exception as error:
-            log.info(error)
+        # try:
+        #     if not pygame.init():
+        #         # set up audio driver to avoid alisa lib errors
+        #         # os.environ['SDL_AUDIODRIVER'] = "dsp"
+        #         # os.putenv("SDL_FBDEV", framebuffer)
+        #
+        #         pygame.init()
+        #
+        #         log.info("pygame initialisation done ")
+        #         # print("pygame initialisation done ")
+        #
+        # except Exception as error:
+        #     log.info(error)
 
     def display_init(self, size=SCREEN_SIZE, flags=pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF):
         """ display initialisation function will initialise pygame display with given size and flags """

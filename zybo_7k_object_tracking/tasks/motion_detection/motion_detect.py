@@ -187,7 +187,7 @@ def _motion_detection_pygm(screen, disply_obj, fbs):
 # """ motion_detection_pygm """
 # ------------------------------------------------------------------------------
 
-def motion_detection_pygm(screen, disply_obj, fbs):
+def motion_detection_pygm(screen, disply_obj):
     """ """
     log.info("motion_detection_pygm starts... ")
 
@@ -226,7 +226,6 @@ def motion_detection_pygm(screen, disply_obj, fbs):
         # to smooth the image and remove noise(if not then could throw algorithm off)
         # smothing avarage pixel intensities across an 21x21 region
         gray = cv2.GaussianBlur(gray, (21, 21), 0)
-
 
         # apply background substraction
         fgmask = fgbg.apply(gray)
@@ -268,13 +267,6 @@ def motion_detection_pygm(screen, disply_obj, fbs):
             break
 
         if not globals.CAM_START or globals.EXIT:
-            # print(f"face_recog globals.CAM_START {globals.CAM_START}")
-            break
-        # cv2.imshow('Original', frame)
-        # cv2.imshow('threshold', thresh)
-        # cv2.imshow('FrameDelta', frameDelta)
-
-        if cv2.waitKey(1) & 0xFF == ord("q"):
             break
 
     cap.stop()
@@ -373,12 +365,6 @@ def _old_motion_detection_pygm(screen, disply_obj, fbs):
 
         if not globals.CAM_START or globals.EXIT:
             # print(f"face_recog globals.CAM_START {globals.CAM_START}")
-            break
-        # cv2.imshow('Original', frame)
-        # cv2.imshow('threshold', thresh)
-        # cv2.imshow('FrameDelta', frameDelta)
-
-        if cv2.waitKey(1) & 0xFF == ord("q"):
             break
 
     cap.stop()

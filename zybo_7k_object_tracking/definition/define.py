@@ -94,16 +94,16 @@ def platform_init():
     #  frame buffer check
     log.info("framebuffer checking...")
     fb0_path = "/dev/fb0"
-    fd_frbuf_1_obj, fd_frbuf_1 = file_mmap(fb0_path, len=ALL_DISP_ADDRESS, inval=50)
+    fd_frbuf_0_obj, fd_frbuf_0 = file_mmap(fb0_path, len=ALL_DISP_ADDRESS, inval=50)
 
     fb1_path = "/dev/fb1"
-    fd_frbuf_2_obj, fd_frbuf_2 = file_mmap(fb1_path, len=ALL_DISP_SMALL, inval=200)
+    fd_frbuf_1_obj, fd_frbuf_1 = file_mmap(fb1_path, len=ALL_DISP_SMALL, inval=200)
 
     fb2_path = "/dev/fb2"
-    fd_frbuf_3_obj, fd_frbuf_3 = file_mmap(fb2_path, len=ALL_DISP_SMALL)
+    fd_frbuf_2_obj, fd_frbuf_2 = file_mmap(fb2_path, len=ALL_DISP_SMALL)
 
     fb3_path = "/dev/fb3"
-    fd_frbuf_4_obj, fd_frbuf_4 = file_mmap(fb3_path, len=ALL_DISP_SMALL)
+    fd_frbuf_3_obj, fd_frbuf_3 = file_mmap(fb3_path, len=ALL_DISP_SMALL)
 
     """ VDMA memory check """
     log.info("VDMA memory checking...")
@@ -176,13 +176,13 @@ def platform_init():
     ptr_vdm_3 = ctypes.c_uint.from_buffer(vdma_buf_3)
 
     log.info("RTC_small window allocated virtual address : " + hex(ctypes.addressof(ptr_vdm_3)))
-    #(50, 100)
-    # small windows adjustment
-    # vdma_buf_3[6 * 4:7 * 4] = struct.pack("I", ((75 << 16) + (HORIZ_PIXELS_SMALL + 75)))
-    vdma_buf_3[6 * 4:7 * 4] = struct.pack("I", ((50 << 16) + (HORIZ_PIXELS_SMALL + 50)))
-    vdma_buf_3[7 * 4:8 * 4] = struct.pack("I", ((150 << 16) + (VERT_LINES_SMALL + 150)))
-    # vdma_buf_3[7 * 4:8 * 4] = struct.pack("I", ((50 << 16) + (VERT_LINES_SMALL + 50)))
-    vdma_buf_3[5 * 4:6 * 4] = struct.pack("I", 0x70B)
+    # #(50, 100)
+    # # small windows adjustment
+    # # vdma_buf_3[6 * 4:7 * 4] = struct.pack("I", ((75 << 16) + (HORIZ_PIXELS_SMALL + 75)))
+    # vdma_buf_3[6 * 4:7 * 4] = struct.pack("I", ((50 << 16) + (HORIZ_PIXELS_SMALL + 50)))
+    # vdma_buf_3[7 * 4:8 * 4] = struct.pack("I", ((150 << 16) + (VERT_LINES_SMALL + 150)))
+    # # vdma_buf_3[7 * 4:8 * 4] = struct.pack("I", ((50 << 16) + (VERT_LINES_SMALL + 50)))
+    # vdma_buf_3[5 * 4:6 * 4] = struct.pack("I", 0x70B)
 
     log.info("RTC_small window configuration end...")
 
@@ -197,11 +197,13 @@ def platform_init():
         # sys.exit(-1)
 
     # creating  namedtupled to return mupltiple arguments
-    # frame_buffers = collections.namedtuple("frame_buffers", ["fd_frbuf_1", "fd_frbuf_2", "fd_frbuf_3", "fd_frbuf_4"])
-    # vdma_buffers = collections.namedtuple("vdma_buffers", ["vdma_buf", "vdma_buf_1", "vdma_buf_2", "vdma_buf_3"])
+    # frame_buffers = collections.namedtuple("frame_buffers", ["fd_frbuf_0", "fd_frbuf_1", "fd_frbuf_2", "fd_frbuf_3"])
+    frame_buffers = collections.namedtuple("frame_buffers", ["fd_frbuf_0", "fd_frbuf_1_obj", "fd_frbuf_2", "fd_frbuf_3"])
+    vdma_buffers = collections.namedtuple("vdma_buffers", ["vdma_buf", "vdma_buf_1", "vdma_buf_2", "vdma_buf_3"])
 
-    # fram_bfs = frame_buffers(fd_frbuf_1, fd_frbuf_2, fd_frbuf_3, fd_frbuf_4)
-    # vdma_bfs = vdma_buffers(vdma_buf, vdma_buf_2, vdma_buf_3, vdma_buf_4)
+    fram_bfs = frame_buffers(fd_frbuf_0, fd_frbuf_1_obj, fd_frbuf_2, fd_frbuf_3)
+    # fram_bfs = frame_buffers(fd_frbuf_0, fd_frbuf_1, fd_frbuf_2, fd_frbuf_3)
+    vdma_bfs = vdma_buffers(vdma_buf, vdma_buf_2, vdma_buf_3, vdma_buf_4)
 
     # fd_frbuf_1_obj.close()
     # fd_frbuf_2_obj.close()
@@ -210,7 +212,7 @@ def platform_init():
 
     # vdma_buf.close()
     log.info("platform_init ends")
-    # return fram_bfs, vdma_bfs
+    return fram_bfs, vdma_bfs
 
 
 # ----------------------------------------------------------------------------------------------------------------------
