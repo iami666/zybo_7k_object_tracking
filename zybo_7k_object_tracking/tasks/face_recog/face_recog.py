@@ -17,6 +17,8 @@ The trainner file is trained from some hollywood actors (from game of thrones TV
 
 import sys
 # import numpy as np
+import time
+
 import cv2
 import pickle
 # import pygame
@@ -48,21 +50,31 @@ TASK_TITLE_POS = (define.VID_FRAME_CENTER - (len(TASK_TITLE) * 4), 100)
 # ------------------------------------------------------------------------------
 # """ FUNCTION: to process face recognition frame"""
 # ------------------------------------------------------------------------------
-def processed_frame(face_cascade, inputQueue, outputQueue):
+def processed_frame(face_cascade, input_queue, output_queue):
     # keep looping
     while True:
-        # check if there is a frame in inputQueue
-        if not inputQueue.empty():
+
+        # check if there is a frame in input_queue
+        if not input_queue.empty():
+            try:
+                # the exit from the while loop during process terminate
+                if input_queue.get(0) == 'exit' or output_queue.get(0) == 'exit':
+                    input_queue.close()
+                    output_queue.close()
+                    # log.info("Queue is closed...")
+                    break
+            except Exception as _:
+                pass
+
             # grab the frame form the input queue
-            gray_frame = inputQueue.get()
+            gray_frame = input_queue.get()
             # detect object of different size i nthe input image.
             # the detected objects are returned as a list of rectangles.
             faces = face_cascade.detectMultiScale(gray_frame, scaleFactor=1.3, minNeighbors=5)
 
-
-
             # write the process frame to the output queue
-            outputQueue.put(faces)
+            output_queue.put(faces)
+
 
 # ------------------------------------------------------------------------------
 # """ file_path_check """
@@ -97,8 +109,8 @@ def face_recog_pygm(screen, disply_obj, fbs):
 
     # initialize the input queue (frames), output queue (process frames)
     # and the list of actual frace recognize processed frame return by the child process
-    inputQueue = Queue(maxsize=1)
-    outputQueue = Queue(maxsize=1)
+    input_queue = Queue(maxsize=1)
+    output_queue = Queue(maxsize=1)
     faces = None
 
     # objected created for cascade classifier
@@ -122,11 +134,11 @@ def face_recog_pygm(screen, disply_obj, fbs):
 
     # construct a child process independent from the main execution
     log.info("starting Queue process...")
-    # inputQueue will be populated by the parent and processed by the child ,input to the child process
-    # outputQueue will be populated by the child and processed by the parent, output from the child process
-    p = Process(target=processed_frame, args=(face_cascade, inputQueue, outputQueue,))
-    p.daemon = True
-    p.start()
+    # input_queue will be populated by the parent and processed by the child ,input to the child process
+    # output_queue will be populated by the child and processed by the parent, output from the child process
+    proc = Process(target=processed_frame, args=(face_cascade, input_queue, output_queue,))
+    proc.daemon = True
+    proc.start()
 
     try:
         with open(labels_path, 'rb') as f:
@@ -156,12 +168,12 @@ def face_recog_pygm(screen, disply_obj, fbs):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # for processing
 
         # if the input queue is empty, give the current frame to classify
-        if inputQueue.empty():
-            inputQueue.put(gray)
+        if input_queue.empty():
+            input_queue.put(gray)
 
         # if the output queue is not empty, grab the processed frame
-        if not outputQueue.empty():
-            faces = outputQueue.get()
+        if not output_queue.empty():
+            faces = output_queue.get()
 
         if faces is not None:
             for (x, y, w, h) in faces:
@@ -183,7 +195,6 @@ def face_recog_pygm(screen, disply_obj, fbs):
 
             frame = gray
 
-
         # elif globals.VID_FRAME_INDEX == 2:
         else:
 
@@ -197,19 +208,24 @@ def face_recog_pygm(screen, disply_obj, fbs):
         # check if TASK_INDEX is not 1 then it means another buttons has pressed
         if not globals.TASK_INDEX == 1:
             log.info("TASK_INDEX is not 1 but {}".format(globals.TASK_INDEX))
+
             break
 
         if not globals.CAM_START or globals.EXIT:
-            p.terminate() # terminate the process
-            # print(f"face_recog globals.CAM_START {globals.CAM_START}")
             break
 
-        # framerate control
+        # frame rate control
         if cv2.waitKey(fbs) & 0xff == ord('q'):
             break
 
-    log.info("Face Recognition closing ")
+    if proc.is_alive():
+        input_queue.put('exit')
+        output_queue.put('exit')
+        proc.terminate()  # terminate the process
+
     vid.video_cleanUp()
+    log.info("Face Recognition closing ")
+
 
 
 

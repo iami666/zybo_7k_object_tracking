@@ -12,6 +12,8 @@ import logging
 import cv2
 import os
 import sys
+from multiprocessing import Process
+from multiprocessing import Queue
 
 
 
@@ -38,6 +40,40 @@ TASK_TITLE_POS = (define.VID_FRAME_CENTER - (len(TASK_TITLE) * 6), 100)
 
 
 # ------------------------------------------------------------------------------
+# """ FUNCTION: to process face recognition frame"""
+# ------------------------------------------------------------------------------
+def processed_frame(net, input_queue, output_queue):
+    # keep looping
+    while True:
+        # check to see if there is a frame in our input queue
+        if not input_queue.empty():
+            try:
+                # the exit from the while loop during process terminate
+                if input_queue.get(0) == 'exit' or output_queue.get(0) == 'exit':
+                    input_queue.close()
+                    output_queue.close()
+                    break
+            except Exception as _:
+                pass
+
+            # grab the frame from the input queue, resize it, and
+            # construct a blob from it
+            frame = input_queue.get()
+            frame = cv2.resize(frame, (300, 300))
+            blob = cv2.dnn.blobFromImage(frame, 0.007843,
+                                         (300, 300), 127.5)
+
+            # set the blob as input to our deep learning object
+            # detector and obtain the detections
+            net.setInput(blob)
+            detections = net.forward()
+
+            # write the detections to the output queue
+            output_queue.put(detections)
+
+
+
+# ------------------------------------------------------------------------------
 # """ file_path_check """
 # ------------------------------------------------------------------------------
 
@@ -61,6 +97,12 @@ def object_recog_pygm(screen, disply_obj):
     """ """
     log.info("object_recog_pygm start... ")
 
+    # initialize the input queue (frames), output queue (process frames)
+    # and the list of actual frace recognize processed frame return by the child process
+    input_queue = Queue(maxsize=1)
+    output_queue = Queue(maxsize=1)
+    detections = None
+
     # configuration file use to train caffe model
     prototxt_file = "MobileNetSSD_deploy.prototxt.txt"
     caffe_model = "MobileNetSSD_deploy.caffemodel"
@@ -83,6 +125,14 @@ def object_recog_pygm(screen, disply_obj):
     # load our serialized model from disk
     net = cv2.dnn.readNetFromCaffe(prototxt_file_path, caffe_model_path)
 
+    # construct a child process *indepedent* from our main process of
+    # execution
+    # print("[INFO] starting process...")
+    log.info("starting process...")
+    proc = Process(target=processed_frame, args=(net, input_queue, output_queue,))
+    proc.daemon = True
+    proc.start()
+
     # initialize the video stream
     vid = Vision()
 
@@ -95,38 +145,38 @@ def object_recog_pygm(screen, disply_obj):
 
         # grab the frame dimensions and convert it to a blob
         (h, w) = frame.shape[:2]
-        blob = cv2.dnn.blobFromImage(cv2.resize(frame, (300, 300)),
-                                     0.007843, (300, 300), 127.5)
 
-        # pass the blob through the network and obtain the detections and
-        # predictions
-        net.setInput(blob)
-        detections = net.forward()
+        # if the input queue *is* empty, give the current frame to
+        # classify
+        if input_queue.empty():
+            input_queue.put(frame)
 
-        # loop over the detections
-        for i in np.arange(0, detections.shape[2]):
-            # extract the confidence (i.e., probability) associated with
-            # the prediction
-            confidence = detections[0, 0, i, 2]
+        # if the output queue *is not* empty, grab the detections
+        if not output_queue.empty():
+            detections = output_queue.get()
+        # draw the detections on the frame)
+        if detections is not None:
+            # loop over the detections
+            for i in np.arange(0, detections.shape[2]):
+                # extract the confidence (i.e., probability) associated with
+                # the prediction
+                confidence = detections[0, 0, i, 2]
 
-            # filter out weak detections by ensuring the `confidence` is
-            # greater than the minimum confidence
-            if confidence > 0.2:
-                # extract the index of the class label from the
-                # `detections`, then compute the (x, y)-coordinates of
-                # the bounding box for the object
-                idx = int(detections[0, 0, i, 1])
-                box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
-                (startX, startY, endX, endY) = box.astype("int")
+                # filter out weak detections by ensuring the `confidence` is
+                # greater than the minimum confidence
+                if confidence > 0.2:
+                    # extract the index of the class label from the
+                    # `detections`, then compute the (x, y)-coordinates of
+                    # the bounding box for the object
+                    idx = int(detections[0, 0, i, 1])
+                    box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
+                    (startX, startY, endX, endY) = box.astype("int")
 
-                # draw the prediction on the frame
-                label = "{}: {:.2f}%".format(CLASSES[idx],
-                                             confidence * 100)
-                cv2.rectangle(frame, (startX, startY), (endX, endY),
-                              COLORS[idx], 2)
-                y = startY - 15 if startY - 15 > 15 else startY + 15
-                cv2.putText(frame, label, (startX, y),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
+                    # draw the prediction on the frame
+                    label = "{}: {:.2f}%".format(CLASSES[idx], confidence * 100)
+                    cv2.rectangle(frame, (startX, startY), (endX, endY), COLORS[idx], 2)
+                    y = startY - 15 if startY - 15 > 15 else startY + 15
+                    cv2.putText(frame, label, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
 
         if globals.VID_FRAME_INDEX == 0:
 
@@ -160,6 +210,11 @@ def object_recog_pygm(screen, disply_obj):
         # if the `q` key was pressed, break from the loop
         if key == ord("q"):
             break
+
+    if proc.is_alive():
+        input_queue.put('exit')
+        output_queue.put('exit')
+        proc.terminate()  # terminate the process
 
     vid.video_cleanUp()
     log.info("object_recog_pygm closing ")

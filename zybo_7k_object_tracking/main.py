@@ -1,4 +1,4 @@
- # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # @Author: vivekpatel99
 # @Date:   2018-10-06 15:43:12
 # @Last Modified by:   vivekpatel99
@@ -62,44 +62,6 @@ def env_setup(fbpath="/dev/fb0"):
 
 # ----------------------------------------------------------------------------------------------------------------------
 # """ MAIN FUNCTION """
-# ----------------------------------------------------------------------------------------------------------------------
-
-def main_():
-    """
-    """
-
-    env_setup()
-
-    define.platform_init()
-
-    try:
-        pygame.init()
-    except Exception as error:
-        print(error)
-
-    # title fonts
-    fonts = pygame.font.SysFont("Comic Sans MS", 40)
-    title = fonts.render(PROJECT_TITLE, False, (0, 0, 255))
-    print("[INFO] title set up done...")
-
-    # making mouse invisible
-    pygame.mouse.set_visible(False)
-
-    screen = pygame.display.set_mode(SCREEN_SIZE, pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF)
-
-    screen.fill(WHITE)
-
-    while True:
-
-        if TASK_INDEX is 0:
-            # cam_test.main()
-            pass
-        if TASK_INDEX is 1:
-            face_recog.face_recog_pygm(screen, FPS)
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-# """ main """
 # ----------------------------------------------------------------------------------------------------------------------
 
 def main():
