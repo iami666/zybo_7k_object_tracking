@@ -28,7 +28,7 @@ def cam_off_loop(screen, disply_obj, FPS=0):
     img_path = "1.jpg"
 
     if not os.path.isfile(img_path):
-        log.error(f"[ERROR] image does not exist {img_path}")
+        log.error("[ERROR] image does not exist {}".format(img_path))
         # print("[ERROR] image does not exist {}".format(img_path))
 
 

@@ -13,6 +13,8 @@ import cv2
 import os
 import sys
 
+
+
 # -----------------------------------------------
 """ Modules """
 
@@ -27,12 +29,12 @@ log = logging.getLogger("__main__." + __name__)
 # -----------------------------------------------
 """ globals """
 
-TASK_INFO = " Objects Names : background, aeroplane, bicycle, bird, boat, \n bottle, bus, car, cat, chair, cow, \n" \
-            " diningtable, dog, horse, motorbike, person, pottedplant, \n sheep, sofa, train, tvmonitor"
+TASK_INFO = " Objects Names : bottle, bus, car, cat, chair" \
+            " diningtable, dog, person, pottedplant, sofa, tvmonitor"
 
-TASK_TITLE = "Object Recognition and tracking"
+TASK_TITLE = "Object Recognition and Tracking"
 
-TASK_TITLE_POS = (define.VID_FRAME_CENTER - (len(TASK_TITLE) * 4), 100)
+TASK_TITLE_POS = (define.VID_FRAME_CENTER - (len(TASK_TITLE) * 6), 100)
 
 
 # ------------------------------------------------------------------------------
@@ -52,14 +54,12 @@ def file_path_check(file_name_fm_same_dir):
         return file_path
 
 
-
-
 # ------------------------------------------------------------------------------
 # """ object_recog """
 # ------------------------------------------------------------------------------
-def object_recog(screen, disply_obj, fbs):
+def object_recog_pygm(screen, disply_obj):
     """ """
-    log.info("object_recog start... ")
+    log.info("object_recog_pygm start... ")
 
     prototxt_file = "MobileNetSSD_deploy.prototxt.txt"
     caffe_model = "MobileNetSSD_deploy.caffemodel"
@@ -73,35 +73,29 @@ def object_recog(screen, disply_obj, fbs):
     # initialize the list of class labels MobileNet SSD was trained to
     # detect, then generate a set of bounding box colors for each class
     CLASSES = ["background", "aeroplane", "bicycle", "bird", "boat",
-        "bottle", "bus", "car", "cat", "chair", "cow", "diningtable",
-        "dog", "horse", "motorbike", "person", "pottedplant", "sheep",
-        "sofa", "train", "tvmonitor"]
+               "bottle", "bus", "car", "cat", "chair", "cow", "diningtable",
+               "dog", "horse", "motorbike", "person", "pottedplant", "sheep",
+               "sofa", "train", "tvmonitor"]
 
     COLORS = np.random.uniform(0, 255, size=(len(CLASSES), 3))
 
     # load our serialized model from disk
-    print("[INFO] loading model...")
     net = cv2.dnn.readNetFromCaffe(prototxt_file_path, caffe_model_path)
 
-    # initialize the video stream, allow the cammera sensor to warmup,
-    # and initialize the FPS counter
-    print("[INFO] starting video stream...")
-    vs = VideoStream(src=0).start()
-    # vs = VideoStream(usePiCamera=True).start()
-    time.sleep(2.0)
-    fps = FPS().start()
+    # initialize the video stream
+    vid = Vision()
 
     # loop over the frames from the video stream
-    while True:
-        # grab the frame from the threaded video stream and resize it
-        # to have a maximum width of 400 pixels
-        frame = vs.read()
-        frame = imutils.resize(frame, width=400)
+    while vid.is_camera_connected():
+
+        ret, frame = vid.get_video()
+
+        frame = vid.resize_frame(frame)
 
         # grab the frame dimensions and convert it to a blob
         (h, w) = frame.shape[:2]
         blob = cv2.dnn.blobFromImage(cv2.resize(frame, (300, 300)),
-            0.007843, (300, 300), 127.5)
+                                     0.007843, (300, 300), 127.5)
 
         # pass the blob through the network and obtain the detections and
         # predictions
@@ -126,15 +120,25 @@ def object_recog(screen, disply_obj, fbs):
 
                 # draw the prediction on the frame
                 label = "{}: {:.2f}%".format(CLASSES[idx],
-                    confidence * 100)
+                                             confidence * 100)
                 cv2.rectangle(frame, (startX, startY), (endX, endY),
-                    COLORS[idx], 2)
+                              COLORS[idx], 2)
                 y = startY - 15 if startY - 15 > 15 else startY + 15
                 cv2.putText(frame, label, (startX, y),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
 
+        if globals.VID_FRAME_INDEX == 0:
 
+            frame = frame
 
+        elif globals.VID_FRAME_INDEX == 1:
+
+            frame = frame
+
+        else:
+            # opencv understand BGR, in order to display we need to convert image  form   BGR to RGB
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # for display
+            # TASK_INFO = "Colored Frame  " + TASK_INFO
         # Display the frame
         display.display_render(screen, frame, disply_obj, TASK_INFO)
 
@@ -142,13 +146,12 @@ def object_recog(screen, disply_obj, fbs):
 
         # check if TASK_INDEX is not 3 then it means another buttons has pressed
         if not globals.TASK_INDEX == 3:
-            log.info(f"TASK_INDEX is not 1 but {globals.TASK_INDEX}")
+            log.info("TASK_INDEX is not 1 but {}".format(globals.TASK_INDEX))
             break
 
         if not globals.CAM_START or globals.EXIT:
             # print(f"face_recog globals.CAM_START {globals.CAM_START}")
             break
-
 
         # show the output frame
         key = cv2.waitKey(1) & 0xFF
@@ -157,18 +160,9 @@ def object_recog(screen, disply_obj, fbs):
         if key == ord("q"):
             break
 
-        # update the FPS counter
-        fps.update()
+    vid.video_cleanUp()
+    log.info("object_recog_pygm closing ")
 
-    # stop the timer and display FPS information
-    fps.stop()
-    print("[INFO] elapsed time: {:.2f}".format(fps.elapsed()))
-    print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
-
-    # do a bit of cleanup
-    cv2.destroyAllWindows()
-    vs.stop()
-    log.info("Object Recognition closing ")
 
 # ----------------------------------------------------------------------------------------------------------------------
 # """ main """
@@ -177,19 +171,19 @@ def main():
     # construct the argument parse and parse the arguments
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--prototxt", required=True,
-        help="path to Caffe 'deploy' prototxt file")
+                    help="path to Caffe 'deploy' prototxt file")
     ap.add_argument("-m", "--model", required=True,
-        help="path to Caffe pre-trained model")
+                    help="path to Caffe pre-trained model")
     ap.add_argument("-c", "--confidence", type=float, default=0.2,
-        help="minimum probability to filter weak detections")
+                    help="minimum probability to filter weak detections")
     args = vars(ap.parse_args())
 
     # initialize the list of class labels MobileNet SSD was trained to
     # detect, then generate a set of bounding box colors for each class
     CLASSES = ["background", "aeroplane", "bicycle", "bird", "boat",
-        "bottle", "bus", "car", "cat", "chair", "cow", "diningtable",
-        "dog", "horse", "motorbike", "person", "pottedplant", "sheep",
-        "sofa", "train", "tvmonitor"]
+               "bottle", "bus", "car", "cat", "chair", "cow", "diningtable",
+               "dog", "horse", "motorbike", "person", "pottedplant", "sheep",
+               "sofa", "train", "tvmonitor"]
     COLORS = np.random.uniform(0, 255, size=(len(CLASSES), 3))
 
     # load our serialized model from disk
@@ -214,7 +208,7 @@ def main():
         # grab the frame dimensions and convert it to a blob
         (h, w) = frame.shape[:2]
         blob = cv2.dnn.blobFromImage(cv2.resize(frame, (300, 300)),
-            0.007843, (300, 300), 127.5)
+                                     0.007843, (300, 300), 127.5)
 
         # pass the blob through the network and obtain the detections and
         # predictions
@@ -239,12 +233,12 @@ def main():
 
                 # draw the prediction on the frame
                 label = "{}: {:.2f}%".format(CLASSES[idx],
-                    confidence * 100)
+                                             confidence * 100)
                 cv2.rectangle(frame, (startX, startY), (endX, endY),
-                    COLORS[idx], 2)
+                              COLORS[idx], 2)
                 y = startY - 15 if startY - 15 > 15 else startY + 15
                 cv2.putText(frame, label, (startX, y),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
 
         # show the output frame
         cv2.imshow("Frame", frame)
@@ -267,6 +261,5 @@ def main():
     vs.stop()
 
 
-
-if __name__=="__main__":
+if __name__ == "__main__":
     main()

@@ -14,6 +14,8 @@ import sys
 import pygame
 from pygame.locals import *
 
+
+
 """ modules """
 
 from definition import define
@@ -143,7 +145,7 @@ def main():
 
                 if globals.TASK_INDEX is 3:
                     screen.fill(WHITE)
-                    object_recognition.object_recog(screen, disply_obj, FPS)
+                    object_recognition.object_recog_pygm(screen, disply_obj)
 
                 if not globals.CAM_START or globals.EXIT:
                     log.info("Camera is OFF")
