@@ -13,7 +13,7 @@ CAM_NUM = 0
 
 class Vision:
     def __init__(self, cam_num=0):
-        print("setting up the video capture ......")
+        print("[INFO] setting up the video capture ......")
         self.cam_num = cam_num
         self.cap = cv2.VideoCapture(cam_num)
 
@@ -28,10 +28,10 @@ class Vision:
             self.frame = frame.copy()
 
         except:
-            print("ERROR: frame  is not captured")
+            print("[ERROR] frame  is not captured")
 
         if not ret:  # check if there was no frame captured
-            print ("ERROR: while capturing frame")
+            print ("[ERROR] while capturing frame")
 
         return ret, frame
 
