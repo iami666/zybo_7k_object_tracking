@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
+<<<<<<< HEAD
     <list default="true" id="d3500eab-3f37-423b-82cb-60a44cb2cb1a" name="Default Changelist" comment="">
       <change afterPath="$PROJECT_DIR$/main_test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
@@ -10,6 +11,9 @@
       <change beforePath="$PROJECT_DIR$/gui/qt_gui.ui" beforeDir="false" afterPath="$PROJECT_DIR$/gui/qt_gui.ui" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
+=======
+    <list default="true" id="d3500eab-3f37-423b-82cb-60a44cb2cb1a" name="Default Changelist" comment="" />
+>>>>>>> 0ef13a5febf0a2c533cddd9fc27999c51743f997
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,16 +93,58 @@
         </counts>
       </usages-collector>
     </session>
+    <session id="-939572320">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.closed" value="1" />
+          <entry key="project.open.time.15" value="1" />
+          <entry key="project.opened" value="1" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="md" value="1" />
+          <entry key="py" value="7" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="Markdown" value="1" />
+          <entry key="Python" value="7" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="md" value="393" />
+          <entry key="py" value="1322" />
+          <entry key="txt" value="81" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="Markdown" value="393" />
+          <entry key="PLAIN_TEXT" value="81" />
+          <entry key="Python" value="1322" />
+        </counts>
+      </usages-collector>
+    </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/definition/define.py">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="2310">
               <caret line="154" column="6" selection-start-line="154" selection-start-column="6" selection-end-line="154" selection-end-column="6" />
               <folding>
                 <marker date="212000" expanded="true" signature="6258:6263" ph="..." />
+=======
+            <state relative-caret-position="270">
+              <caret line="22" selection-start-line="22" selection-end-line="23" selection-end-column="22" />
+              <folding>
+                <element signature="e#9#19#0" expanded="true" />
+>>>>>>> 0ef13a5febf0a2c533cddd9fc27999c51743f997
               </folding>
             </state>
           </provider>
@@ -107,6 +153,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="255">
               <caret line="23" selection-start-line="23" selection-end-line="23" selection-end-column="29" />
               <folding>
@@ -132,6 +179,10 @@
         <entry file="file://$PROJECT_DIR$/lib/vision/vision.py">
           <provider selected="true" editor-type-id="text-editor">
             <state>
+=======
+            <state relative-caret-position="405">
+              <caret line="27" selection-start-line="27" selection-end-line="27" />
+>>>>>>> 0ef13a5febf0a2c533cddd9fc27999c51743f997
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -139,9 +190,35 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/display/display.py">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/gui/gui.py">
           <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-26">
+              <caret line="22" selection-start-line="22" selection-end-line="22" />
+              <folding>
+                <element signature="e#257#267#0" expanded="true" />
+                <marker date="1539589362119" expanded="true" signature="562:1935" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/README.md">
+          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+            <state split_layout="SPLIT">
+              <first_editor relative-caret-position="105">
+                <caret line="7" column="33" lean-forward="true" selection-start-line="7" selection-start-column="33" selection-end-line="7" selection-end-column="33" />
+              </first_editor>
+              <second_editor />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/gui/test.py">
+          <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="1020">
               <caret line="71" selection-start-line="71" selection-end-line="71" selection-end-column="18" />
               <folding>
@@ -160,6 +237,13 @@
               <caret line="52" selection-start-line="52" selection-end-line="52" />
               <folding>
                 <element signature="e#257#267#0" expanded="true" />
+=======
+            <state relative-caret-position="135">
+              <caret line="9" selection-start-line="9" selection-end-line="9" />
+              <folding>
+                <marker date="1539587986853" expanded="true" signature="267:271" ph="..." />
+                <marker date="1539587986853" expanded="true" signature="1675:1684" ph="..." />
+>>>>>>> 0ef13a5febf0a2c533cddd9fc27999c51743f997
               </folding>
             </state>
           </provider>
@@ -208,11 +292,18 @@
         <option value="$PROJECT_DIR$/definition/__init__.py" />
         <option value="$PROJECT_DIR$/__init__.py" />
         <option value="$PROJECT_DIR$/lib/display/display.py" />
+<<<<<<< HEAD
         <option value="$PROJECT_DIR$/gui/gui.py" />
         <option value="/media/sf_linux_shared/python_projects/zybo_project/zybo_7k_object_tracking/gui/gui.py" />
         <option value="$PROJECT_DIR$/definition/define.py" />
         <option value="$PROJECT_DIR$/main.py" />
         <option value="$PROJECT_DIR$/main_test.py" />
+=======
+        <option value="$PROJECT_DIR$/gui/test.py" />
+        <option value="$PROJECT_DIR$/main.py" />
+        <option value="$PROJECT_DIR$/gui/gui.py" />
+        <option value="$PROJECT_DIR$/README.md" />
+>>>>>>> 0ef13a5febf0a2c533cddd9fc27999c51743f997
       </list>
     </option>
   </component>
@@ -252,6 +343,19 @@
               <item name="zybo_7k_object_tracking" type="b2602c69:ProjectViewProjectNode" />
               <item name="zybo_7k_object_tracking" type="462c0819:PsiDirectoryNode" />
             </path>
+<<<<<<< HEAD
+=======
+            <path>
+              <item name="zybo_7k_object_tracking" type="b2602c69:ProjectViewProjectNode" />
+              <item name="zybo_7k_object_tracking" type="462c0819:PsiDirectoryNode" />
+              <item name="definition" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="zybo_7k_object_tracking" type="b2602c69:ProjectViewProjectNode" />
+              <item name="zybo_7k_object_tracking" type="462c0819:PsiDirectoryNode" />
+              <item name="gui" type="462c0819:PsiDirectoryNode" />
+            </path>
+>>>>>>> 0ef13a5febf0a2c533cddd9fc27999c51743f997
           </expand>
           <select />
         </subPane>
@@ -260,7 +364,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/gui/display.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/gui/test.py" />
     <property name="settings.editor.selected.configurable" value="preferences.keymap" />
     <property name="settings.editor.splitter.proportion" value="0.27509293" />
   </component>
@@ -281,7 +385,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.gui">
+  <component name="RunManager" selected="Python.main">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="zybo_7k_object_tracking" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -366,8 +470,30 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="test_gui" type="PythonConfigurationType" factoryName="Python">
+      <module name="zybo_7k_object_tracking" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/.virtualenvs/cv/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/gui" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/gui/test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="true" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Python.gui" />
+      <item itemvalue="Python.test_gui" />
       <item itemvalue="Python.main" />
       <item itemvalue="Python.display" />
     </list>
@@ -404,7 +530,14 @@
       <option name="project" value="LOCAL" />
       <updated>1538911342120</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="In gui dir&#10; - new simple vidoe gui created for testing">
+      <created>1539588751119</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1539588751119</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -413,9 +546,14 @@
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24962963" />
       <window_info id="Favorites" order="1" side_tool="true" />
       <window_info id="Structure" order="2" weight="0.054112554" />
+      <window_info anchor="bottom" id="Messages" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32951653" />
+<<<<<<< HEAD
       <window_info anchor="bottom" id="Run" order="2" weight="0.25" />
+=======
+      <window_info anchor="bottom" id="Run" order="2" weight="0.38389122" />
+>>>>>>> 0ef13a5febf0a2c533cddd9fc27999c51743f997
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -455,7 +593,8 @@
     <MESSAGE value="In define.py&#10;&#10; - mmap for buffer 1" />
     <MESSAGE value="In define.py&#10;&#10; - minor change" />
     <MESSAGE value="In define.py&#10;&#10; - printing fd_frbut" />
-    <option name="LAST_COMMIT_MESSAGE" value="In define.py&#10;&#10; - printing fd_frbut" />
+    <MESSAGE value="In gui dir&#10; - new simple vidoe gui created for testing" />
+    <option name="LAST_COMMIT_MESSAGE" value="In gui dir&#10; - new simple vidoe gui created for testing" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$USER_HOME$/.PyCharmCE2018.2/system/python_stubs/-1247971764/mmap.py">
@@ -465,6 +604,7 @@
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/gui/qt_gui.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
@@ -472,6 +612,8 @@
         </state>
       </provider>
     </entry>
+=======
+>>>>>>> 0ef13a5febf0a2c533cddd9fc27999c51743f997
     <entry file="file://$PROJECT_DIR$/definition/cpp/setup.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
@@ -481,10 +623,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/definition/def.py" />
     <entry file="file://$PROJECT_DIR$/definition/untitled folder/define.py" />
-    <entry file="file://$PROJECT_DIR$/lib/_logger/logging.py">
+<<<<<<< HEAD
+    t
+<entry file="file://$PROJECT_DIR$/lib/_logger/logging.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
-          <caret line="5" column="1" lean-forward="true" selection-start-line="5" selection-start-column="1" selection-end-line="5" selection-end-column="1" />
+:q
+
+
+
+
+          <caret line="4" column="1" lean-forward="true" selection-start-line="5" selection-start-column="1" selection-end-line="5" selection-end-column="1" />
         </state>
       </provider>
     </entry>
@@ -508,6 +657,9 @@
         </state>
       </provider>
     </entry>
+=======
+    <entry file="file://$PROJECT_DIR$/lib/_logger/logging.py" />
+>>>>>>> 0ef13a5febf0a2c533cddd9fc27999c51743f997
     <entry file="file://$PROJECT_DIR$/definition/cpp/def.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2235">
@@ -522,6 +674,7 @@
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/definition/define.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2310">
@@ -540,31 +693,68 @@
           </folding>
         </state>
       </provider>
+=======
+    <entry file="file://$PROJECT_DIR$/lib/vision/vision.py" />
+    <entry file="file://$PROJECT_DIR$/definition/__init__.py">
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/display/display.py">
+    <entry file="file://$PROJECT_DIR$/__init__.py">
+      <provider selected="true" editor-type-id="text-editor" />
+>>>>>>> 0ef13a5febf0a2c533cddd9fc27999c51743f997
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/display/display.py" />
+    <entry file="file://$PROJECT_DIR$/lib/__init__.py" />
+    <entry file="file://$PROJECT_DIR$/definition/define.py">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="1020">
           <caret line="71" selection-start-line="71" selection-end-line="71" selection-end-column="18" />
           <folding>
             <element signature="e#41#50#0" expanded="true" />
             <marker date="1362000" expanded="true" signature="314:319" ph="..." />
             <marker date="1362000" expanded="true" signature="1419:1482" ph="..." />
+=======
+        <state relative-caret-position="270">
+          <caret line="22" selection-start-line="22" selection-end-line="23" selection-end-column="22" />
+          <folding>
+            <element signature="e#9#19#0" expanded="true" />
+>>>>>>> 0ef13a5febf0a2c533cddd9fc27999c51743f997
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file:///media/sf_linux_shared/python_projects/zybo_project/zybo_7k_object_tracking/gui/gui.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="660">
           <caret line="52" selection-start-line="52" selection-end-line="52" />
           <folding>
             <element signature="e#257#267#0" expanded="true" />
+=======
+    <entry file="file://$PROJECT_DIR$/gui/qt_gui.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="409">
+          <caret line="32" lean-forward="true" selection-start-line="32" selection-end-line="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharmCE2018.2/system/python_stubs/-1247971764/PyQt5/QtGui/QImage.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="405">
+          <caret line="27" selection-start-line="27" selection-end-line="27" />
+          <folding>
+            <element signature="e#263#273#0" expanded="true" />
+>>>>>>> 0ef13a5febf0a2c533cddd9fc27999c51743f997
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/gui/test.py">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="255">
           <caret line="17" column="63" selection-start-line="17" selection-start-column="63" selection-end-line="17" selection-end-column="63" />
         </state>
@@ -576,16 +766,43 @@
           <caret line="23" selection-start-line="23" selection-end-line="23" selection-end-column="29" />
           <folding>
             <marker date="3295000" expanded="true" signature="2215:2220" ph="..." />
+=======
+        <state relative-caret-position="135">
+          <caret line="9" selection-start-line="9" selection-end-line="9" />
+          <folding>
+            <marker date="1539587986853" expanded="true" signature="267:271" ph="..." />
+            <marker date="1539587986853" expanded="true" signature="1675:1684" ph="..." />
+>>>>>>> 0ef13a5febf0a2c533cddd9fc27999c51743f997
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/main_test.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="277">
           <caret line="91" column="5" lean-forward="true" selection-start-line="91" selection-start-column="5" selection-end-line="91" selection-end-column="5" />
           <folding>
             <element signature="e#37#46#0" expanded="true" />
+=======
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="105">
+            <caret line="7" column="33" lean-forward="true" selection-start-line="7" selection-start-column="33" selection-end-line="7" selection-end-column="33" />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gui/gui.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-26">
+          <caret line="22" selection-start-line="22" selection-end-line="22" />
+          <folding>
+            <element signature="e#257#267#0" expanded="true" />
+            <marker date="1539589362119" expanded="true" signature="562:1935" ph="..." />
+>>>>>>> 0ef13a5febf0a2c533cddd9fc27999c51743f997
           </folding>
         </state>
       </provider>

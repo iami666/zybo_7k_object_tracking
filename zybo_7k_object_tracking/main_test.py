@@ -3,6 +3,8 @@
 import os
 import sys
 import cv2
+
+
 import numpy as np
 from random import *
 
@@ -15,14 +17,14 @@ from pygame.locals import *
 from definition import define
 
 # Frames per second
-FPS = 5
+FPS = 60
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
 WIDTH = 500
 HEIGHT = 500
-MARGIN = 5
+MARGIN = 60
 
 RECT_SIZE = (10, 10)
 
@@ -59,32 +61,33 @@ def setup_tkinter():
 
 
 # Main game loopq
-def game_loop(screen, fps_clock, root):
+def game_loop(screen, fps_clock, root=None):
     cam = cv2.VideoCapture(0)
-    pygame.init()
-    pygame.display.set_caption("opencv cam")
+
+    # pygame.display.set_caption("opencv cam")
     # screen = pygame.display.set_mode([WIDTH - MARGIN, HEIGHT - MARGIN])
+    screen.fill(WHITE)
     try:
         while True:
             ret, frame = cam.read()
-            screen.fill(WHITE)
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             frame = np.rot90(frame)
             frame = pygame.surfarray.make_surface(frame)
             screen.blit(frame, (50, 50))
-            root.update()
-            pygame.display.update()
-            # fps_clock.tick(FPS)
-            checkVar2.set(2)
-            for event in pygame.event.get():
-                if event.type == KEYDOWN:
-                    sys.exit(0)
+            # root.update()
+            # pygame.display.update()
+            fps_clock.tick(FPS)
+            # checkVar2.set(2)
+            # for event in pygame.event.get():
+            #     if event.type == KEYDOWN:
+            #         sys.exit(0)
+            pygame.display.flip()
     except Exception as error:
         print(error)
         pygame.quit()
         cv2.destroyAllWindows()
-        root.destroy()
-        sys.exit()
+        # root.destroy()
+        sys.exit(-1)
 
     # random_pos = (
     #     randint(MARGIN, WIDTH - MARGIN),
@@ -108,19 +111,28 @@ def main():
     fram_bfs, vdma_bfs = define.platform_init()
     fb3 = "/dev/fb0"
     # os.putenv("SDL_FBDEV", fb3)
+    # set up audio driver to avoid alisa lib erros
+    os.environ['SDL_AUDIODRIVER'] = "dsp"
+
     # os.environ['SDL_VIDEODRIVER'] = fb3
     os.environ["SDL_FBDEV"] = fb3
 
-    root = setup_tkinter()
-
-    pygame.init()
+    pygame.display.init()
+    # root = setup_tkinter()
     fps_clock = pygame.time.Clock()
 
-    screen = pygame.display.set_mode((WIDTH, HEIGHT), 0, 32)
-    pygame.display.set_caption('animation')
+    # WIDTH =  define.VERTICAL_LINES
+    # HEIGHT = define.HORIZONTAL_PIXELS
+    # screen = pygame.display.set_mode((1240, 1010))
+    # size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
+
+    # print("Framebuffer size set {} x {}".format(size[0],size[1]))
+
+    screen = pygame.display.set_mode((1265, 1015), pygame.FULLSCREEN)
+
 
     # while True:
-    game_loop(screen, fps_clock, root)
+    game_loop(screen, fps_clock)
 
 
 if __name__ == '__main__':

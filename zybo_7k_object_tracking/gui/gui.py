@@ -33,6 +33,12 @@ class test(QMainWindow):
         self.Stop_btn.clicked.connect(self.stop_webcam)
 
     # def start_webcam(self):
+
+        self.Start_btn.clicked.connect(self.start_webcam)
+        self.Stop_btn.clicked.connect(self.stop_webcam)
+
+    def start_webcam(self):
+
         self.capture = cv2.VideoCapture(0)
         self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 640)

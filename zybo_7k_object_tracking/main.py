@@ -8,20 +8,20 @@
 
 ptr_frbuf, ptr_frbuf_2, ptr_frbuf_3, ptr_frbuf_4, ptr_vdma, ptr_vdma_2, ptr_vdma_3, ptr_vdma_4
 """
-import base64
+import os
 import sys
 import cv2
-import time
-import  os
-import pygame
+
 import numpy as np
-from random import *
+# from tkinter import *
+# import tkinter as tk
 
-from PyQt5.QtWidgets import QApplication
-
-
+import pygame
+from pygame.locals import *
 
 from definition import define
+
+
 # from gui import gui
 from lib.display import display
 # from lib._Time import timecount
@@ -30,28 +30,82 @@ from lib.vision.vision import Vision
 from gui import gui
 
 
+""" constants declaration  """
+
+SCREEN_SIZE = (1265, 1015) # width, height
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+
+# Frames per second
+FPS = 60
+
+
+""" env_setup """ ############################################################
+def env_setup(fbpath="/dev/fb0"):
+
+    # os.putenv("SDL_FBDEV", fbpath)
+    os.environ["SDL_FBDEV"] = fbpath
+
+    # set up audio driver to avoid alisa lib erros
+    os.environ['SDL_AUDIODRIVER'] = "dsp"
+    # os.environ['SDL_VIDEODRIVER'] = "svgalib"
+  
+
+""" cam_loop """ ############################################################
+
+def cam_loop(screen, fps_clock, title):
+
+    cam = cv2.VideoCapture(0)
+    print("[INFO] cam object created...")
+    screen.fill(WHITE)
+
+    try:
+        while True:
+            ret, frame = cam.read()
+
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            frame = np.rot90(frame)
+            frame = pygame.surfarray.make_surface(frame)
+
+            screen.blit(frame, (50, 100)) # x, y
+            screen.blit(title, (200,25))
+            # fps_clock.tick(FPS)
+            pygame.display.flip()
+
+            if cv2.waitKey(30) & 0xFF == ord("q"):
+                break
+    except Exception as error:
+        print(error)
+        pygame.quit()
+        cv2.destroyAllWindows()
+        # root.destroy()
+        sys.exit(-1)
+
+""" main """ ##########################################################################################################
 def main():
     """
     """
+    env_setup()
+
     fram_bfs, vdma_bfs = define.platform_init()
-    # print(vdma_bfs)
-    # display.main()
-    fb3 = "/dev/fb1"
-    os.putenv("SDL_FBDEV", fb3)
-    os.environ["SDL_FBDEV"] = fb3
+
+
     try:
-        pygame.display.init()
+        pygame.init()
     except Exception as error:
         print(error)
 
-    size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
+    # title fonts
+    fonts = pygame.font.SysFont("Comic Sans MS", 40)
+    title = fonts.render('Closed Loop Object Tracking based on Image Recongnition', False, (0, 0, 255))
+    print("[INFO] title set up done...")
+    fps_clock = pygame.time.Clock()
 
-    print("Framebuffer size set {} x {}".format(size[0],size[1]))
 
-    screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
+    screen = pygame.display.set_mode(SCREEN_SIZE, pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF)
 
-    gui.main()
-    pygame.display.update()
+    cam_loop(screen, fps_clock, title)
+
 
     # vid = Vision()
     #
@@ -73,29 +127,6 @@ def main():
     #
     # vid.video_cleanUp()
 
-def img_disply():
-    fram_bfs, vdma_bfs = define.platform_init()
-    # print(vdma_bfs)
-    # display.main()
-    fb3 = "/dev/fb0"
-    os.putenv("SDL_FBDEV", fb3)
-    os.environ["SDL_FBDEV"] = fb3
-    try:
-        pygame.display.init()
-    except Exception as error:
-        print(error)
-
-    w = 640
-    h = 480
-    size = (w, h)
-
-    screen = pygame.display.set_mode(size)
-    img_name = "1.jpg"
-    print(img_name)
-    img = pygame.image.load(img_name)
-    screen.blit(img, (0,0))
-    pygame.display.flip()
-    time.sleep(10)
 
 
 
@@ -112,13 +143,10 @@ def _main():
     white = (255,255,255)
     black = (0,0,0)
 
-    width =
+
 
 
 if __name__ == '__main__':
-    img_disply()
-    # main()
 
-    # app = QApplication(sys.argv)
-    # a_winow = gui.Window()
-    # sys.exit(app.exec_())
+    main()
+
