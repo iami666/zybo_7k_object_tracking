@@ -37,6 +37,6 @@ def platform_init():
         print("invalid fb0 device file \n")
 
     # mmap.mmap(fileno, length[, flags[, prot[, access[, offset]]]])
-    ptr_frbuf = mmap.mmap(fileno=fd_frbuf.fileno(), length=all_disp_address,access=mmap.MAP_SHARED, prot=mmap.PROT_READ|mmap.PROT_WRITE,  0)
+    ptr_frbuf = mmap.mmap(fileno=fd_frbuf.fileno(), length=all_disp_address,access=mmap.MAP_SHARED, prot=mmap.PROT_READ|mmap.PROT_WRITE,  offset=0)
 
     fd_frbuf.close()
