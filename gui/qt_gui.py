@@ -7,6 +7,8 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtMultimediaWidgets import QVideoWidget
+import sys
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -60,10 +62,10 @@ class Ui_MainWindow(object):
         self.checkBox_2.setText(_translate("MainWindow", "Face Recognition"))
         self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar"))
 
-from PyQt5.QtMultimediaWidgets import QVideoWidget
+
 
 if __name__ == "__main__":
-    import sys
+
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
