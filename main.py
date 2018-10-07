@@ -32,7 +32,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
-    app = QApplication(sys.argv)
-    a_winow = gui.Window()
-    sys.exit(app.exec_())
+    print("{:#08x}".format(255))
+    # main()
+    # app = QApplication(sys.argv)
+    # a_winow = gui.Window()
+    # sys.exit(app.exec_())

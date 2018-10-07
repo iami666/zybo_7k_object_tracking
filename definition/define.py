@@ -38,5 +38,5 @@ def platform_init():
 
     # mmap.mmap(fileno, length[, flags[, prot[, access[, offset]]]])
     ptr_frbuf = mmap.mmap(fileno=fd_frbuf.fileno(), length=all_disp_address,access=mmap.MAP_SHARED, prot=mmap.PROT_READ|mmap.PROT_WRITE,  offset=0)
-
+    print("fb0 has allocated memory address {:#08x}".format(ptr_frbuf))
     fd_frbuf.close()
