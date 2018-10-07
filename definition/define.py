@@ -2,7 +2,7 @@
 
 """
 
-import numpy as np
+import os
 import mmap
 import struct
 
@@ -22,7 +22,7 @@ HORIZ_PIXELS_SMALL = 640
 VERT_LINES_SMALL = 480
 N_BUFFERS = 2
 
-print('hello')
+
 
 
 
@@ -31,17 +31,18 @@ def platform_init():
 
     all_disp_address = HORIZONTAL_PIXELS * VERTICAL_LINES * PIXEL_NUM_OF_BYTES
     all_disp_small = HORIZ_PIXELS_SMALL * VERT_LINES_SMALL * PIXEL_NUM_OF_BYTES
-   
+    print('helo')
     # 1st frame buffer mapping
-    fd_frbuf = open("/dev/fb0", 'wb+', buffering=0)
+    fd_frbuf = open("/dev/fb0", 'wb+')
    # print(np.fromfile(fd_frbuf, dtype=np.uint32))
-     fub_val = struct.unpack('i', fd_frbuf.read(4))[0] 
-   #fd_frbuf.flush()
+    fub_val = struct.unpack('i', fd_frbuf.read(4))[0] 
+    print(fub_val)
+    #fd_frbuf.flush()
     if fub_val < 1:
         print("invalid fb0 device file \n")
 
     # mmap.mmap(fileno, length[, flags[, prot[, access[, offset]]]])
     ptr_frbuf = mmap.mmap(fileno=fd_frbuf.fileno(), length=all_disp_address,access=mmap.MAP_SHARED, prot=mmap.PROT_READ|mmap.PROT_WRITE,  offset=0)
-    print("fb0 has allocated memory address {:#08x}".format(ptr_frbuf))
+    print("fb0 has allocated memory address {:#08x}".format(fub_val))
     fd_frbuf.close()
 platform_init()
