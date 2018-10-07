@@ -35,13 +35,13 @@ def platform_init():
     # 1st frame buffer mapping
     fd_frbuf = open("/dev/fb0", 'wb+', buffering=0)
    # print(np.fromfile(fd_frbuf, dtype=np.uint32))
-    print(struct.unpack('i', fd_frbuf.read(4))[0]) 
+     fub_val = struct.unpack('i', fd_frbuf.read(4))[0] 
    #fd_frbuf.flush()
-   # if fd_frbuf.read() < 1:
-    #    print("invalid fb0 device file \n")
+    if fub_val < 1:
+        print("invalid fb0 device file \n")
 
     # mmap.mmap(fileno, length[, flags[, prot[, access[, offset]]]])
-   # ptr_frbuf = mmap.mmap(fileno=fd_frbuf.fileno(), length=all_disp_address,access=mmap.MAP_SHARED, prot=mmap.PROT_READ|mmap.PROT_WRITE,  offset=0)
-   # print("fb0 has allocated memory address {:#08x}".format(ptr_frbuf))
+    ptr_frbuf = mmap.mmap(fileno=fd_frbuf.fileno(), length=all_disp_address,access=mmap.MAP_SHARED, prot=mmap.PROT_READ|mmap.PROT_WRITE,  offset=0)
+    print("fb0 has allocated memory address {:#08x}".format(ptr_frbuf))
     fd_frbuf.close()
 platform_init()
