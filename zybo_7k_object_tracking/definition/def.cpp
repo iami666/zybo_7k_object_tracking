@@ -7,7 +7,7 @@
 
 
 
-gcc define.cpp -o def.out
+g++ def.cpp -o def.out
 
 g++ -fPIC -O2 -c def.cpp
 g++ -shared define.o -o define.so
@@ -81,7 +81,7 @@ void platform_Init()
              memset(ptr_frbuf_4, 0, ALL_DISP_SMALL);
     /******************************vdma config********************************************/
 
- /*   int fd_vdma = open("/dev/mem", O_RDWR|O_SYNC);	// open uiox device for vdma access
+   int fd_vdma = open("/dev/mem", O_RDWR|O_SYNC);	// open uiox device for vdma access
     if (fd_vdma < 1) {
         printf("Invalid mem device file\n");
     }
@@ -90,7 +90,7 @@ void platform_Init()
     unsigned int *ptr_vdma;
     ptr_vdma = (unsigned int*)mmap(NULL, VDMA_MAP_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED, fd_vdma, VDMA_ADDR);
     printf("DMA 1 virtual address: 0x%08x \n",ptr_vdma);
-
+ /*
     *(ptr_vdma+5) = FRBUF_ADDR_0;
     *(ptr_vdma+7) = 2;  // use internal fifos to trigger xfer
     *(ptr_vdma+8) = 20480;
