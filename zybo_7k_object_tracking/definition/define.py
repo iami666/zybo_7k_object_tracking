@@ -117,11 +117,11 @@ def platform_init():
 
     vdma_buf_2[5 * 4:6 * 4] = struct.pack("I", FRBUF_ADDR_1)
     vdma_buf_2[4 * 4:5 * 4] = struct.pack("I", FRBUF_ADDR_1)
-    vdma_buf_2[7 * 4:8 * 4] = struct.pack("I", 2)
+    vdma_buf_2[7 * 4:8 * 4] = struct.pack("I", 2) # use internal fifos to trigger xfer
 
     ring_buf_size = int((ALL_DISP_SMALL / 128) - 1)
-    vdma_buf_2[8 * 4:9 * 4] = struct.pack("I", ring_buf_size)  # turn vesa master xfer on
-    vdma_buf_2[6 * 4:7 * 4] = struct.pack("I", 0x00010300)  # no. FIFO threshhol ..max.. 240
+    vdma_buf_2[8 * 4:9 * 4] = struct.pack("I", ring_buf_size)
+    vdma_buf_2[6 * 4:7 * 4] = struct.pack("I", 0x00010300)  # enable read xfer, countinously mode
     print("[INFO] RTC configuration end.....\n")
 
 
@@ -177,10 +177,10 @@ def platform_init():
     vdma_bfs = vdma_buffers(vdma_buf, vdma_buf_2, vdma_buf_3, vdma_buf_4)
 
 
-    fd_frbuf_1_obj.close()
-    fd_frbuf_2_obj.close()
-    fd_frbuf_3_obj.close()
-    fd_frbuf_4_obj.close()
+    # fd_frbuf_1_obj.close()
+    # fd_frbuf_2_obj.close()
+    # fd_frbuf_3_obj.close()
+    # fd_frbuf_4_obj.close()
 
 
     # vdma_buf.close()
