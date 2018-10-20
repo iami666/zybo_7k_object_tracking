@@ -37,7 +37,7 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
 # Frames per second
-FPS = 60
+FPS = 30
 
 
 """ env_setup """ ############################################################
@@ -49,21 +49,24 @@ def env_setup(fbpath="/dev/fb0"):
     # set up audio driver to avoid alisa lib erros
     os.environ['SDL_AUDIODRIVER'] = "dsp"
     # os.environ['SDL_VIDEODRIVER'] = "svgalib"
-  
+    # os.putenv['SDL_VIDEODRIVER'] = "fbcon"
 
 """ cam_loop """ ############################################################
 
 def cam_loop(screen, fps_clock, title):
 
-    cam = cv2.VideoCapture(0)
+    # cam = cv2.VideoCapture(0)
+    vid = Vision()
     print("[INFO] cam object created...")
     screen.fill(WHITE)
 
     try:
-        while True:
-            ret, frame = cam.read()
+        while vid.is_camera_connected():
+            ret, frame = vid.get_video()
 
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            resized_frame = cv2.resize(frame, (define.HORIZ_PIXELS_SMALL, define.VERT_LINES_SMALL))
+
             frame = np.rot90(frame)
             frame = pygame.surfarray.make_surface(frame)
 
@@ -72,14 +75,18 @@ def cam_loop(screen, fps_clock, title):
             # fps_clock.tick(FPS)
             pygame.display.flip()
 
-            if cv2.waitKey(30) & 0xFF == ord("q"):
+            if cv2.waitKey(FPS) & 0xFF == ord("q"):
                 break
     except Exception as error:
         print(error)
         pygame.quit()
-        cv2.destroyAllWindows()
+        vid.video_cleanUp()
         # root.destroy()
         sys.exit(-1)
+
+    vid.video_cleanUp()
+
+
 
 """ main """ ##########################################################################################################
 def main():
@@ -97,53 +104,17 @@ def main():
 
     # title fonts
     fonts = pygame.font.SysFont("Comic Sans MS", 40)
-    title = fonts.render('Closed Loop Object Tracking based on Image Recongnition', False, (0, 0, 255))
+    title = fonts.render('Closed Loop Object Tracking based on Image Recognition', False, (0, 0, 255))
     print("[INFO] title set up done...")
     fps_clock = pygame.time.Clock()
 
+    # making mouse invisible
+    pygame.mouse.set_visible(False)
 
+    # screen = pygame.display.set_mode(SCREEN_SIZE)
     screen = pygame.display.set_mode(SCREEN_SIZE, pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF)
 
     cam_loop(screen, fps_clock, title)
-
-
-    # vid = Vision()
-    #
-    # # cap = cv2.VideoCapture(0)
-    # # time.sleep(5)
-    #
-    # while vid.is_camera_connected():
-    #
-    #     ret, frame = vid.get_video()
-    #     vid.display('img', frame)
-    #
-    #     resized_frame = cv2.resize(frame, (define.HORIZ_PIXELS_SMALL, define.VERT_LINES_SMALL))
-    #
-    #     fram_bfs.fd_frbuf_3.write(bytes(000000))
-    #
-    #     if cv2.waitKey(300) & 0xFF == ord("q"):
-    #         break
-    #
-    #
-    # vid.video_cleanUp()
-
-
-
-
-
-
-
-
-def _main():
-    """
-    """
-    fram_bfs, vdma_bfs = define.platform_init()
-
-    fps = 5
-    white = (255,255,255)
-    black = (0,0,0)
-
-
 
 
 if __name__ == '__main__':

@@ -162,7 +162,7 @@ def platform_init():
     cam_path  = "/dev/video0"
     try:
         with open(cam_path, 'r') as _:
-            print("[INFO] Camera checked")
+            print("[INFO] Camera checked...")
 
     except Exception as error:
         print(error)

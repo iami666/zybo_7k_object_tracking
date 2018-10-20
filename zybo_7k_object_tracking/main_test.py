@@ -106,6 +106,21 @@ def game_loop(screen, fps_clock, root=None):
     #         root.destroy()
     #         sys.exit()
 
+def test_loop():
+
+    pygame.init()
+    screen = pygame.display.set_mode((1265, 1015))
+    screen.fill(WHITE)
+    done = False
+    while not done:
+        for event in pygame.event.get():
+            if event.type==pygame.QUIT:
+                done =True
+
+        pygame.draw.rect(screen, (0,128,255), pygame.Rect(30,30,30,30))
+
+        pygame.display.flip()
+
 
 def main():
     fram_bfs, vdma_bfs = define.platform_init()
@@ -117,7 +132,7 @@ def main():
     # os.environ['SDL_VIDEODRIVER'] = fb3
     os.environ["SDL_FBDEV"] = fb3
 
-    pygame.display.init()
+    pygame.init()
     # root = setup_tkinter()
     fps_clock = pygame.time.Clock()
 
@@ -132,9 +147,9 @@ def main():
 
 
     # while True:
-    game_loop(screen, fps_clock)
-
+    # game_loop(screen, fps_clock)
+    test_loop(screen, fram_bfs)
 
 if __name__ == '__main__':
-    main()
-# Created by viv at 19.10.18
+    # main()
+    test_loop()
