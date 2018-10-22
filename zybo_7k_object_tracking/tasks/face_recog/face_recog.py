@@ -102,7 +102,7 @@ def face_recog_pygm(screen, fbs, title):
             # width of text
             stroke = 2
 
-            cv2.putText(frame, name, (x, y), front, 1.0, color, stroke, cv2.LINE_AA)
+            cv2.putText(frame, name[::-1], (x, y), front, 1.0, color, stroke, cv2.LINE_AA)
 
         # Display the frame
         frame = np.rot90(frame)

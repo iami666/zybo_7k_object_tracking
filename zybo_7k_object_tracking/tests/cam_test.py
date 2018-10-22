@@ -69,13 +69,23 @@ def cam_loop(screen, fps_clock, title):
             resize_frame = cv2.resize(frame, (define.HORIZ_PIXELS_SMALL, define.VERT_LINES_SMALL))
             frame = cv2.cvtColor(resize_frame, cv2.COLOR_BGR2RGB)
 
+
+            front = cv2.FONT_HERSHEY_SIMPLEX
+            name = "vivek"
+            color = (255, 0, 0)
+            # width of text
+            stroke = 2
+
+            cv2.putText(frame, name[::-1], (100, 100), front, 1.0, color, stroke)
+            # cv2.putText(frame, name, (100, 100), front, 1.0, color, stroke, cv2.LINE_AA)
             frame = np.rot90(frame)
             frame = pygame.surfarray.make_surface(frame)
 
             screen.blit(title, (200, 25))
             screen.blit(frame, (50, 100)) # x, y
 
-            pygame.display.flip()
+            # pygame.display.flip()
+            pygame.display.update()
 
             if cv2.waitKey(FPS) & 0xFF == ord("q"):
                 break
