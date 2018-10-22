@@ -1,17 +1,11 @@
-# -*- coding: utf-8 -*-
-# @Author: vivekpatel99
-# @Date:   2018-10-06 15:43:12
-# @Last Modified by:   vivekpatel99
-# @Last Modified time: 2018-10-06 16:43:29
-
 """
+# Created by viv at 22.10.18
 
-ptr_frbuf, ptr_frbuf_2, ptr_frbuf_3, ptr_frbuf_4, ptr_vdma, ptr_vdma_2, ptr_vdma_3, ptr_vdma_4
+This script will simply check that camera and pygame is working correctly or not by simply displying image of
+camera into display
 """
 import os
 import sys
-# from concurrent.futures import thread
-import _thread
 import cv2
 
 import numpy as np
@@ -21,15 +15,17 @@ import numpy as np
 import pygame
 from pygame.locals import *
 
+import sys
+
+
+
+sys.path.append("../")
+
+## my modules ##
 from definition import define
 from tasks.face_recog import face_recog
-
-# from gui import gui
-from lib.display import display
-# from lib._Time import timecount
 from lib.vision.vision import Vision
-# from lib._logger import logging
-from gui import gui
+
 
 
 """ constants declaration  """
@@ -52,6 +48,46 @@ def env_setup(fbpath="/dev/fb0"):
     os.environ['SDL_AUDIODRIVER'] = "dsp"
     # os.environ['SDL_VIDEODRIVER'] = "svgalib"
     # os.putenv['SDL_VIDEODRIVER'] = "fbcon"
+
+
+""" cam_loop """ ##############################################################
+
+def cam_loop(screen, fps_clock, title):
+
+    print("[INFO] cam_loop starts...")
+
+    # vid_window = "/dev/fb3"
+    # env_setup(vid_window)
+
+    vid = Vision()
+    print("[INFO] cam object created...")
+
+    try:
+        while vid.is_camera_connected():
+            # screen.fill(WHITE)
+            ret, frame = vid.get_video()
+            resize_frame = cv2.resize(frame, (define.HORIZ_PIXELS_SMALL, define.VERT_LINES_SMALL))
+            frame = cv2.cvtColor(resize_frame, cv2.COLOR_BGR2RGB)
+
+            frame = np.rot90(frame)
+            frame = pygame.surfarray.make_surface(frame)
+
+            screen.blit(title, (200, 25))
+            screen.blit(frame, (50, 100)) # x, y
+
+            pygame.display.flip()
+
+            if cv2.waitKey(FPS) & 0xFF == ord("q"):
+                break
+
+    except Exception as error:
+        print(error)
+        pygame.quit()
+        vid.video_cleanUp()
+        sys.exit(-1)
+
+    vid.video_cleanUp()
+
 
 
 
@@ -83,7 +119,9 @@ def main():
 
     screen.fill(WHITE)
 
-    face_recog.face_recog_pygm(screen, FPS,  title)
+    cam_loop(screen, fps_clock, title)
+
+
 
 if __name__ == '__main__':
 
