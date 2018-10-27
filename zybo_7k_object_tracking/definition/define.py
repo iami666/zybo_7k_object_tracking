@@ -27,7 +27,11 @@ N_BUFFERS = 2
 ALL_DISP_ADDRESS = HORIZONTAL_PIXELS * VERTICAL_LINES * PIXEL_NUM_OF_BYTES
 ALL_DISP_SMALL = HORIZ_PIXELS_SMALL * VERT_LINES_SMALL * PIXEL_NUM_OF_BYTES
 
-## platform_init #######################################################################################################
+VID_FRAME_SIZE = (HORIZ_PIXELS_SMALL, VERT_LINES_SMALL)
+VID_FRAME_CENTER = (50 + HORIZ_PIXELS_SMALL) / 2
+
+
+""" platform_init """###############################################################################
 def platform_init():
     """"""
 
@@ -53,7 +57,7 @@ def platform_init():
             ctypes.memset(ctypes.addressof(ptr_frbuf), inval, len)
 
         except Exception as error:
-            print("{}".format(error))
+            print(error)
             sys.exit(-1)
 
         return fd_frbuf, frbuf
@@ -81,7 +85,7 @@ def platform_init():
         # open uiox device for VDMA access
         fd_vdm = open(fd_vdm_path, mode)
 
-        print("[INFO] " + fd_vdm_path + " checked")
+        print("[INFO] " + fd_vdm_path + " checked...")
 
     except Exception as error:
         print("{}".format(error))
@@ -98,12 +102,12 @@ def platform_init():
     print("[INFO] " + fd_vdm_path + " has allocated virtual address : " + hex(ctypes.addressof(ptr_vdm)))
 
     vdma_buf[5 * 4:6 * 4] = struct.pack("I", FRBUF_ADDR_0)
-    vdma_buf[7 * 4:8 * 4] = struct.pack("I", 2)  # use internal fifos to trigger xfer
+    vdma_buf[7 * 4:8 * 4] = struct.pack("I", 2)  # use internal FIFOs to trigger transfer
     vdma_buf[8 * 4:9 * 4] = struct.pack("I", 20480)
-    vdma_buf[6 * 4:7 * 4] = struct.pack("I", 0x10300)  # turn vesa master xfer on
-    vdma_buf[0x0D * 4:0x0E * 4] = struct.pack("I", 200)  # no. FIFO threshhol ..max.. 240
+    vdma_buf[6 * 4:7 * 4] = struct.pack("I", 0x10300)  # turn vesa master transfer on
+    vdma_buf[0x0D * 4:0x0E * 4] = struct.pack("I", 200)  # no. FIFO threshold ..max.. 240
 
-    print("[INFO] VDMA configuration end.....\n")
+    print("[INFO] VDMA configuration end...")
 
 
     """ 2nd VDMA config """
@@ -117,12 +121,12 @@ def platform_init():
 
     vdma_buf_2[5 * 4:6 * 4] = struct.pack("I", FRBUF_ADDR_1)
     vdma_buf_2[4 * 4:5 * 4] = struct.pack("I", FRBUF_ADDR_1)
-    vdma_buf_2[7 * 4:8 * 4] = struct.pack("I", 2) # use internal fifos to trigger xfer
+    vdma_buf_2[7 * 4:8 * 4] = struct.pack("I", 2) # use internal FIFOs to trigger transfer
 
     ring_buf_size = int((ALL_DISP_SMALL / 128) - 1)
     vdma_buf_2[8 * 4:9 * 4] = struct.pack("I", ring_buf_size)
-    vdma_buf_2[6 * 4:7 * 4] = struct.pack("I", 0x00010300)  # enable read xfer, countinously mode
-    print("[INFO] RTC configuration end.....\n")
+    vdma_buf_2[6 * 4:7 * 4] = struct.pack("I", 0x00010300)  # enable read transfer, continuously mode
+    print("[INFO] RTC configuration end...")
 
 
     """ config VDMA bypass """
@@ -134,9 +138,9 @@ def platform_init():
 
     print("[INFO] VDMA_BYPASS has virtual address : " + hex(ctypes.addressof(ptr_vdm_4)))
 
-    vdma_buf_4[0x0D * 4:0x0E * 4] = struct.pack("I", (1 << 30))
+    vdma_buf_4[0x0D * 4:0x0E * 4] = struct.pack("I", (1 << 30)) # DMA_RTC bypass
 
-    print("[INFO] DMA_RTC_BYPASS configuration end....\n")
+    print("[INFO] DMA_RTC_BYPASS configuration end...")
 
 
     """ config for child window size """
@@ -149,13 +153,13 @@ def platform_init():
     print("[INFO] RTC_small window allocated virtual address : " + hex(ctypes.addressof(ptr_vdm_3)))
 
     # small windows adjustment
-    ## vdma_buf_3[6 * 4:7 * 4] = struct.pack("I", ((75 << 16) + (HORIZ_PIXELS_SMALL + 75)))
+    # # vdma_buf_3[6 * 4:7 * 4] = struct.pack("I", ((75 << 16) + (HORIZ_PIXELS_SMALL + 75)))
     # vdma_buf_3[6 * 4:7 * 4] = struct.pack("I", ((50 << 16) + (HORIZ_PIXELS_SMALL + 50)))
-    ## vdma_buf_3[7 * 4:8 * 4] = struct.pack("I", ((150 << 16) + (VERT_LINES_SMALL + 150)))
+    # # vdma_buf_3[7 * 4:8 * 4] = struct.pack("I", ((150 << 16) + (VERT_LINES_SMALL + 150)))
     # vdma_buf_3[7 * 4:8 * 4] = struct.pack("I", ((50 << 16) + (VERT_LINES_SMALL + 50)))
     # vdma_buf_3[5 * 4:6 * 4] = struct.pack("I", 0x70B)
 
-    print("[INFO] RTC_small window configuration end....\n")
+    print("[INFO] RTC_small window configuration end...")
 
 
     """ USB CAM check """
@@ -166,16 +170,15 @@ def platform_init():
 
     except Exception as error:
         print(error)
-        sys.exit(-1)
+        # sys.exit(-1)
 
 
     # creating  namedtupled to return mupltiple arguments
-    frame_buffers = collections.namedtuple("frame_buffers", ["fd_frbuf_1", "fd_frbuf_2", "fd_frbuf_3", "fd_frbuf_4"])
-    vdma_buffers = collections.namedtuple("vdma_buffers", ["vdma_buf", "vdma_buf_1", "vdma_buf_2", "vdma_buf_3"])
+    # frame_buffers = collections.namedtuple("frame_buffers", ["fd_frbuf_1", "fd_frbuf_2", "fd_frbuf_3", "fd_frbuf_4"])
+    # vdma_buffers = collections.namedtuple("vdma_buffers", ["vdma_buf", "vdma_buf_1", "vdma_buf_2", "vdma_buf_3"])
 
-    fram_bfs = frame_buffers(fd_frbuf_1, fd_frbuf_2, fd_frbuf_3, fd_frbuf_4)
-    vdma_bfs = vdma_buffers(vdma_buf, vdma_buf_2, vdma_buf_3, vdma_buf_4)
-
+    # fram_bfs = frame_buffers(fd_frbuf_1, fd_frbuf_2, fd_frbuf_3, fd_frbuf_4)
+    # vdma_bfs = vdma_buffers(vdma_buf, vdma_buf_2, vdma_buf_3, vdma_buf_4)
 
     # fd_frbuf_1_obj.close()
     # fd_frbuf_2_obj.close()
@@ -185,8 +188,9 @@ def platform_init():
 
     # vdma_buf.close()
 
-    return fram_bfs, vdma_bfs
+    # return fram_bfs, vdma_bfs
 
+""" main """############################################################################################################
 def main():
     platform_init()
 

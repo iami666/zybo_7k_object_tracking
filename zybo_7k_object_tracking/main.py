@@ -10,26 +10,26 @@ ptr_frbuf, ptr_frbuf_2, ptr_frbuf_3, ptr_frbuf_4, ptr_vdma, ptr_vdma_2, ptr_vdma
 """
 import os
 import sys
-import cv2
-
-import numpy as np
-# from tkinter import *
-# import tkinter as tk
-
+import _thread
 import pygame
 from pygame.locals import *
 
+
+""" modules """
+
+
 from definition import define
-
-
-# from gui import gui
+from tasks.face_recog import face_recog
+import globals
+sys.path.append("/lib/display")
+from lib.display import display_gui
 from lib.display import display
-# from lib._Time import timecount
-from lib.vision.vision import Vision
+
+
 # from lib._logger import logging
-from gui import gui
 
 
+PROJECT_TITLE = 'Closed Loop Object Tracking based on Image Recognition'
 """ constants declaration  """
 
 SCREEN_SIZE = (1265, 1015) # width, height
@@ -37,8 +37,10 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
 # Frames per second
-FPS = 30
+FPS = 60
 
+
+TASK_INDEX = 0
 
 """ env_setup """ ############################################################
 def env_setup(fbpath="/dev/fb0"):
@@ -51,50 +53,16 @@ def env_setup(fbpath="/dev/fb0"):
     # os.environ['SDL_VIDEODRIVER'] = "svgalib"
     # os.putenv['SDL_VIDEODRIVER'] = "fbcon"
 
-""" cam_loop """ ############################################################
-
-def cam_loop(screen, fps_clock, title):
-
-    # cam = cv2.VideoCapture(0)
-    vid = Vision()
-    print("[INFO] cam object created...")
-    screen.fill(WHITE)
-
-    try:
-        while vid.is_camera_connected():
-            ret, frame = vid.get_video()
-
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            resized_frame = cv2.resize(frame, (define.HORIZ_PIXELS_SMALL, define.VERT_LINES_SMALL))
-
-            frame = np.rot90(frame)
-            frame = pygame.surfarray.make_surface(frame)
-
-            screen.blit(frame, (50, 100)) # x, y
-            screen.blit(title, (200,25))
-            # fps_clock.tick(FPS)
-            pygame.display.flip()
-
-            if cv2.waitKey(FPS) & 0xFF == ord("q"):
-                break
-    except Exception as error:
-        print(error)
-        pygame.quit()
-        vid.video_cleanUp()
-        # root.destroy()
-        sys.exit(-1)
-
-    vid.video_cleanUp()
 
 
-
-""" main """ ##########################################################################################################
-def main():
+""" main """ ###########################################################################################################
+def main_():
     """
     """
+
     env_setup()
 
-    fram_bfs, vdma_bfs = define.platform_init()
+    define.platform_init()
 
 
     try:
@@ -104,18 +72,50 @@ def main():
 
     # title fonts
     fonts = pygame.font.SysFont("Comic Sans MS", 40)
-    title = fonts.render('Closed Loop Object Tracking based on Image Recognition', False, (0, 0, 255))
+    title = fonts.render(PROJECT_TITLE, False, (0, 0, 255))
     print("[INFO] title set up done...")
-    fps_clock = pygame.time.Clock()
 
+  
     # making mouse invisible
     pygame.mouse.set_visible(False)
 
-    # screen = pygame.display.set_mode(SCREEN_SIZE)
     screen = pygame.display.set_mode(SCREEN_SIZE, pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF)
 
-    cam_loop(screen, fps_clock, title)
+    screen.fill(WHITE)
 
+    while True:
+
+        if TASK_INDEX is 0:
+            # cam_test.main()
+            pass
+        if TASK_INDEX is 1:
+            face_recog.face_recog_pygm(screen, FPS)
+
+
+""" main """  ###########################################################################################################
+
+
+def main():
+    """
+    """
+
+    # env_setup()
+
+    define.platform_init()
+
+    disply = display_gui.Menu()
+    screen = disply.display_init()
+    disply.display_color()
+
+    disply_obj = display.display_menu_init(screen)
+    print(globals.TASK_INDEX)
+    while True:
+
+        if globals.TASK_INDEX is 0:
+            # cam_test.main()
+            pass
+        if globals.TASK_INDEX is 1:
+            face_recog.face_recog_pygm(screen, disply_obj, FPS)
 
 if __name__ == '__main__':
 
