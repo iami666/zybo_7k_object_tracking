@@ -12,7 +12,8 @@ import pygame
 
 sys.path.append(os.path.dirname(__file__))
 from colors import *
-
+sys.path.append("../../")
+from definition import define
 pygame.init()
 
 # path = os.path.abspath(os.path.join("../../", "definition"))
@@ -103,9 +104,16 @@ def MouseOver(rect):
 """ display """######################################################################################
 class Menu:
 
-    def __init__(self):
+    def __init__(self, framebuffer = "/dev/fb1"):
 
         self.screen = None
+
+        os.putenv("SDL_FBDEV", framebuffer)
+        # os.environ["SDL_FBDEV"] = fb3
+
+        # set up audio driver to avoid alisa lib errors
+        os.environ['SDL_AUDIODRIVER'] = "dsp"
+
         try:
             pygame.init()
             print("[INFO] pygame initialisation done ")
@@ -219,10 +227,38 @@ class Menu:
 
 
 
+    """ FrameText """  ########################################################################
+    class FrameText:
+        rect_x = 50
+        rect_y = define.HORIZ_PIXELS_SMALL + 10 # 10 pixel down from frame
+        rect_width = SCREEN_WIDTH - 100 # reduce distance from edge of the screen width
+        rect_height = 330
+
+        text_x = rect_x + 5
+        text_y = rect_y + 5
+
+        def __init__(self, screen,  font=Font.Medium):
+            self.font = font
+            # self.font = pygame.font.SysFont("Verdana", 15)
+            self.screen = screen
+            self.Left = 0
+            self.Top = 0
 
 
+        def add_frame(self, color=Color.CornflowerBlue,  rect=(rect_x, rect_y, rect_width, rect_height)):
+            self.rect = rect
+            self.rect = pygame.draw.rect(self.screen, color, rect, 2)
 
+        def add_text(self, text, text_color=Color.Black, flag=True, pos=(text_x, text_y)):
+            self.screen.blit(self.font.render(text, flag, text_color), pos)
 
+            # bitmap = self.font.render(text, flag, text_color)
+            # self.Bitmap = pygame.Surface(bitmap.get_size(), pygame.SRCALPHA | pygame.HWSURFACE)
+            # self.Bitmap.blit(bitmap, (0, 0)
+            # pygame.display.update()
+
+        # def Render(self, to, pos=(0,0)):
+        #     to.blit(self.screen, (self.Left + pos[0], self.Top + pos[1]))
 
 
 

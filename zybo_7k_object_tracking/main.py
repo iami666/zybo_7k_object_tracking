@@ -10,6 +10,7 @@ ptr_frbuf, ptr_frbuf_2, ptr_frbuf_3, ptr_frbuf_4, ptr_vdma, ptr_vdma_2, ptr_vdma
 """
 import os
 import sys
+import _thread
 import pygame
 from pygame.locals import *
 
@@ -19,9 +20,10 @@ from pygame.locals import *
 
 from definition import define
 from tasks.face_recog import face_recog
+import globals
 sys.path.append("/lib/display")
 from lib.display import display_gui
-
+from lib.display import display
 
 
 # from lib._logger import logging
@@ -35,7 +37,7 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
 # Frames per second
-FPS = 30
+FPS = 60
 
 
 TASK_INDEX = 0
@@ -57,9 +59,6 @@ def env_setup(fbpath="/dev/fb0"):
 def main_():
     """
     """
-    global TASK_INDEX
-
-    TASK_INDEX = 0
 
     env_setup()
 
@@ -90,7 +89,7 @@ def main_():
             # cam_test.main()
             pass
         if TASK_INDEX is 1:
-            face_recog.face_recog_pygm(screen, FPS,  title)
+            face_recog.face_recog_pygm(screen, FPS)
 
 
 """ main """  ###########################################################################################################
@@ -99,23 +98,24 @@ def main_():
 def main():
     """
     """
-    global TASK_INDEX
 
-    TASK_INDEX = 0
-
-    env_setup()
+    # env_setup()
 
     define.platform_init()
 
-    disp = display_gui.Menu()
-    disp.display_init()
-    disp.screen()
+    disply = display_gui.Menu()
+    screen = disply.display_init()
+    disply.display_color()
+
+    disply_obj = display.display_menu_init(screen)
+    print(globals.TASK_INDEX)
     while True:
-        disp.render()
-    # title fonts
-    # fonts = pygame.font.SysFont("Comic Sans MS", 40)
-    # title = fonts.render('Closed Loop Object Tracking based on Image Recognition', False, (0, 0, 255))
-    # print("[INFO] title set up done...")
+
+        if globals.TASK_INDEX is 0:
+            # cam_test.main()
+            pass
+        if globals.TASK_INDEX is 1:
+            face_recog.face_recog_pygm(screen, disply_obj, FPS)
 
 if __name__ == '__main__':
 

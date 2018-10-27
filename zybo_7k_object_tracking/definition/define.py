@@ -27,6 +27,10 @@ N_BUFFERS = 2
 ALL_DISP_ADDRESS = HORIZONTAL_PIXELS * VERTICAL_LINES * PIXEL_NUM_OF_BYTES
 ALL_DISP_SMALL = HORIZ_PIXELS_SMALL * VERT_LINES_SMALL * PIXEL_NUM_OF_BYTES
 
+VID_FRAME_SIZE = (HORIZ_PIXELS_SMALL, VERT_LINES_SMALL)
+VID_FRAME_CENTER = (50 + HORIZ_PIXELS_SMALL) / 2
+
+
 """ platform_init """###############################################################################
 def platform_init():
     """"""

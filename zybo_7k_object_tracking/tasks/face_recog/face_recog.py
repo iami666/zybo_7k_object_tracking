@@ -17,10 +17,15 @@ import os
 
 from definition import define
 from lib.vision.vision import Vision
+from lib.display import display
+from lib.display import display_gui
+import globals
 
 
+TASK_INFO = "Vivek, John Snow"
+TASK_TITLE = "Face Recognition"
 
-
+TASK_TITLE_POS = (define.VID_FRAME_CENTER - (len(TASK_TITLE)*4), 100)
 
 """ file_path_check """  ####################################################
 
@@ -39,7 +44,7 @@ def file_path_check(file_name_fm_same_dir):
 """ face_recog_pygm """  ####################################################
 
 
-def face_recog_pygm(screen, fbs, title):
+def face_recog_pygm(screen, disply_obj, fbs):
     print("[INFO] face_recog_pygm start")
 
     # objected created for cascadeclassifer
@@ -66,8 +71,18 @@ def face_recog_pygm(screen, fbs, title):
         print(error)
         raise
 
-    # cap = cv2.VideoCapture(0)
+    image_title = display_gui.Menu.Text(text=TASK_TITLE, font=display_gui.Font.Medium)
+
+    # info = "INFO"
+    # info = display_gui.Menu.Text(text=TASK_INFO, font=display_gui.Font.Medium)
+
     vid = Vision()
+
+    front = cv2.FONT_HERSHEY_SIMPLEX
+
+    color = (255, 0, 0)
+    # width of text
+    stroke = 2
 
     while vid.is_camera_connected():
 
@@ -92,39 +107,42 @@ def face_recog_pygm(screen, fbs, title):
             # roi_color = frame[y:y+h, x:x+w]
 
             id_ = recognizer.predict(roi_gray)
+            name = labels[id_]
 
             # id_, conf = recognizer.predict(roi_gray) # no confidence because opencv 3.1
             # if conf >= 30 or conf<= 85:
 
-            front = cv2.FONT_HERSHEY_SIMPLEX
-            name = labels[id_]
-            color = (255, 0, 0)
-            # width of text
-            stroke = 2
-
             cv2.putText(frame, name[::-1], (x, y), front, 1.0, color, stroke, cv2.LINE_AA)
 
         # Display the frame
-        frame = np.rot90(frame)
-        frame = pygame.surfarray.make_surface(frame)
+        display.display_render(screen, frame, disply_obj, TASK_INFO)
+        # frame = np.rot90(frame)
+        # frame = pygame.surfarray.make_surface(frame)
+        #
+        # # screen.blit(title, (200, 25))
+        # screen.blit(frame, globals.VID_FRAME_POS)
 
-        screen.blit(title, (200, 25))
-        screen.blit(frame, (50, 100))  # x, y
+        # pygame.display.flip()
 
-        pygame.display.flip()
+        image_title.Render(to=screen, pos=TASK_TITLE_POS)
 
+        if not globals.TASK_INDEX == 1:
+            print("[INOF] TASK_INDEX is not 1 but {}".format(globals.TASK_INDEX))
+            break
         if cv2.waitKey(fbs) & 0xff == ord('q'):
             break
 
     vid.video_cleanUp()
-    pygame.quit()
+    print("[INOF] closing face recognition")
+
+    # pygame.quit()
 
 
 """ main """  ###########################################################################################################
 
 
 def main():
-    # objected created for cascadeclassifer
+    # objected created for cascade classifer
     face_cascade = cv2.CascadeClassifier(r'haarcascade_frontalface_default.xml')
     recognizer = cv2.face.createLBPHFaceRecognizer()
 

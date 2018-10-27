@@ -164,8 +164,8 @@ def test_loop():
 
     image_title = display_gui.Menu.Text(text=img_title_str, font=display_gui.Font.Medium)
     task_info = "Vivek, John Snow, khalisi"
-    info  = display_gui.Menu.Text(text=task_info, font=display_gui.Font.Small)
-    pygame.draw.rect(info, )
+    # info  = display_gui.Menu.Text(text=task_info, font=display_gui.Font.Small)
+    # pygame.draw.rect(info, )
     start_btn = display_gui.Menu.Button(text="START", rect=SMALL_BUTTON)
     start_btn.Command = start_btn_action
 

@@ -48,7 +48,7 @@ class Vision:
 
     """ frame_resize """  #############################################
 
-    def resize_frame(self, frame, size=(define.HORIZ_PIXELS_SMALL, define.VERT_LINES_SMALL)):
+    def resize_frame(self, frame, size=define.VID_FRAME_SIZE):
 
         resize_frame = cv2.resize(frame, size)
 
