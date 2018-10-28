@@ -19,7 +19,7 @@ from colors import *
 sys.path.append("../../")
 from definition import define
 
-log = logging.getLogger("__main__." + __name__)
+log = logging.getLogger("main." + __name__)
 
 # -----------------------------------------------
 """ pygame initialisation """
@@ -80,20 +80,23 @@ def MouseOver(rect):
 class Menu:
     """ Menu class """
 
-    # set up audio driver to avoid alisa lib errors
-    os.environ['SDL_AUDIODRIVER'] = "dsp"
-
     def __init__(self, framebuffer="/dev/fb1"):
         """ """
-        os.putenv("SDL_FBDEV", framebuffer)
+        # os.putenv("SDL_FBDEV", framebuffer)
         # os.environ["SDL_FBDEV"] = fb3
 
         self.screen = None
 
         try:
-            pygame.init()
-            log.info("pygame initialisation done ")
-            # print("pygame initialisation done ")
+            if not pygame.init():
+                # set up audio driver to avoid alisa lib errors
+                os.environ['SDL_AUDIODRIVER'] = "dsp"
+                os.putenv("SDL_FBDEV", framebuffer)
+
+                pygame.init()
+
+                log.info("pygame initialisation done ")
+                # print("pygame initialisation done ")
 
         except Exception as error:
             log.info(error)
@@ -121,7 +124,7 @@ class Menu:
     # ------------------------------------------------------------------------------
 
     class Button:
-        """ Button class will inisilise button with fonts and render it """
+        """ Button class will initialise button with fonts and render it """
         All = []
 
         def __init__(self, text, rect, bg=Color.Gray, fg=Color.White, bgr=Color.CornflowerBlue, font=Font.Default,

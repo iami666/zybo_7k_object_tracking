@@ -118,24 +118,36 @@ def face_recog_pygm(screen, disply_obj, fbs):
 
         # opencv understand BGR, in order to display we need to convert image  form   BGR to RGB
         frame = cv2.cvtColor(resize_frame, cv2.COLOR_BGR2RGB)  # for display
+        org_frame = frame
 
         # covert image into gray
         gray = cv2.cvtColor(resize_frame, cv2.COLOR_BGR2GRAY)  # for processing
 
+
         # detect object of different size i nthe input image.
         # the detected objects are returned as a list of rectangles.
-        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
+        # faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
+        #
+        # for (x, y, w, h) in faces:
+        #     # create rectangle around face
+        #     frame = cv2.rectangle(frame, (x, y), (x + w, y + w), (255, 0, 0), 2)  # RGB
+        #     roi_gray = gray[y:y + h, x:x + w]
+        #     # roi_color = frame[y:y+h, x:x+w]
+        #
+        #     id_ = recognizer.predict(roi_gray)
+        #     name = labels[id_]
+        #
+        #     cv2.putText(frame, name[::-1], (x, y), front, 1.0, color, stroke, cv2.LINE_AA)
 
-        for (x, y, w, h) in faces:
-            # create rectangle around face
-            frame = cv2.rectangle(frame, (x, y), (x + w, y + w), (255, 0, 0), 2)  # RGB
-            roi_gray = gray[y:y + h, x:x + w]
-            # roi_color = frame[y:y+h, x:x+w]
+        if globals.VID_FRAME_CHANGE_INDEX is 0:
+            frame = org_frame
 
-            id_ = recognizer.predict(roi_gray)
-            name = labels[id_]
+        elif globals.VID_FRAME_CHANGE_INDEX is 1:
 
-            cv2.putText(frame, name[::-1], (x, y), front, 1.0, color, stroke, cv2.LINE_AA)
+            frame = frame
+
+        elif globals.VID_FRAME_CHANGE_INDEX is 2:
+            frame = gray
 
         # Display the frame
         display.display_render(screen, frame, disply_obj, TASK_INFO)
@@ -201,7 +213,7 @@ def main():
 
             cv2.putText(frame, name, (x, y), front, 1, color, stroke, cv2.LINE_AA)
 
-        # Display the frameq
+        # Display the frame
         cv2.imshow('frame', frame)
         if cv2.waitKey(20) & 0xff == ord('q'):
             break

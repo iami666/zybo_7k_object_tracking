@@ -18,6 +18,7 @@ from pygame.locals import *
 
 from definition import define
 from tasks.face_recog import face_recog
+from tasks.motion_detection import motion_detect
 import globals
 
 sys.path.append("/lib/display")
@@ -102,10 +103,9 @@ def main_():
 def main():
     """
     """
-    # set up audio driver to avoid alisa lib erros
-    os.environ['SDL_AUDIODRIVER'] = "dsp"
+    env_setup()
 
-    log = _logging.logger_init(log_filepath="obj_track_img_recog.log", project_name=__name__)
+    log = _logging.logger_init(log_filepath="obj_track_img_recog.log", project_name="main")
     log.info("main script starts")
 
     log.info("calling  define.platform_init()")
@@ -130,6 +130,9 @@ def main():
             pass
         if globals.TASK_INDEX is 1:
             face_recog.face_recog_pygm(screen, disply_obj, FPS)
+
+        if globals.TASK_INDEX is 2:
+            motion_detect.motion_detection_pygm(screen, disply_obj, FPS)
 
 
 if __name__ == '__main__':

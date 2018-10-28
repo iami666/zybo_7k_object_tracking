@@ -20,7 +20,7 @@ from definition import define
 
 from lib.display import colors
 
-log = logging.getLogger("__main__." + __name__)
+log = logging.getLogger("main." + __name__)
 
 # -----------------------------------------------
 """ globals """

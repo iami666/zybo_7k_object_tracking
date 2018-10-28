@@ -11,7 +11,7 @@ import logging
 
 from definition import define
 
-log = logging.getLogger("__main__." + __name__)
+log = logging.getLogger("main." + __name__)
 
 # minimum size (in pixel) for a region of image to be considered actual "motion"
 MIN_AREA = 500
@@ -104,7 +104,7 @@ class Vision:
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-# """ frame_resize """
+# """ test  """
 # ----------------------------------------------------------------------------------------------------------------------
 def test():
     vid = Vision()

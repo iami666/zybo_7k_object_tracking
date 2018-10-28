@@ -12,7 +12,7 @@ import struct
 import collections
 import logging
 
-log = logging.getLogger("__main__." + __name__)
+log = logging.getLogger("main." + __name__)
 
 # -----------------------------------------------
 # registers addresses
