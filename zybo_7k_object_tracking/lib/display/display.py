@@ -1,9 +1,10 @@
 # Created by viv at 26.10.18
-
+""" The Display script contains all gui functions """
 
 import os
 import cv2
 import collections
+import logging
 import numpy as np
 
 from tkinter import *
@@ -18,6 +19,12 @@ sys.path.append("../../")
 from definition import define
 
 from lib.display import colors
+
+log = logging.getLogger("main." + __name__)
+
+# -----------------------------------------------
+""" globals """
+
 
 # Frames per second
 FPS = 60
@@ -36,35 +43,89 @@ BIG_BUTTON = (5, 5, 200, 50)
 PROJECT_TITLE = 'Closed Loop Object Tracking based on Image Recognition'
 btn_done = None
 
+# video frame position on the display in pixel values
 VID_FRAME_POS = (50, 150) # x, y
 
+
+# ------------------------------------------------------------------------------
+# """ start_btn_action """
+# ------------------------------------------------------------------------------
+
+
 def start_btn_action():
-    print("start bnt click")
+    """ start_button_action """
+
+    log.info("start bnt click")
+
+
+# ------------------------------------------------------------------------------
+# """ stop_btn_action """
+# ------------------------------------------------------------------------------
 
 
 def stop_btn_action():
+    """ stop_button_action """
+
     global btn_done
-    print("stop bnt click")
+
+    log.info("stop bnt click")
     btn_done = True
 
 
+# ------------------------------------------------------------------------------
+# """ forward_btn_action """
+# ------------------------------------------------------------------------------
+
+
 def forward_btn_action():
-    print("forward bnt click")
+    """ forward_button_action """
+
+    log.info("forward bnt click")
+
+
+# ------------------------------------------------------------------------------
+# """ backward_btn_action """
+# ------------------------------------------------------------------------------
 
 
 def backward_btn_action():
-    print("backward bnt click")
+    """ backward_button_action """
 
+    log.info("backward bnt click")
+
+
+# ------------------------------------------------------------------------------
+# """ face_recog_btn_action """
+# ------------------------------------------------------------------------------
 
 def face_recog_btn_action():
-    print("face_recog bnt click")
+    """ face_recognition_button_action """
 
+    log.info("face_recog bnt click")
+
+
+# ------------------------------------------------------------------------------
+# """ object_tracking_btn_action """
+# ------------------------------------------------------------------------------
 
 def object_tracking_btn_action():
-    print("object tracking bnt click")
+    """ object_tracking_button_action """
+
+    log.info("object tracking bnt click")
+
+
+# ------------------------------------------------------------------------------
+# """ display_menu_init """
+# ------------------------------------------------------------------------------
 
 
 def display_menu_init(screen):
+    """
+    display_menu_init function initialise all gui on the display
+
+    :param screen: object from pygame.display.setmode
+    :return: namedtupled of all the objects of gui
+    """
 
     title = display_gui.Menu.Text(text=PROJECT_TITLE, font=display_gui.Font.Medium)
 
@@ -76,6 +137,7 @@ def display_menu_init(screen):
 
     frame_info = display_gui.Menu.FrameText(screen)
     frame_info.add_frame()
+
     # info  = display_gui.Menu.FrameText(text=task_info, font=display_gui.Font.Small)
     # pygame.draw.rect(info, )
 
@@ -107,11 +169,31 @@ def display_menu_init(screen):
 
     return disply_obj
 
-def display_render(screen, frame, dsply_obj, task_info): #
 
+# ------------------------------------------------------------------------------
+# """ display_render """
+# ------------------------------------------------------------------------------
+
+
+def display_render(screen, frame, dsply_obj, task_info):
+    """
+    display_render render all the pygame object on display
+
+    :param screen: object from pygame.display.setmode
+    :param frame: opencv video frame
+    :param dsply_obj:  namdedtuple of display_menu_init
+    :param task_info: string task info
+
+    :return:
+    """
+    # taking list of all the events form the display gui
     for event in pygame.event.get():
+        # check if the pygame window quit button precess or not
         if event.type == pygame.QUIT:
-            done = True
+            pass
+        #     done = True
+
+        # check mouse event on display
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:  # check for left mouse click
                 # handle button click events
@@ -124,7 +206,9 @@ def display_render(screen, frame, dsply_obj, task_info): #
                         break
 
         if btn_done:
-            done = True
+            pass
+            # done = True
+
     # 144 is upper y value of the picture frame
     dsply_obj.start_btn.Render(screen, pos=(60 + define.HORIZ_PIXELS_SMALL, 144))
     #  length of small button  + 10 pixel (50  + 10) = 60
@@ -133,10 +217,12 @@ def display_render(screen, frame, dsply_obj, task_info): #
     dsply_obj.forward_btn.Render(screen, pos=(60 + define.HORIZ_PIXELS_SMALL, 574))
     dsply_obj.backward_btn.Render(screen, pos=(60 + define.HORIZ_PIXELS_SMALL, 574 - 60))
 
+    # 280 pixel away form start button
     dsply_obj.face_recog_btn.Render(screen, pos=(280 + define.HORIZ_PIXELS_SMALL, 144))
 
     dsply_obj.obj_tracking_btn.Render(screen, pos=(280 + define.HORIZ_PIXELS_SMALL, 144 + 60))
     dsply_obj.frame_info.add_text(text=task_info)
+
 
     frame = np.rot90(frame)
     frame = pygame.surfarray.make_surface(frame)
@@ -147,14 +233,18 @@ def display_render(screen, frame, dsply_obj, task_info): #
     pygame.display.flip()
 
 
+# ------------------------------------------------------------------------------
+# """ test_loop """
+# ------------------------------------------------------------------------------
 
 
 def test_loop():
+    """ testing of  all the object for gui """
     global btn_done
     btn_done = False
     img_path = "1.jpg"
     if not os.path.isfile(img_path):
-        print("[ERROR] image does not exist {}".format(img_path))
+        log.error("image does not exist {}".format(img_path))
     img = cv2.imread(img_path, 1)
     # size = (define.HORIZ_PIXELS_SMALL, define.VERT_LINES_SMALL)
     resize_frame = cv2.resize(img, define.VID_FRAME_SIZE)
@@ -241,6 +331,11 @@ def test_loop():
         title.Render(to=screen, pos=display_gui.TITLE_POSTION)
         image_title.Render(to=screen, pos=(frame_center, 100))
         pygame.display.flip()
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# """ main """
+# ----------------------------------------------------------------------------------------------------------------------
 
 
 def main():

@@ -3,17 +3,28 @@
 Created on Fri Jul 20 12:53:33 2018
 
 @author: patelviv
+
+This face recognistion script contains all the code for face recognitions.
+It uses opencv haarcascade for recognition of faces.
+The haarcascade file name is "haarcascade_frontalface_default.xml" (provided by opencv)
+The trainner file is trained from some hollywood actors (from game of thrones TV series) faces. Those actor names are following
+   1. Emilia Clarke
+   2. Kit harington
+   3. Nikolaj Coster Waldau
+   4. Peter Dinklage
+
 """
+
 import sys
 import numpy as np
 import cv2
 import pickle
 import pygame
 import os
+import logging
 
-
-
-
+# -----------------------------------------------
+""" Modules """
 
 from definition import define
 from lib.vision.vision import Vision
@@ -21,31 +32,46 @@ from lib.display import display
 from lib.display import display_gui
 import globals
 
+log = logging.getLogger("__main__." + __name__)
 
-TASK_INFO = "Vivek, John Snow"
+# -----------------------------------------------
+""" globals """
+
+TASK_INFO = " Face Names : Vivek, Emilia Clarke, Kit harington, Nikolaj Coster Waldau, Peter Dinklage"
 TASK_TITLE = "Face Recognition"
 
-TASK_TITLE_POS = (define.VID_FRAME_CENTER - (len(TASK_TITLE)*4), 100)
+TASK_TITLE_POS = (define.VID_FRAME_CENTER - (len(TASK_TITLE) * 4), 100)
 
-""" file_path_check """  ####################################################
 
+# ------------------------------------------------------------------------------
+# """ file_path_check """
+# ------------------------------------------------------------------------------
 
 def file_path_check(file_name_fm_same_dir):
+    """ file_path_check """
     script_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(script_dir, file_name_fm_same_dir)
     if not os.path.exists(file_path):
-        print("[ERROR] does not exist path  {} ".format(file_path))
+        log.info("does not exist path  {} ".format(file_path))
         sys.exit(-1)
     else:
-        print("[INFO] checked path {} ".format(file_path))
+        log.info("checked path {} ".format(file_path))
         return file_path
 
 
-""" face_recog_pygm """  ####################################################
-
+# ------------------------------------------------------------------------------
+# """ face_recog_pygm """
+# ------------------------------------------------------------------------------
 
 def face_recog_pygm(screen, disply_obj, fbs):
-    print("[INFO] face_recog_pygm start")
+    """
+    Face Recognition pygame function read info from haarcascade_frontalface_defualt.xml, trainner.yml
+    (for predicting trained faces), labels.pickle (to get label of faces ) and predict name of the face.
+
+    """
+
+    log.info("face_recog_pygm start")
+    # print("[INFO] face_recog_pygm start")
 
     # objected created for cascadeclassifer
     face_cascade_name = "haarcascade_frontalface_default.xml"
@@ -68,13 +94,10 @@ def face_recog_pygm(screen, disply_obj, fbs):
             og_labels = pickle.load(f)
             labels = {v: k for k, v in og_labels.items()}
     except Exception as error:
-        print(error)
+        log.error(error)
         raise
 
     image_title = display_gui.Menu.Text(text=TASK_TITLE, font=display_gui.Font.Medium)
-
-    # info = "INFO"
-    # info = display_gui.Menu.Text(text=TASK_INFO, font=display_gui.Font.Medium)
 
     vid = Vision()
 
@@ -83,6 +106,8 @@ def face_recog_pygm(screen, disply_obj, fbs):
     color = (255, 0, 0)
     # width of text
     stroke = 2
+
+    log.info("frame reading starts ")
 
     while vid.is_camera_connected():
 
@@ -93,62 +118,66 @@ def face_recog_pygm(screen, disply_obj, fbs):
 
         # opencv understand BGR, in order to display we need to convert image  form   BGR to RGB
         frame = cv2.cvtColor(resize_frame, cv2.COLOR_BGR2RGB)  # for display
+        org_frame = frame
 
         # covert image into gray
         gray = cv2.cvtColor(resize_frame, cv2.COLOR_BGR2GRAY)  # for processing
 
+
         # detect object of different size i nthe input image.
         # the detected objects are returned as a list of rectangles.
-        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
+        # faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
+        #
+        # for (x, y, w, h) in faces:
+        #     # create rectangle around face
+        #     frame = cv2.rectangle(frame, (x, y), (x + w, y + w), (255, 0, 0), 2)  # RGB
+        #     roi_gray = gray[y:y + h, x:x + w]
+        #     # roi_color = frame[y:y+h, x:x+w]
+        #
+        #     id_ = recognizer.predict(roi_gray)
+        #     name = labels[id_]
+        #
+        #     cv2.putText(frame, name[::-1], (x, y), front, 1.0, color, stroke, cv2.LINE_AA)
 
-        for (x, y, w, h) in faces:
-            frame = cv2.rectangle(frame, (x, y), (x + w, y + w), (255, 0, 0), 2)  # RGB
-            roi_gray = gray[y:y + h, x:x + w]
-            # roi_color = frame[y:y+h, x:x+w]
+        if globals.VID_FRAME_CHANGE_INDEX is 0:
+            frame = org_frame
 
-            id_ = recognizer.predict(roi_gray)
-            name = labels[id_]
+        elif globals.VID_FRAME_CHANGE_INDEX is 1:
 
-            # id_, conf = recognizer.predict(roi_gray) # no confidence because opencv 3.1
-            # if conf >= 30 or conf<= 85:
+            frame = frame
 
-            cv2.putText(frame, name[::-1], (x, y), front, 1.0, color, stroke, cv2.LINE_AA)
+        elif globals.VID_FRAME_CHANGE_INDEX is 2:
+            frame = gray
 
         # Display the frame
         display.display_render(screen, frame, disply_obj, TASK_INFO)
-        # frame = np.rot90(frame)
-        # frame = pygame.surfarray.make_surface(frame)
-        #
-        # # screen.blit(title, (200, 25))
-        # screen.blit(frame, globals.VID_FRAME_POS)
-
-        # pygame.display.flip()
 
         image_title.Render(to=screen, pos=TASK_TITLE_POS)
 
+        # check if TASK_INDEX is not 1 then it means another buttons has pressed
         if not globals.TASK_INDEX == 1:
-            print("[INOF] TASK_INDEX is not 1 but {}".format(globals.TASK_INDEX))
+            log.info("TASK_INDEX is not 1 but {}".format(globals.TASK_INDEX))
             break
+
+        # framerate control
         if cv2.waitKey(fbs) & 0xff == ord('q'):
             break
 
     vid.video_cleanUp()
-    print("[INOF] closing face recognition")
+    log.info("closing face recognition")
 
     # pygame.quit()
 
 
-""" main """  ###########################################################################################################
-
-
+# ----------------------------------------------------------------------------------------------------------------------
+# """ main """
+# ----------------------------------------------------------------------------------------------------------------------
 def main():
     # objected created for cascade classifer
     face_cascade = cv2.CascadeClassifier(r'haarcascade_frontalface_default.xml')
     recognizer = cv2.face.createLBPHFaceRecognizer()
-
     recognizer.load("trainner.yml")
 
-    print("hre")
     labels = {"person_name": 1}
     with open("labels.pickle", 'rb') as f:
         og_labels = pickle.load(f)
@@ -184,7 +213,7 @@ def main():
 
             cv2.putText(frame, name, (x, y), front, 1, color, stroke, cv2.LINE_AA)
 
-        # Display the frameq
+        # Display the frame
         cv2.imshow('frame', frame)
         if cv2.waitKey(20) & 0xff == ord('q'):
             break
