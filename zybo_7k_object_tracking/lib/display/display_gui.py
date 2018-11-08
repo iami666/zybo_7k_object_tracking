@@ -39,7 +39,7 @@ pygame.init()
 SCREEN_WIDTH = 1265
 SCREEN_HEIGHT = 1015
 SCREEN_SIZE = (SCREEN_WIDTH, SCREEN_HEIGHT)  # width, height
-TITLE_POSTION = (200, 25)
+TITLE_POSITION = (200, 25)
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -76,7 +76,6 @@ def MouseOver(rect):
 # """ Menu """
 # ------------------------------------------------------------------------------
 
-
 class Menu:
     """ Menu class """
 
@@ -90,8 +89,7 @@ class Menu:
         try:
             if not pygame.init():
                 # set up audio driver to avoid alisa lib errors
-                os.environ['SDL_AUDIODRIVER'] = "dsp"
-                os.putenv("SDL_FBDEV", framebuffer)
+                # os.putenv("SDL_FBDEV", framebuffer)
 
                 pygame.init()
 
@@ -101,7 +99,10 @@ class Menu:
         except Exception as error:
             log.info(error)
 
-    def display_init(self, size=SCREEN_SIZE, flags=pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF):
+    def display_init(self, size=(pygame.display.Info().current_w, pygame.display.Info().current_h),
+                     flags=pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF):
+        # pygame.HWSURFACE = hardware accelerated in full screen
+        # pygame.BOUBLEBUF = recommended for HWSURFACE
         """ display initialisation function will initialise pygame display with given size and flags """
 
         log.info("display initialisation done ")
@@ -111,7 +112,7 @@ class Menu:
         return self.screen
 
     def display_color(self, color=WHITE):
-        """ display_color will fill the color on display, default color is white"""
+        """ display_color will fill the color on display, default color is white """
 
         self.screen.fill(color)
 
@@ -235,7 +236,7 @@ class Menu:
     # ------------------------------------------------------------------------------
 
     class FrameText:
-        """ FrameText class will initialise frame on display and text and render it"""
+        """ FrameText class will initialise frame on display and text and render it """
         rect_x = 50
         rect_y = define.HORIZ_PIXELS_SMALL + 10  # 10 pixel down from frame
         rect_width = SCREEN_WIDTH - 100  # reduce distance from edge of the screen width

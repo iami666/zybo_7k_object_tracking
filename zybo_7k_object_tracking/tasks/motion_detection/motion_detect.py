@@ -109,8 +109,18 @@ def motion_detection_pygm(screen, disply_obj, fbs):
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
             cv2.circle(frame, (cX, cY), 7, (0, 0, 225), -1)
 
-        # Display the frame
-        display.display_render(screen, frame, disply_obj, TASK_INFO)
+        if globals.VID_FRAME_CHANGE_INDEX is 0:
+
+            display.display_render(screen, frame, disply_obj, "Finale Frame " + TASK_INFO)
+
+        if globals.VID_FRAME_CHANGE_INDEX is 1:
+
+            display.display_render(screen, thresh, disply_obj, "Threshold Frame " + TASK_INFO)
+
+        if globals.VID_FRAME_CHANGE_INDEX is 2:
+
+            # Display the frame
+            display.display_render(screen, frameDelta, disply_obj, "FrameDelta Frame " + TASK_INFO)
 
         image_title.Render(to=screen, pos=TASK_TITLE_POS)
 

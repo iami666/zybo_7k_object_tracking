@@ -228,7 +228,7 @@ def display_render(screen, frame, dsply_obj, task_info):
     frame = pygame.surfarray.make_surface(frame)
     screen.blit(frame, VID_FRAME_POS)
 
-    dsply_obj.title.Render(to=screen, pos=display_gui.TITLE_POSTION)
+    dsply_obj.title.Render(to=screen, pos=display_gui.TITLE_POSITION)
     # dsply_obj.image_title.Render(to=screen, pos=(define.VID_FRAME_CENTER, 100))
     pygame.display.flip()
 
@@ -328,7 +328,7 @@ def test_loop():
         frame_info.add_text(text=task_info)
         screen.blit(frame, (50, 150))
 
-        title.Render(to=screen, pos=display_gui.TITLE_POSTION)
+        title.Render(to=screen, pos=display_gui.TITLE_POSITION)
         image_title.Render(to=screen, pos=(frame_center, 100))
         pygame.display.flip()
 

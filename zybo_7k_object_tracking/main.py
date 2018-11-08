@@ -31,6 +31,7 @@ from lib._logger import _logging
 PROJECT_TITLE = 'Closed Loop Object Tracking based on Image Recognition'
 
 
+
 # -----------------------------------------------
 """ constants declaration  """
 
@@ -103,7 +104,7 @@ def main_():
 def main():
     """
     """
-    env_setup()
+    # env_setup()
 
     log = _logging.logger_init(log_filepath="obj_track_img_recog.log", project_name="main")
     log.info("main script starts")

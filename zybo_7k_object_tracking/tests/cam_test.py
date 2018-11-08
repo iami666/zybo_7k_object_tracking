@@ -7,7 +7,7 @@ camera into display
 import os
 import sys
 import cv2
-
+import imutils
 import numpy as np
 # from tkinter import *
 # import tkinter as tk
@@ -52,7 +52,7 @@ def env_setup(fbpath="/dev/fb0"):
 
 """ cam_loop """ ##############################################################
 
-def cam_loop(screen, fps_clock, title):
+def _cam_loop(screen, fps_clock, title):
 
     print("[INFO] cam_loop starts...")
 
@@ -100,12 +100,106 @@ def cam_loop(screen, fps_clock, title):
 
 
 
+""" cam_loop """ ##############################################################
+
+def cam_loop(screen, fps_clock, title):
+
+    print("[INFO] cam_loop starts...")
+
+    # vid_window = "/dev/fb3"
+    # env_setup(vid_window)
+
+    vid = imutils.video.VideoStream(src=0).start()
+    print("[INFO] cam object created...")
+
+    try:
+        while True:
+            # screen.fill(WHITE)
+            frame = vid.read()
+            resize_frame =imutils.resize(frame, (define.HORIZ_PIXELS_SMALL))
+            frame = cv2.cvtColor(resize_frame, cv2.COLOR_BGR2GRAY)
+
+
+            front = cv2.FONT_HERSHEY_SIMPLEX
+            name = "vivek"
+            color = (255, 0, 0)
+            # width of text
+            stroke = 2
+
+            cv2.putText(frame, name[::-1], (100, 100), front, 1.0, color, stroke)
+            # cv2.putText(frame, name, (100, 100), front, 1.0, color, stroke, cv2.LINE_AA)
+            frame = np.rot90(frame)
+            frame = pygame.surfarray.make_surface(frame)
+
+            screen.blit(title, (200, 25))
+            screen.blit(frame, (50, 100)) # x, y
+
+            pygame.display.flip()
+            # pygame.display.update()
+
+            if cv2.waitKey(FPS) & 0xFF == ord("q"):
+                break
+
+    except Exception as error:
+        print(error)
+        pygame.quit()
+        cv2.destroyAllWindows()
+        vid.stop()
+        raise
+
+    # do a bit of cleanup
+    cv2.destroyAllWindows()
+    vid.stop()
+
+
+# Main game loop
+def game_loop(screen, fps_clock, root=None):
+    cam = imutils.video.VideoStream(src=0)
+
+    # cam.set(cv2.CAP_PROP_MODE, cv2.CAP_MODE_YUYV)
+    # pygame.display.set_caption("opencv cam")
+    # screen = pygame.display.set_mode([WIDTH - MARGIN, HEIGHT - MARGIN])
+    screen.fill(WHITE)
+    try:
+        while True:
+            frame = cam.read()
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            frame = np.rot90(frame)
+            frame = pygame.surfarray.make_surface(frame)
+            screen.blit(frame, (50, 50))
+            # root.update()
+            # pygame.display.update()
+            fps_clock.tick(FPS)
+            # checkVar2.set(2)
+            # for event in pygame.event.get():
+            #     if event.type == KEYDOWN:
+            #         sys.exit(0)
+            pygame.display.flip()
+
+            key = cv2.waitKey(1) & 0xFF
+
+            # if the `q` key was pressed, break from the loop
+            if key == ord("q"):
+                break
+    except Exception as error:
+        print(error)
+        pygame.quit()
+        cv2.destroyAllWindows()
+        # root.destroy()
+        sys.exit(-1)
+
+    # do a bit of cleanup
+    cv2.destroyAllWindows()
+    cam.stop()
+
+
+
 
 """ main """ ###########################################################################################################
 def main():
     """
     """
-    env_setup()
+    # env_setup()
 
     define.platform_init()
 

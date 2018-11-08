@@ -2,7 +2,7 @@
 
 import os
 import cv2
-
+import imutils
 import numpy as np
 
 from tkinter import *
@@ -10,6 +10,7 @@ import tkinter as tk
 
 import pygame
 from pygame.locals import *
+
 
 sys.path.append("../")
 from definition import define
@@ -70,7 +71,7 @@ def setup_tkinter():
 # Main game loop
 def game_loop(screen, fps_clock, root=None):
     cam = cv2.VideoCapture(0)
-
+    cam.set(cv2.CAP_PROP_MODE, cv2.CAP_MODE_YUYV)
     # pygame.display.set_caption("opencv cam")
     # screen = pygame.display.set_mode([WIDTH - MARGIN, HEIGHT - MARGIN])
     screen.fill(WHITE)
@@ -113,6 +114,7 @@ def game_loop(screen, fps_clock, root=None):
     #         root.destroy()
     #         sys.exit()
 
+
 def start_btn_action():
 
     print("start bnt click")
@@ -146,12 +148,18 @@ def test_loop():
     img_path = "1.jpg"
     if not os.path.isfile(img_path):
         print("[ERROR] image does not exist {}".format(img_path))
-    img = cv2.imread(img_path, 1)
+    img = cv2.imread(img_path, 0)
     size = (define.HORIZ_PIXELS_SMALL, define.VERT_LINES_SMALL)
-    resize_frame = cv2.resize(img, size)
-    frame = cv2.cvtColor(resize_frame, cv2.COLOR_BGR2RGB)
+    # resize_frame = cv2.resize(img, size)
+    frame = cv2.resize(img, size)
+    # frame = cv2.cvtColor(resize_frame, cv2.COLOR_BGR2RGB)
+    # frame = np.mean(frame, -1) # gray conversion
+    # frame = np.dot(frame[..., :3], [0.299, 0.587, 0.114])
+    # frame = cv2.cvtColor(resize_frame, cv2.COLOR_HSV2RGB)
+    # frame = cv2.cvtColor(resize_frame, cv2.COLOR_BGR2GRAY)
+    # frame = cv2.flip(frame, 1) # flip image vertically
     frame = np.rot90(frame)
-    frame = pygame.surfarray.make_surface(frame)
+    frame = pygame.surfarray.make_surface(frame[..., ::-1, :]) # flip image vertically (optimized)
 
     disply = display_gui.Menu()
     screen = disply.display_init()
@@ -221,40 +229,40 @@ def test_loop():
 
         screen.blit(frame, (50, 150))
 
-        title.Render(to=screen, pos=display_gui.TITLE_POSTION)
+        title.Render(to=screen, pos=display_gui.TITLE_POSITION)
         image_title.Render(to=screen, pos=(frame_center , 100))
         pygame.display.flip()
     else:
         print("done")
 
+
 def main():
-    fb3 = "/dev/fb0"
-    os.putenv("SDL_FBDEV", fb3)
-    # set up audio driver to avoid alisa lib erros
-    os.environ['SDL_AUDIODRIVER'] = "dsp"
 
-    # os.environ['SDL_VIDEODRIVER'] = fb3
-    # os.environ["SDL_FBDEV"] = fb3
+    import time
+
+    fb3 = "/dev/fb3"
+    print(fb3)
     define.platform_init()
+    # os.putenv("SDL_FBDEV", fb3)
 
+    # set up audio driver to avoid alisa lib errors
+    # os.environ['SDL_AUDIODRIVER'] = "dsp"
 
     # pygame.init()
-    # root = setup_tkinter()
-    # fps_clock = pygame.time.Clock()
-
-    # WIDTH =  define.VERTICAL_LINES
-    # HEIGHT = define.HORIZONTAL_PIXELS
-    # # screen = pygame.display.set_mode((1240, 1010))
-    # size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
+    # # # root = setup_tkinter()
+    fps_clock = pygame.time.Clock()
+    # # #
     #
-    # print("Framebuffer size set {} x {}".format(size[0],size[1]))
+    size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
+    # # size = (define.HORIZ_PIXELS_SMALL, define.VERT_LINES_SMALL)
     #
-    # screen = pygame.display.set_mode((1265, 1015), pygame.FULLSCREEN)
-    # while True:
-    #     screen.fill(BLACK)
-
-    # game_loop(screen, fps_clock)
-    test_loop()
+    # # print("Framebuffer size set {} x {}".format(size[0],size[1]))
+    # #
+    screen = pygame.display.set_mode(size, pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF)
+    #
+    # #     pygame.display.flip()
+    game_loop(screen, fps_clock)
+    # test_loop()
 
 
 if __name__ == '__main__':

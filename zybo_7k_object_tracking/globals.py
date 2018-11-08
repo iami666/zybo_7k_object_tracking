@@ -32,4 +32,4 @@ VID_STOP = False
 # VID_FRAME_CHANGE_INDEX = 1 --> processed frame
 # VID_FRAME_CHANGE_INDEX = 2 --> gray frame
 
-VID_FRAME_CHANGE_INDEX = 1
+VID_FRAME_CHANGE_INDEX = 0

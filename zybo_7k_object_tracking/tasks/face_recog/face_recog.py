@@ -77,13 +77,13 @@ def face_recog_pygm(screen, disply_obj, fbs):
     face_cascade_name = "haarcascade_frontalface_default.xml"
     face_cascade_path = file_path_check(face_cascade_name)
     face_cascade = cv2.CascadeClassifier(face_cascade_path)
-    recognizer = cv2.face.createLBPHFaceRecognizer()
+    recognizer = cv2.face.LBPHFaceRecognizer_create()
 
     # creating object from trained file
     recognizer_file = "trainner.yml"
     recognizer_path = file_path_check(recognizer_file)
     file_path_check(recognizer_path)
-    recognizer.load(recognizer_path)
+    recognizer.read(recognizer_path)
 
     # reading labels from label.pickle file
     labels = {"person_name": 1}
@@ -123,34 +123,36 @@ def face_recog_pygm(screen, disply_obj, fbs):
         # covert image into gray
         gray = cv2.cvtColor(resize_frame, cv2.COLOR_BGR2GRAY)  # for processing
 
-
         # detect object of different size i nthe input image.
         # the detected objects are returned as a list of rectangles.
-        # faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
-        #
-        # for (x, y, w, h) in faces:
-        #     # create rectangle around face
-        #     frame = cv2.rectangle(frame, (x, y), (x + w, y + w), (255, 0, 0), 2)  # RGB
-        #     roi_gray = gray[y:y + h, x:x + w]
-        #     # roi_color = frame[y:y+h, x:x+w]
-        #
-        #     id_ = recognizer.predict(roi_gray)
-        #     name = labels[id_]
-        #
-        #     cv2.putText(frame, name[::-1], (x, y), front, 1.0, color, stroke, cv2.LINE_AA)
+        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
+
+        for (x, y, w, h) in faces:
+            # create rectangle around face
+            frame = cv2.rectangle(frame, (x, y), (x + w, y + w), (255, 0, 0), 2)  # RGB
+            roi_gray = gray[y:y + h, x:x + w]
+            # roi_color = frame[y:y+h, x:x+w]
+
+            id_, conf = recognizer.predict(roi_gray)
+            if conf >= 30 or conf <= 85:
+                name = labels[id_]
+
+                cv2.putText(frame, name[::-1], (x, y), front, 1.0, color, stroke, cv2.LINE_AA)
+                cv2.circle(frame, (int(x + w/2), int(y + w/2)), 5, (0, 0, 225), -1)
 
         if globals.VID_FRAME_CHANGE_INDEX is 0:
             frame = org_frame
 
-        elif globals.VID_FRAME_CHANGE_INDEX is 1:
+            display.display_render(screen, frame, disply_obj, "Original Frame " + TASK_INFO)
 
+        elif globals.VID_FRAME_CHANGE_INDEX is 1:
             frame = frame
+            display.display_render(screen, frame, disply_obj, "Face Recognition " + TASK_INFO)
 
         elif globals.VID_FRAME_CHANGE_INDEX is 2:
             frame = gray
-
-        # Display the frame
-        display.display_render(screen, frame, disply_obj, TASK_INFO)
+            # Display the frame
+            display.display_render(screen, frame, disply_obj, "Gray Frame" + TASK_INFO)
 
         image_title.Render(to=screen, pos=TASK_TITLE_POS)
 
@@ -175,8 +177,8 @@ def face_recog_pygm(screen, disply_obj, fbs):
 def main():
     # objected created for cascade classifer
     face_cascade = cv2.CascadeClassifier(r'haarcascade_frontalface_default.xml')
-    recognizer = cv2.face.createLBPHFaceRecognizer()
-    recognizer.load("trainner.yml")
+    recognizer = cv2.face.LBPHFaceRecognizer_create()
+    recognizer.read("trainner.yml")
 
     labels = {"person_name": 1}
     with open("labels.pickle", 'rb') as f:
@@ -211,7 +213,7 @@ def main():
                 color = (255, 255, 255)
                 stroke = 2
 
-            cv2.putText(frame, name, (x, y), front, 1, color, stroke, cv2.LINE_AA)
+                cv2.putText(frame, name, (x, y), front, 1, color, stroke, cv2.LINE_AA)
 
         # Display the frame
         cv2.imshow('frame', frame)
