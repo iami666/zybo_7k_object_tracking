@@ -19,6 +19,7 @@ from pygame.locals import *
 from definition import define
 from tasks.face_recog import face_recog
 from tasks.motion_detection import motion_detect
+from tasks.cam_off import cam_off
 from tests import main_test
 import globals
 
@@ -124,20 +125,31 @@ def main():
 
     while True:
             if not globals.CAM_START: # camera is off, picture will be displayed
-                main_test.cam_off()
+                screen.fill(WHITE) # clean up the display
+                cam_off.cam_off_loop(screen, disply_obj, FPS)
+
+            if globals.EXIT:
+                break
 
             while globals.CAM_START:
 
                 if globals.TASK_INDEX is 1:
+                    screen.fill(WHITE)
                     face_recog.face_recog_pygm(screen, disply_obj, FPS)
 
                 if globals.TASK_INDEX is 2:
+                    screen.fill(WHITE)
                     motion_detect.motion_detection_pygm(screen, disply_obj, FPS)
 
-                if not globals.CAM_START:
+                if not globals.CAM_START or globals.EXIT:
                     log.info("Camera is OFF")
                     break
 
+            if globals.EXIT:
+                break
+
+    pygame.quit()
+    log.info("exiting from the main...")
 
 if __name__ == '__main__':
     main()

@@ -7,7 +7,7 @@ https://www.pyimagesearch.com/2016/02/01/opencv-center-of-contour/
 
 import numpy as np
 import cv2
-import sys
+# import sys
 from imutils.video import VideoStream
 import imutils
 import time
@@ -118,8 +118,8 @@ def motion_detection_pygm(screen, disply_obj, fbs):
             log.info("TASK_INDEX is not 2 but {}".format(globals.TASK_INDEX))
             break
 
-        if not globals.CAM_START:
-            print(f"face_recog globals.CAM_START {globals.CAM_START}")
+        if not globals.CAM_START or globals.EXIT:
+            # print(f"face_recog globals.CAM_START {globals.CAM_START}")
             break
         # cv2.imshow('Original', frame)
         # cv2.imshow('threshold', thresh)
@@ -128,9 +128,9 @@ def motion_detection_pygm(screen, disply_obj, fbs):
         if cv2.waitKey(1) & 0xFF == ord("q"):
             break
 
-    log.info("closing motion detection")
     cap.stop()
     cv2.destroyAllWindows()
+    log.info("closing motion detection")
 
 
 # ----------------------------------------------------------------------------------------------------------------------

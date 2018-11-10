@@ -16,10 +16,10 @@ The trainner file is trained from some hollywood actors (from game of thrones TV
 """
 
 import sys
-import numpy as np
+# import numpy as np
 import cv2
 import pickle
-import pygame
+# import pygame
 import os
 import logging
 
@@ -74,7 +74,7 @@ def face_recog_pygm(screen, disply_obj, fbs):
     log.info("face_recog_pygm start")
     # print("[INFO] face_recog_pygm start")
 
-    # objected created for cascadeclassifer
+    # objected created for cascade classifier
     face_cascade_name = "haarcascade_frontalface_default.xml"
     face_cascade_path = file_path_check(face_cascade_name)
     face_cascade = cv2.CascadeClassifier(face_cascade_path)
@@ -137,8 +137,8 @@ def face_recog_pygm(screen, disply_obj, fbs):
             roi_gray = gray[y:y + h, x:x + w]
             # roi_color = frame[y:y+h, x:x+w]
 
-            id_, confidance = recognizer.predict(roi_gray)
-            if confidance >= 30:
+            id_, confidence = recognizer.predict(roi_gray)
+            if confidence >= 30:
                 name = labels[id_]
                 cv2.putText(frame, name[::-1], (x, y), front, 1.0, color, stroke, cv2.LINE_AA)
 
@@ -161,8 +161,8 @@ def face_recog_pygm(screen, disply_obj, fbs):
         if not globals.TASK_INDEX == 1:
             log.info(f"TASK_INDEX is not 1 but {globals.TASK_INDEX}")
             break
-        if not globals.CAM_START:
-            print(f"face_recog globals.CAM_START {globals.CAM_START}")
+        if not globals.CAM_START or globals.EXIT:
+            # print(f"face_recog globals.CAM_START {globals.CAM_START}")
             break
 
         # framerate control
@@ -172,7 +172,7 @@ def face_recog_pygm(screen, disply_obj, fbs):
     vid.video_cleanUp()
     log.info("closing face recognition")
 
-    # pygame.quit()
+
 
 
 # ----------------------------------------------------------------------------------------------------------------------

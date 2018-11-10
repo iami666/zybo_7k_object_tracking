@@ -29,3 +29,5 @@ VID_FRAME_CHANGE_INDEX = 1
 
 # start/stop cam
 CAM_START = False  # camera  True = ON/ False = OFF
+
+EXIT = False

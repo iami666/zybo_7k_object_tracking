@@ -39,12 +39,13 @@ MARGIN = 60
 RECT_SIZE = (10, 10)
 SMALL_BUTTON = (5, 5, 100, 50)
 BIG_BUTTON = (5, 5, 200, 50)
-
+EXIT_BUTTON = (5, 5, 40, 40)
 PROJECT_TITLE = 'Closed Loop Object Tracking based on Image Recognition'
 btn_done = None
 
 # video frame position on the display in pixel values
 VID_FRAME_POS = (50, 150) # x, y
+
 
 
 # ------------------------------------------------------------------------------
@@ -71,6 +72,16 @@ def stop_btn_action():
     log.info("stop bnt click")
     btn_done = True
 
+
+# ------------------------------------------------------------------------------
+# """ start_btn_action """
+# ------------------------------------------------------------------------------
+
+
+def exit_btn_action():
+    """ start_button_action """
+    globals.EXIT = True
+    log.info("exit bnt click")
 
 # ------------------------------------------------------------------------------
 # """ forward_btn_action """
@@ -152,6 +163,9 @@ def display_menu_init(screen):
     backward_btn = display_gui.Menu.Button(text="<<", rect=SMALL_BUTTON)
     backward_btn.Command = backward_btn_action
 
+    exit_btn = display_gui.Menu.Button(text="X", rect=EXIT_BUTTON)
+    exit_btn.Command = exit_btn_action
+
     face_recog_btn = display_gui.Menu.Button(text="Face Recognition", rect=BIG_BUTTON)
     face_recog_btn.Command = face_recog_btn_action
 
@@ -159,11 +173,11 @@ def display_menu_init(screen):
     obj_tracking_btn.Command = object_tracking_btn_action
 
     display_object = collections.namedtuple("display_object",
-                                            ["title", "frame_info", "start_btn", "stop_btn", "forward_btn",
+                                            ["title", "frame_info", "start_btn", "stop_btn", "exit_btn", "forward_btn",
                                              "backward_btn", "face_recog_btn",
                                              "obj_tracking_btn"])
 
-    disply_obj = display_object(title,  frame_info, start_btn, stop_btn, forward_btn, backward_btn, face_recog_btn,
+    disply_obj = display_object(title,  frame_info, start_btn, stop_btn, exit_btn, forward_btn, backward_btn, face_recog_btn,
                                 obj_tracking_btn)
 
     return disply_obj
@@ -204,18 +218,22 @@ def display_render(screen, frame, dsply_obj, task_info):
                         btn.Rolling = False
                         break
 
-    # 144 is upper y value of the picture frame
-    dsply_obj.start_btn.Render(screen, pos=(60 + define.HORIZ_PIXELS_SMALL, 144))
+    # 144 is upper y value of the picture frame, SMALL_BUTTON[3] = button height (50)
+    dsply_obj.start_btn.Render(screen, pos=(SMALL_BUTTON[3] + 10 + define.HORIZ_PIXELS_SMALL, 144))
     #  length of small button  + 10 pixel (50  + 10) = 60
-    dsply_obj.stop_btn.Render(screen, pos=(60 + define.HORIZ_PIXELS_SMALL, 144 + 60))
+    dsply_obj.stop_btn.Render(screen, pos=(SMALL_BUTTON[3] + 10 + define.HORIZ_PIXELS_SMALL, 144 + SMALL_BUTTON[3] + 10))
+
+    # SMALL_BUTTON[2] = button weight (100)
+    dsply_obj.exit_btn.Render(screen, pos=(display_gui.SCREEN_WIDTH - SMALL_BUTTON[2] + 48, 0))
+
     # 574 is lower y value of frame
-    dsply_obj.forward_btn.Render(screen, pos=(60 + define.HORIZ_PIXELS_SMALL, 574))
-    dsply_obj.backward_btn.Render(screen, pos=(60 + define.HORIZ_PIXELS_SMALL, 574 - 60))
+    dsply_obj.forward_btn.Render(screen, pos=(SMALL_BUTTON[3] + 10 + define.HORIZ_PIXELS_SMALL, 574))
+    dsply_obj.backward_btn.Render(screen, pos=(SMALL_BUTTON[3] + 10 + define.HORIZ_PIXELS_SMALL, 574 - SMALL_BUTTON[3] - 10))
 
     # 280 pixel away form start button
     dsply_obj.face_recog_btn.Render(screen, pos=(280 + define.HORIZ_PIXELS_SMALL, 144))
 
-    dsply_obj.obj_tracking_btn.Render(screen, pos=(280 + define.HORIZ_PIXELS_SMALL, 144 + 60))
+    dsply_obj.obj_tracking_btn.Render(screen, pos=(280 + define.HORIZ_PIXELS_SMALL, 144 + SMALL_BUTTON[3] + 10))
     dsply_obj.frame_info.add_text(text=task_info)
 
     frame = np.rot90(frame)
