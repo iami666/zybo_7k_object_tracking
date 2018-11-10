@@ -19,6 +19,7 @@ from pygame.locals import *
 from definition import define
 from tasks.face_recog import face_recog
 from tasks.motion_detection import motion_detect
+from tests import main_test
 import globals
 
 sys.path.append("/lib/display")
@@ -26,10 +27,8 @@ from lib.display import display_gui
 from lib.display import display
 from lib._logger import _logging
 
-
 # -----------------------------------------------
 PROJECT_TITLE = 'Closed Loop Object Tracking based on Image Recognition'
-
 
 # -----------------------------------------------
 """ constants declaration  """
@@ -124,15 +123,20 @@ def main():
     disply_obj = display.display_menu_init(screen)
 
     while True:
+            if not globals.CAM_START: # camera is off, picture will be displayed
+                main_test.cam_off()
 
-        if globals.TASK_INDEX is 0:
-            # cam_test.main()
-            pass
-        if globals.TASK_INDEX is 1:
-            face_recog.face_recog_pygm(screen, disply_obj, FPS)
+            while globals.CAM_START:
 
-        if globals.TASK_INDEX is 2:
-            motion_detect.motion_detection_pygm(screen, disply_obj, FPS)
+                if globals.TASK_INDEX is 1:
+                    face_recog.face_recog_pygm(screen, disply_obj, FPS)
+
+                if globals.TASK_INDEX is 2:
+                    motion_detect.motion_detection_pygm(screen, disply_obj, FPS)
+
+                if not globals.CAM_START:
+                    log.info("Camera is OFF")
+                    break
 
 
 if __name__ == '__main__':

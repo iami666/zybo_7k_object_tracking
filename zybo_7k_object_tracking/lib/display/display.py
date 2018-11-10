@@ -16,8 +16,8 @@ from pygame.locals import *
 import display_gui, colors
 
 sys.path.append("../../")
+import globals
 from definition import define
-
 from lib.display import colors
 
 log = logging.getLogger("main." + __name__)
@@ -54,7 +54,7 @@ VID_FRAME_POS = (50, 150) # x, y
 
 def start_btn_action():
     """ start_button_action """
-
+    globals.CAM_START = True
     log.info("start bnt click")
 
 
@@ -66,7 +66,7 @@ def start_btn_action():
 def stop_btn_action():
     """ stop_button_action """
 
-    global btn_done
+    globals.CAM_START = False
 
     log.info("stop bnt click")
     btn_done = True
@@ -100,7 +100,7 @@ def backward_btn_action():
 
 def face_recog_btn_action():
     """ face_recognition_button_action """
-
+    globals.TASK_INDEX = 1
     log.info("face_recog bnt click")
 
 
@@ -110,7 +110,7 @@ def face_recog_btn_action():
 
 def object_tracking_btn_action():
     """ object_tracking_button_action """
-
+    globals.TASK_INDEX = 2
     log.info("object tracking bnt click")
 
 
@@ -128,7 +128,6 @@ def display_menu_init(screen):
     """
 
     title = display_gui.Menu.Text(text=PROJECT_TITLE, font=display_gui.Font.Medium)
-
 
     # image_title = display_gui.Menu.Text(text=task_title, font=display_gui.Font.Medium)
     #
@@ -205,10 +204,6 @@ def display_render(screen, frame, dsply_obj, task_info):
                         btn.Rolling = False
                         break
 
-        if btn_done:
-            pass
-            # done = True
-
     # 144 is upper y value of the picture frame
     dsply_obj.start_btn.Render(screen, pos=(60 + define.HORIZ_PIXELS_SMALL, 144))
     #  length of small button  + 10 pixel (50  + 10) = 60
@@ -222,7 +217,6 @@ def display_render(screen, frame, dsply_obj, task_info):
 
     dsply_obj.obj_tracking_btn.Render(screen, pos=(280 + define.HORIZ_PIXELS_SMALL, 144 + 60))
     dsply_obj.frame_info.add_text(text=task_info)
-
 
     frame = np.rot90(frame)
     frame = pygame.surfarray.make_surface(frame)

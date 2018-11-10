@@ -15,7 +15,7 @@ sys.path.append("../")
 from definition import define
 from lib.display import display_gui, colors
 from lib.display import colors
-
+import globals
 
 
 
@@ -115,11 +115,15 @@ def game_loop(screen, fps_clock, root=None):
 
 def start_btn_action():
 
+    globals.CAM_START = True
+    print(f"main_test globals.CAM_START {globals.CAM_START}")
+
     print("start bnt click")
 
 
 def stop_btn_action():
     global btn_done
+    globals.CAM_START = False
     print("stop bnt click")
     btn_done = True
 
@@ -163,7 +167,7 @@ def test_loop():
     img_title_str = "Panda"
 
     image_title = display_gui.Menu.Text(text=img_title_str, font=display_gui.Font.Medium)
-    task_info = "Vivek, John Snow, khalisi"
+    task_info = "push start button to start camera "
     # info  = display_gui.Menu.Text(text=task_info, font=display_gui.Font.Small)
     # pygame.draw.rect(info, )
     start_btn = display_gui.Menu.Button(text="START", rect=SMALL_BUTTON)
@@ -188,9 +192,9 @@ def test_loop():
     frame_center = (50 + define.HORIZ_PIXELS_SMALL)/2
     frame_end = 60 + define.HORIZ_PIXELS_SMALL
 
-    done = False
 
-    while not done:
+
+    while not btn_done:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 done = True
@@ -205,7 +209,7 @@ def test_loop():
                             btn.Rolling = False
                             break
 
-            if btn_done:
+            if globals.CAM_START:
                 done = True
         # 144 is upper y value of the picture frame
         start_btn.Render(screen, pos=(60 + define.HORIZ_PIXELS_SMALL, 144))
@@ -226,6 +230,101 @@ def test_loop():
         pygame.display.flip()
     else:
         print("done")
+
+
+def cam_off_loop():
+
+    break_loop_btn = False
+
+    img_path = "1.jpg"
+    if not os.path.isfile(img_path):
+        print("[ERROR] image does not exist {}".format(img_path))
+    img = cv2.imread(img_path, 1)
+    size = (define.HORIZ_PIXELS_SMALL, define.VERT_LINES_SMALL)
+    resize_frame = cv2.resize(img, size)
+    frame = cv2.cvtColor(resize_frame, cv2.COLOR_BGR2RGB)
+    frame = np.rot90(frame)
+    frame = pygame.surfarray.make_surface(frame)
+
+    disply = display_gui.Menu()
+    screen = disply.display_init()
+    disply.display_color()
+
+    # fonts = pygame.font.SysFont("Comic Sans MS", 40)
+    # title = fonts.render('Closed Loop Object Tracking based on Image Recognition', False, (0, 0, 255))
+    title = display_gui.Menu.Text(text=PROJECT_TITLE, font=display_gui.Font.Medium)
+    img_title_str = "Panda"
+
+    image_title = display_gui.Menu.Text(text=img_title_str, font=display_gui.Font.Medium)
+    task_info = "push start button to start camera "
+    # info  = display_gui.Menu.Text(text=task_info, font=display_gui.Font.Small)
+    # pygame.draw.rect(info, )
+    start_btn = display_gui.Menu.Button(text="START", rect=SMALL_BUTTON)
+    start_btn.Command = start_btn_action
+
+    stop_btn = display_gui.Menu.Button(text="STOP", rect=SMALL_BUTTON)
+    stop_btn.Command = stop_btn_action
+
+    forward_btn = display_gui.Menu.Button(text=">>", rect=SMALL_BUTTON)
+    forward_btn.Command = forward_btn_action
+
+    backward_btn = display_gui.Menu.Button(text="<<", rect=SMALL_BUTTON)
+    backward_btn.Command = backward_btn_action
+
+    face_recog_btn = display_gui.Menu.Button(text="Face Recognition", rect=BIG_BUTTON)
+    face_recog_btn.Command = face_recog_btn_action
+
+    obj_tracking_btn = display_gui.Menu.Button(text="Object Tracking", rect=BIG_BUTTON)
+    obj_tracking_btn.Command = object_tracking_btn_action
+
+    # btn_start.Left = display_gui.SCREEN_HEIGHT/2 - btn_start.Left*2
+    frame_center = (50 + define.HORIZ_PIXELS_SMALL)/2
+    frame_end = 60 + define.HORIZ_PIXELS_SMALL
+
+
+
+    while not break_loop_btn:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                done = True
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1: # check for left mouse click
+                    # handle button click events
+                    for btn in display_gui.Menu.Button.All:
+                        if btn.Rolling: # mouse is over button
+                            if btn.Command() != None: # do button event
+                                btn.Command()
+
+                            btn.Rolling = False
+                            break
+
+            if globals.CAM_START:
+                print(f"globals.CAM_START {globals.CAM_START}")
+                break_loop_btn = True
+
+        # 144 is upper y value of the picture frame
+        start_btn.Render(screen, pos=(60 + define.HORIZ_PIXELS_SMALL, 144))
+        #  length of small button  + 10 pixel (50  + 10) = 60
+        stop_btn.Render(screen, pos=(60 + define.HORIZ_PIXELS_SMALL , 144 + 60))
+        # 574 is lower y value of frame
+        forward_btn.Render(screen, pos=(60 + define.HORIZ_PIXELS_SMALL , 574))
+        backward_btn.Render(screen, pos=(60 + define.HORIZ_PIXELS_SMALL , 574 - 60))
+
+        face_recog_btn.Render(screen, pos=(280 + define.HORIZ_PIXELS_SMALL, 144))
+
+        obj_tracking_btn.Render(screen, pos=(280 + define.HORIZ_PIXELS_SMALL, 144 + 60))
+
+        screen.blit(frame, (50, 150))
+
+        title.Render(to=screen, pos=display_gui.TITLE_POSTION)
+        image_title.Render(to=screen, pos=(frame_center , 100))
+        pygame.display.flip()
+
+
+
+def cam_off():
+    define.platform_init()
+    cam_off_loop()
 
 def main():
     fb3 = "/dev/fb0"

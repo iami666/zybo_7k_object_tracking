@@ -111,7 +111,6 @@ def motion_detection_pygm(screen, disply_obj, fbs):
 
         # Display the frame
         display.display_render(screen, frame, disply_obj, TASK_INFO)
-
         image_title.Render(to=screen, pos=TASK_TITLE_POS)
 
         # check if TASK_INDEX is not 1 then it means another buttons has pressed
@@ -119,6 +118,9 @@ def motion_detection_pygm(screen, disply_obj, fbs):
             log.info("TASK_INDEX is not 2 but {}".format(globals.TASK_INDEX))
             break
 
+        if not globals.CAM_START:
+            print(f"face_recog globals.CAM_START {globals.CAM_START}")
+            break
         # cv2.imshow('Original', frame)
         # cv2.imshow('threshold', thresh)
         # cv2.imshow('FrameDelta', frameDelta)
