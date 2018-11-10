@@ -36,9 +36,13 @@ pygame.init()
 # -----------------------------------------------
 """ constants declaration  """
 
-SCREEN_WIDTH = 1265
-SCREEN_HEIGHT = 1015
+# SCREEN_WIDTH = 1265
+# SCREEN_HEIGHT = 1015
+SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.Info().current_w, pygame.display.Info().current_h
+
 SCREEN_SIZE = (SCREEN_WIDTH, SCREEN_HEIGHT)  # width, height
+
+# SCREEN_SIZE = (0, 0)  # width, height
 TITLE_POSTION = (200, 25)
 
 WHITE = (255, 255, 255)

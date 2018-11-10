@@ -16,10 +16,10 @@ The trainner file is trained from some hollywood actors (from game of thrones TV
 """
 
 import sys
-import numpy as np
+# import numpy as np
 import cv2
 import pickle
-import pygame
+# import pygame
 import os
 import logging
 
@@ -51,6 +51,7 @@ def file_path_check(file_name_fm_same_dir):
     """ file_path_check """
     script_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(script_dir, file_name_fm_same_dir)
+
     if not os.path.exists(file_path):
         log.info("does not exist path  {} ".format(file_path))
         sys.exit(-1)
@@ -73,17 +74,19 @@ def face_recog_pygm(screen, disply_obj, fbs):
     log.info("face_recog_pygm start")
     # print("[INFO] face_recog_pygm start")
 
-    # objected created for cascadeclassifer
+    # objected created for cascade classifier
     face_cascade_name = "haarcascade_frontalface_default.xml"
     face_cascade_path = file_path_check(face_cascade_name)
     face_cascade = cv2.CascadeClassifier(face_cascade_path)
-    recognizer = cv2.face.createLBPHFaceRecognizer()
+    # recognizer = cv2.face.createLBPHFaceRecognizer() # for opencv 2.4
+    recognizer = cv2.face.LBPHFaceRecognizer_create()
 
     # creating object from trained file
     recognizer_file = "trainner.yml"
     recognizer_path = file_path_check(recognizer_file)
     file_path_check(recognizer_path)
-    recognizer.load(recognizer_path)
+    # recognizer.load(recognizer_path) # for opencv 2.4
+    recognizer.read(recognizer_path)
 
     # reading labels from label.pickle file
     labels = {"person_name": 1}
@@ -126,18 +129,18 @@ def face_recog_pygm(screen, disply_obj, fbs):
 
         # detect object of different size i nthe input image.
         # the detected objects are returned as a list of rectangles.
-        # faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
-        #
-        # for (x, y, w, h) in faces:
-        #     # create rectangle around face
-        #     frame = cv2.rectangle(frame, (x, y), (x + w, y + w), (255, 0, 0), 2)  # RGB
-        #     roi_gray = gray[y:y + h, x:x + w]
-        #     # roi_color = frame[y:y+h, x:x+w]
-        #
-        #     id_ = recognizer.predict(roi_gray)
-        #     name = labels[id_]
-        #
-        #     cv2.putText(frame, name[::-1], (x, y), front, 1.0, color, stroke, cv2.LINE_AA)
+        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
+
+        for (x, y, w, h) in faces:
+            # create rectangle around face
+            frame = cv2.rectangle(frame, (x, y), (x + w, y + w), (255, 0, 0), 2)  # RGB
+            roi_gray = gray[y:y + h, x:x + w]
+            # roi_color = frame[y:y+h, x:x+w]
+
+            id_, confidence = recognizer.predict(roi_gray)
+            if confidence >= 30:
+                name = labels[id_]
+                cv2.putText(frame, name[::-1], (x, y), front, 1.0, color, stroke, cv2.LINE_AA)
 
         if globals.VID_FRAME_CHANGE_INDEX is 0:
             frame = org_frame
@@ -156,7 +159,10 @@ def face_recog_pygm(screen, disply_obj, fbs):
 
         # check if TASK_INDEX is not 1 then it means another buttons has pressed
         if not globals.TASK_INDEX == 1:
-            log.info("TASK_INDEX is not 1 but {}".format(globals.TASK_INDEX))
+            log.info(f"TASK_INDEX is not 1 but {globals.TASK_INDEX}")
+            break
+        if not globals.CAM_START or globals.EXIT:
+            # print(f"face_recog globals.CAM_START {globals.CAM_START}")
             break
 
         # framerate control
@@ -166,7 +172,7 @@ def face_recog_pygm(screen, disply_obj, fbs):
     vid.video_cleanUp()
     log.info("closing face recognition")
 
-    # pygame.quit()
+
 
 
 # ----------------------------------------------------------------------------------------------------------------------

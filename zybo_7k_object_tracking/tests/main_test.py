@@ -15,7 +15,7 @@ sys.path.append("../")
 from definition import define
 from lib.display import display_gui, colors
 from lib.display import colors
-
+import globals
 
 
 
@@ -115,13 +115,17 @@ def game_loop(screen, fps_clock, root=None):
 
 def start_btn_action():
 
-    print("start bnt click")
+    globals.CAM_START = True
+    # print(f"main_test globals.CAM_START {globals.CAM_START}")
+
+    # print("start bnt click")
 
 
 def stop_btn_action():
-    global btn_done
-    print("stop bnt click")
-    btn_done = True
+    # global btn_done
+    globals.CAM_START = False
+    # print("stop bnt click")
+    # btn_done = True
 
 def forward_btn_action():
 
@@ -163,7 +167,7 @@ def test_loop():
     img_title_str = "Panda"
 
     image_title = display_gui.Menu.Text(text=img_title_str, font=display_gui.Font.Medium)
-    task_info = "Vivek, John Snow, khalisi"
+    task_info = "push start button to start camera "
     # info  = display_gui.Menu.Text(text=task_info, font=display_gui.Font.Small)
     # pygame.draw.rect(info, )
     start_btn = display_gui.Menu.Button(text="START", rect=SMALL_BUTTON)
@@ -188,9 +192,9 @@ def test_loop():
     frame_center = (50 + define.HORIZ_PIXELS_SMALL)/2
     frame_end = 60 + define.HORIZ_PIXELS_SMALL
 
-    done = False
 
-    while not done:
+
+    while not btn_done:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 done = True
@@ -205,7 +209,7 @@ def test_loop():
                             btn.Rolling = False
                             break
 
-            if btn_done:
+            if globals.CAM_START:
                 done = True
         # 144 is upper y value of the picture frame
         start_btn.Render(screen, pos=(60 + define.HORIZ_PIXELS_SMALL, 144))
@@ -226,6 +230,7 @@ def test_loop():
         pygame.display.flip()
     else:
         print("done")
+
 
 def main():
     fb3 = "/dev/fb0"
