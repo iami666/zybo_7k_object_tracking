@@ -2,9 +2,10 @@
 import os
 import cv2
 import sys
-import numpy as np
-import pygame
-from pygame.locals import *
+import logging
+# import numpy as np
+# import pygame
+# from pygame.locals import *
 
 sys.path.append("../")
 from definition import define
@@ -16,13 +17,21 @@ TASK_TITLE = "Panda"
 TASK_TITLE_POS = (define.VID_FRAME_CENTER - (len(TASK_TITLE) * 4), 100)
 TASK_INFO = ""
 
+log = logging.getLogger("__main__." + __name__)
 
-def cam_off_loop(screen, disply_obj, FPS):
-    break_loop_btn = False
 
+# ------------------------------------------------------------------------------
+# """ cam_off_loop """
+# ------------------------------------------------------------------------------
+def cam_off_loop(screen, disply_obj, FPS=0):
+    log.info("cam_off_loop start")
     img_path = "1.jpg"
+
     if not os.path.isfile(img_path):
-        print("[ERROR] image does not exist {}".format(img_path))
+        log.error(f"[ERROR] image does not exist {img_path}")
+        # print("[ERROR] image does not exist {}".format(img_path))
+
+
     img = cv2.imread(img_path, 1)
     size = (define.HORIZ_PIXELS_SMALL, define.VERT_LINES_SMALL)
     resize_frame = cv2.resize(img, size)

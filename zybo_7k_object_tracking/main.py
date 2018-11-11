@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+ # -*- coding: utf-8 -*-
 # @Author: vivekpatel99
 # @Date:   2018-10-06 15:43:12
 # @Last Modified by:   vivekpatel99
@@ -126,7 +126,7 @@ def main():
     while True:
             if not globals.CAM_START: # camera is off, picture will be displayed
                 screen.fill(WHITE) # clean up the display
-                cam_off.cam_off_loop(screen, disply_obj, FPS)
+                cam_off.cam_off_loop(screen, disply_obj)
 
             if globals.EXIT:
                 break

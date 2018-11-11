@@ -18,6 +18,7 @@ requests = "*"
 "progressbar2" = "*"
 scikit-learn = "*"
 scikit-image = "*"
+keras = "*"
 
 [requires]
 python_version = "3.6"
