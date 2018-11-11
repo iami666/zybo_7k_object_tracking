@@ -11,6 +11,7 @@ PROJECT_TITLE = """Closed Loop Object Tracking based on Image Recognition"""
 # TASK_INDEX = 0 --> waiting to start
 # TASK_INDEX = 1 --> face recognition
 # TASK_INDEX = 2 --> motion detection
+# TASK_INDEX = 3 --> Object recognition
 TASK_INDEX = 1
 
 # video frame position on display

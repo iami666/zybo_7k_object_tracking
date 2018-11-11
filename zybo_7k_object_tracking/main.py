@@ -20,7 +20,7 @@ from definition import define
 from tasks.face_recog import face_recog
 from tasks.motion_detection import motion_detect
 from tasks.cam_off import cam_off
-from tests import main_test
+from tasks.object_recognition import object_recognition
 import globals
 
 sys.path.append("/lib/display")
@@ -140,6 +140,10 @@ def main():
                 if globals.TASK_INDEX is 2:
                     screen.fill(WHITE)
                     motion_detect.motion_detection_pygm(screen, disply_obj, FPS)
+
+                if globals.TASK_INDEX is 3:
+                    screen.fill(WHITE)
+                    object_recognition.object_recog(screen, disply_obj, FPS)
 
                 if not globals.CAM_START or globals.EXIT:
                     log.info("Camera is OFF")

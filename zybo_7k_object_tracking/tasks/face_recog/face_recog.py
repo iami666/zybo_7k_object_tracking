@@ -170,7 +170,7 @@ def face_recog_pygm(screen, disply_obj, fbs):
             break
 
     vid.video_cleanUp()
-    log.info("closing face recognition")
+    log.info("Face Recognition closing ")
 
 
 
