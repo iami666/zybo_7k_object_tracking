@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+ # -*- coding: utf-8 -*-
 # @Author: vivekpatel99
 # @Date:   2018-10-06 15:43:12
 # @Last Modified by:   vivekpatel99
@@ -14,13 +14,15 @@ import sys
 import pygame
 from pygame.locals import *
 
+
+
 """ modules """
 
 from definition import define
 from tasks.face_recog import face_recog
 from tasks.motion_detection import motion_detect
 from tasks.cam_off import cam_off
-from tests import main_test
+from tasks.object_recognition import object_recognition
 import globals
 
 sys.path.append("/lib/display")
@@ -126,7 +128,7 @@ def main():
     while True:
             if not globals.CAM_START: # camera is off, picture will be displayed
                 screen.fill(WHITE) # clean up the display
-                cam_off.cam_off_loop(screen, disply_obj, FPS)
+                cam_off.cam_off_loop(screen, disply_obj)
 
             if globals.EXIT:
                 break
@@ -140,6 +142,10 @@ def main():
                 if globals.TASK_INDEX is 2:
                     screen.fill(WHITE)
                     motion_detect.motion_detection_pygm(screen, disply_obj, FPS)
+
+                if globals.TASK_INDEX is 3:
+                    screen.fill(WHITE)
+                    object_recognition.object_recog_pygm(screen, disply_obj)
 
                 if not globals.CAM_START or globals.EXIT:
                     log.info("Camera is OFF")

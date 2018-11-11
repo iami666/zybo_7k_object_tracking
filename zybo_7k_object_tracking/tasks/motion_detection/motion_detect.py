@@ -42,6 +42,93 @@ CAM_NUM = 0
 # ------------------------------------------------------------------------------
 # """ motion_detection_pygm """
 # ------------------------------------------------------------------------------
+
+def _motion_detection_pygm(screen, disply_obj, fbs):
+    """ """
+    log.info("motion_detection_pygm starts... ")
+
+    image_title = display_gui.Menu.Text(text=TASK_TITLE, font=display_gui.Font.Medium)
+
+    cap = VideoStream(src=CAM_NUM).start()
+    time.sleep(2.0)
+
+    # initialize the firstFrame in video stream
+    firstFrame = None
+    fgbg = cv2.createBackgroundSubtractorMOG2()
+    while True:
+
+        # if ret is true than no error with cap.isOpened
+        frame = cap.read()
+
+        if frame is None:
+            log.error("No frame available !!")
+            # print("ERROR: No frame available !!")
+            break
+
+        # resize frame for required size
+        resize_frame = cv2.resize(frame, define.VID_FRAME_SIZE)
+
+        # opencv understand BGR, in order to display we need to convert image  form   BGR to RGB
+        frame = cv2.cvtColor(resize_frame, cv2.COLOR_BGR2RGB)  # for display
+
+        # color has no bearing on motion detection algorithm
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+        # to smooth the image and remove noise(if not then could throw algorithm off)
+        # smoothing average pixel intensities across an 21x21 region
+        gray = cv2.GaussianBlur(gray, (21, 21), 0)
+
+        # if the first stream is not initialized, store it for reference
+        # to smooth the image and remove noise(if not then could throw algorithm off)
+        # smothing avarage pixel intensities across an 21x21 region
+        gray = cv2.GaussianBlur(gray, (21, 21), 0)
+
+
+        # apply background substraction
+        fgmask = fgbg.apply(gray)
+        (im2, contours, hierarchy) = cv2.findContours(fgmask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        # looping for contours
+        for c in contours:
+            if cv2.contourArea(c) < MIN_AREA:
+                continue
+
+            M = cv2.moments(c)
+            cX = int(M["m10"] / M["m00"])
+            cY = int(M["m01"] / M["m00"])
+            # get bounding box from countour
+            (x, y, w, h) = cv2.boundingRect(c)
+
+            # draw bounding box
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            cv2.circle(frame, (cX, cY), 7, (0, 0, 225), -1)
+
+        # Display the frame
+        display.display_render(screen, frame, disply_obj, TASK_INFO)
+        image_title.Render(to=screen, pos=TASK_TITLE_POS)
+
+        # check if TASK_INDEX is not 1 then it means another buttons has pressed
+        if not globals.TASK_INDEX == 2:
+            log.info("TASK_INDEX is not 2 but {}".format(globals.TASK_INDEX))
+            break
+
+        if not globals.CAM_START or globals.EXIT:
+            # print(f"face_recog globals.CAM_START {globals.CAM_START}")
+            break
+        # cv2.imshow('Original', frame)
+        # cv2.imshow('threshold', thresh)
+        # cv2.imshow('FrameDelta', frameDelta)
+
+        if cv2.waitKey(1) & 0xFF == ord("q"):
+            break
+
+    cap.stop()
+    cv2.destroyAllWindows()
+    log.info("closing motion detection")
+
+
+
+
 def motion_detection_pygm(screen, disply_obj, fbs):
     """ """
     log.info("motion_detection_pygm starts... ")
@@ -94,10 +181,11 @@ def motion_detection_pygm(screen, disply_obj, fbs):
         contours = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         contours = contours[0] if imutils.is_cv2() else contours[1]
 
-        # looping for contours
+        # # looping for contours
         for c in contours:
             if cv2.contourArea(c) < MIN_AREA:
                 continue
+
             M = cv2.moments(c)
             cX = int(M["m10"] / M["m00"])
             cY = int(M["m01"] / M["m00"])
@@ -108,6 +196,16 @@ def motion_detection_pygm(screen, disply_obj, fbs):
             # draw bounding box
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
             cv2.circle(frame, (cX, cY), 7, (0, 0, 225), -1)
+
+        if globals.VID_FRAME_INDEX == 0:
+            frame = thresh
+
+        elif globals.VID_FRAME_INDEX == 1:
+
+            frame = frame
+
+        elif globals.VID_FRAME_INDEX == 2:
+            frame = frameDelta
 
         # Display the frame
         display.display_render(screen, frame, disply_obj, TASK_INFO)

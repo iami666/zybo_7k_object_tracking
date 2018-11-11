@@ -121,11 +121,9 @@ def face_recog_pygm(screen, disply_obj, fbs):
 
         # opencv understand BGR, in order to display we need to convert image  form   BGR to RGB
         frame = cv2.cvtColor(resize_frame, cv2.COLOR_BGR2RGB)  # for display
-        org_frame = frame
 
         # covert image into gray
         gray = cv2.cvtColor(resize_frame, cv2.COLOR_BGR2GRAY)  # for processing
-
 
         # detect object of different size i nthe input image.
         # the detected objects are returned as a list of rectangles.
@@ -138,19 +136,22 @@ def face_recog_pygm(screen, disply_obj, fbs):
             # roi_color = frame[y:y+h, x:x+w]
 
             id_, confidence = recognizer.predict(roi_gray)
-            if confidence >= 30:
+            if confidence >= 20:
                 name = labels[id_]
                 cv2.putText(frame, name[::-1], (x, y), front, 1.0, color, stroke, cv2.LINE_AA)
 
-        if globals.VID_FRAME_CHANGE_INDEX is 0:
-            frame = org_frame
+        if globals.VID_FRAME_INDEX == 0:
 
-        elif globals.VID_FRAME_CHANGE_INDEX is 1:
+            frame = resize_frame
+
+        elif globals.VID_FRAME_INDEX == 1:
+
+            frame = gray
+
+        # elif globals.VID_FRAME_INDEX == 2:
+        else:
 
             frame = frame
-
-        elif globals.VID_FRAME_CHANGE_INDEX is 2:
-            frame = gray
 
         # Display the frame
         display.display_render(screen, frame, disply_obj, TASK_INFO)
@@ -159,8 +160,9 @@ def face_recog_pygm(screen, disply_obj, fbs):
 
         # check if TASK_INDEX is not 1 then it means another buttons has pressed
         if not globals.TASK_INDEX == 1:
-            log.info(f"TASK_INDEX is not 1 but {globals.TASK_INDEX}")
+            log.info("TASK_INDEX is not 1 but {}".format(globals.TASK_INDEX))
             break
+
         if not globals.CAM_START or globals.EXIT:
             # print(f"face_recog globals.CAM_START {globals.CAM_START}")
             break
@@ -169,8 +171,9 @@ def face_recog_pygm(screen, disply_obj, fbs):
         if cv2.waitKey(fbs) & 0xff == ord('q'):
             break
 
+    log.info("Face Recognition closing ")
     vid.video_cleanUp()
-    log.info("closing face recognition")
+
 
 
 
