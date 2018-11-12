@@ -43,7 +43,7 @@ CAM_NUM = 0
 # """ motion_detection_pygm """
 # ------------------------------------------------------------------------------
 
-def _motion_detection_pygm(screen, disply_obj, fbs):
+def motion_detection_pygm(screen, disply_obj, fbs):
     """ """
     log.info("motion_detection_pygm starts... ")
 
@@ -103,6 +103,17 @@ def _motion_detection_pygm(screen, disply_obj, fbs):
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
             cv2.circle(frame, (cX, cY), 7, (0, 0, 225), -1)
 
+
+        if globals.VID_FRAME_INDEX == 0:
+            frame = fgmask
+
+        elif globals.VID_FRAME_INDEX == 1:
+
+            frame = frame
+
+        elif globals.VID_FRAME_INDEX == 2:
+            frame = frame
+
         # Display the frame
         display.display_render(screen, frame, disply_obj, TASK_INFO)
         image_title.Render(to=screen, pos=TASK_TITLE_POS)
@@ -129,7 +140,7 @@ def _motion_detection_pygm(screen, disply_obj, fbs):
 
 
 
-def motion_detection_pygm(screen, disply_obj, fbs):
+def _motion_detection_pygm(screen, disply_obj, fbs):
     """ """
     log.info("motion_detection_pygm starts... ")
 

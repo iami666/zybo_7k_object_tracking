@@ -61,6 +61,7 @@ def object_recog_pygm(screen, disply_obj):
     """ """
     log.info("object_recog_pygm start... ")
 
+    # configuration file use to train caffe model
     prototxt_file = "MobileNetSSD_deploy.prototxt.txt"
     caffe_model = "MobileNetSSD_deploy.caffemodel"
 
