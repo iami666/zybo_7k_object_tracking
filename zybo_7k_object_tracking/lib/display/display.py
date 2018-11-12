@@ -188,7 +188,7 @@ def display_menu_init(screen):
     face_recog_btn = display_gui.Menu.Button(text="Face Recognition", rect=BIG_BUTTON)
     face_recog_btn.Command = face_recog_btn_action
 
-    obj_tracking_btn = display_gui.Menu.Button(text="Object Tracking", rect=BIG_BUTTON)
+    obj_tracking_btn = display_gui.Menu.Button(text="Motion detection", rect=BIG_BUTTON)
     obj_tracking_btn.Command = object_tracking_btn_action
 
     obj_recog_btn = display_gui.Menu.Button(text="Object Recognition", rect=BIG_BUTTON)
