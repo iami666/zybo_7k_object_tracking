@@ -1,19 +1,19 @@
 main - INFO - main script starts
 main - INFO - calling  define.platform_init()
 main.definition.define - INFO - framebuffer checking...
-main.definition.define - INFO - /dev/fb0 has allocated memory address : 0xac6b0000
-main.definition.define - INFO - /dev/fb1 has allocated memory address : 0xac61a000
-main.definition.define - INFO - /dev/fb2 has allocated memory address : 0xac584000
-main.definition.define - INFO - /dev/fb3 has allocated memory address : 0xac4ee000
+main.definition.define - INFO - /dev/fb0 has allocated memory address : 0xac6b9000
+main.definition.define - INFO - /dev/fb1 has allocated memory address : 0xac623000
+main.definition.define - INFO - /dev/fb2 has allocated memory address : 0xac58d000
+main.definition.define - INFO - /dev/fb3 has allocated memory address : 0xac4f7000
 main.definition.define - INFO - VDMA memory checking...
 main.definition.define - INFO - /dev/mem checked...
-main.definition.define - INFO - /dev/mem has allocated virtual address : 0xb55d1000
+main.definition.define - INFO - /dev/mem has allocated virtual address : 0xb55da000
 main.definition.define - INFO - VDMA configuration end...
-main.definition.define - INFO - RTC has virtual address : 0xb55d0000
+main.definition.define - INFO - RTC has virtual address : 0xb55d9000
 main.definition.define - INFO - RTC configuration end...
-main.definition.define - INFO - VDMA_BYPASS has virtual address : 0xb55cf000
+main.definition.define - INFO - VDMA_BYPASS has virtual address : 0xb55d8000
 main.definition.define - INFO - DMA_RTC_BYPASS configuration end...
-main.definition.define - INFO - RTC_small window allocated virtual address : 0xb55ce000
+main.definition.define - INFO - RTC_small window allocated virtual address : 0xb55d7000
 main.definition.define - INFO - RTC_small window configuration end...
 main.definition.define - INFO - Camera checked...
 main.definition.define - INFO - platform_init ends
@@ -22,13 +22,5 @@ main - INFO - calling  disply.display_init()
 main.lib.display.display_gui - INFO - display initialisation done 
 main - INFO - calling  disply.display_color()
 main - INFO - calling  display.display_menu_init()
-main.lib.display.display - INFO - Start Button clicked
-main.lib.vision.vision - INFO - setting up the video capture ......
-main.lib.display.display - INFO - Forward Button clicked
-main.lib.display.display - INFO - Forward Button clicked
-main.lib.display.display - INFO - Object Tracking Button clicked
-main.tasks.motion_detection.motion_detect - INFO - motion_detection_pygm starts... 
 main.lib.display.display - INFO - Exit Button clicked
-main.tasks.motion_detection.motion_detect - INFO - closing motion detection
-main - INFO - Camera is OFF
 main - INFO - exiting from the main...

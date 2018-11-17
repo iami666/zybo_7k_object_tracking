@@ -22,6 +22,8 @@ import pickle
 # import pygame
 import os
 import logging
+from multiprocessing import Process
+from multiprocessing import Queue
 
 # -----------------------------------------------
 """ Modules """
@@ -42,6 +44,25 @@ TASK_TITLE = "Face Recognition"
 
 TASK_TITLE_POS = (define.VID_FRAME_CENTER - (len(TASK_TITLE) * 4), 100)
 
+
+# ------------------------------------------------------------------------------
+# """ FUNCTION: to process face recognition frame"""
+# ------------------------------------------------------------------------------
+def processed_frame(face_cascade, inputQueue, outputQueue):
+    # keep looping
+    while True:
+        # check if there is a frame in inputQueue
+        if not inputQueue.empty():
+            # grab the frame form the input queue
+            gray_frame = inputQueue.get()
+            # detect object of different size i nthe input image.
+            # the detected objects are returned as a list of rectangles.
+            faces = face_cascade.detectMultiScale(gray_frame, scaleFactor=1.3, minNeighbors=5)
+
+
+
+            # write the process frame to the output queue
+            outputQueue.put(faces)
 
 # ------------------------------------------------------------------------------
 # """ file_path_check """
@@ -65,6 +86,139 @@ def file_path_check(file_name_fm_same_dir):
 # ------------------------------------------------------------------------------
 
 def face_recog_pygm(screen, disply_obj, fbs):
+    """
+    Face Recognition pygame function read info from haarcascade_frontalface_defualt.xml, trainner.yml
+    (for predicting trained faces), labels.pickle (to get label of faces ) and predict name of the face.
+
+    """
+
+    log.info("face_recog_pygm start")
+    # print("[INFO] face_recog_pygm start")
+
+    # initialize the input queue (frames), output queue (process frames)
+    # and the list of actual frace recognize processed frame return by the child process
+    inputQueue = Queue(maxsize=1)
+    outputQueue = Queue(maxsize=1)
+    faces = None
+
+    # objected created for cascade classifier
+    face_cascade_name = "haarcascade_frontalface_default.xml"
+    face_cascade_path = file_path_check(face_cascade_name)
+    face_cascade = cv2.CascadeClassifier(face_cascade_path)
+    # recognizer = cv2.face.createLBPHFaceRecognizer() # for opencv 2.4
+    recognizer = cv2.face.LBPHFaceRecognizer_create()
+
+    # creating object from trained file
+    recognizer_file = "trainner.yml"
+    recognizer_path = file_path_check(recognizer_file)
+    file_path_check(recognizer_path)
+    # recognizer.load(recognizer_path) # for opencv 2.4
+    recognizer.read(recognizer_path)
+
+    # reading labels from label.pickle file
+    labels = {"person_name": 1}
+    labels_file = "labels.pickle"
+    labels_path = file_path_check(labels_file)
+
+    # construct a child process independent from the main execution
+    log.info("starting Queue process...")
+    # inputQueue will be populated by the parent and processed by the child ,input to the child process
+    # outputQueue will be populated by the child and processed by the parent, output from the child process
+    p = Process(target=processed_frame, args=(face_cascade, inputQueue, outputQueue,))
+    p.daemon = True
+    p.start()
+
+    try:
+        with open(labels_path, 'rb') as f:
+            og_labels = pickle.load(f)
+            labels = {v: k for k, v in og_labels.items()}
+    except Exception as error:
+        log.error(error)
+        raise
+
+    image_title = display_gui.Menu.Text(text=TASK_TITLE, font=display_gui.Font.Medium)
+
+    vid = Vision()
+
+    log.info("frame reading starts ")
+
+    while vid.is_camera_connected():
+
+        ret, frame = vid.get_video()
+
+        # resize frame for required size
+        resize_frame = vid.resize_frame(frame)
+
+        # opencv understand BGR, in order to display we need to convert image  form   BGR to RGB
+        frame = cv2.cvtColor(resize_frame, cv2.COLOR_BGR2RGB)  # for display
+
+        # covert image into gray
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # for processing
+
+        # if the input queue is empty, give the current frame to classify
+        if inputQueue.empty():
+            inputQueue.put(gray)
+
+        # if the output queue is not empty, grab the processed frame
+        if not outputQueue.empty():
+            faces = outputQueue.get()
+
+        if faces is not None:
+            for (x, y, w, h) in faces:
+                # create rectangle around face
+                frame = cv2.rectangle(frame, (x, y), (x + w, y + w), (255, 0, 0), 2)  # RGB
+                roi_gray = gray[y:y + h, x:x + w]
+                # roi_color = frame[y:y+h, x:x+w]
+
+                id_, confidence = recognizer.predict(roi_gray)
+                if confidence >= 20:
+                    name = labels[id_]
+                    cv2.putText(frame, name[::-1], (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 0, 0), 2, cv2.LINE_AA)
+
+        if globals.VID_FRAME_INDEX == 0:
+
+            frame = resize_frame
+
+        elif globals.VID_FRAME_INDEX == 1:
+
+            frame = gray
+
+
+        # elif globals.VID_FRAME_INDEX == 2:
+        else:
+
+            frame = frame
+
+        # Display the frame
+        display.display_render(screen, frame, disply_obj, TASK_INFO)
+
+        image_title.Render(to=screen, pos=TASK_TITLE_POS)
+
+        # check if TASK_INDEX is not 1 then it means another buttons has pressed
+        if not globals.TASK_INDEX == 1:
+            log.info("TASK_INDEX is not 1 but {}".format(globals.TASK_INDEX))
+            break
+
+        if not globals.CAM_START or globals.EXIT:
+            p.terminate() # terminate the process
+            # print(f"face_recog globals.CAM_START {globals.CAM_START}")
+            break
+
+        # framerate control
+        if cv2.waitKey(fbs) & 0xff == ord('q'):
+            break
+
+    log.info("Face Recognition closing ")
+    vid.video_cleanUp()
+
+
+
+
+# ------------------------------------------------------------------------------
+# """ face_recog_pygm """
+# ------------------------------------------------------------------------------
+
+def _face_recog_pygm(screen, disply_obj, fbs):
     """
     Face Recognition pygame function read info from haarcascade_frontalface_defualt.xml, trainner.yml
     (for predicting trained faces), labels.pickle (to get label of faces ) and predict name of the face.
