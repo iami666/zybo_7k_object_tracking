@@ -12,6 +12,7 @@ import logging
 import cv2
 import os
 import sys
+import queue
 from multiprocessing import Process
 from multiprocessing import Queue
 
@@ -53,7 +54,7 @@ def processed_frame(net, input_queue, output_queue):
                     input_queue.close()
                     output_queue.close()
                     break
-            except Exception as _:
+            except queue.Empty:
                 pass
 
             # grab the frame from the input queue, resize it, and
@@ -215,6 +216,7 @@ def object_recog_pygm(screen, disply_obj):
         input_queue.put('exit')
         output_queue.put('exit')
         proc.terminate()  # terminate the process
+        log.info("Queue is closed...")
 
     vid.video_cleanUp()
     log.info("object_recog_pygm closing ")

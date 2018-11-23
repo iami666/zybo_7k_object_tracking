@@ -14,7 +14,11 @@ The trainner file is trained from some hollywood actors (from game of thrones TV
    4. Peter Dinklage
 
 """
+
 import sys
+# import numpy as np
+import time
+
 import cv2
 import pickle
 # import pygame
@@ -22,7 +26,7 @@ import os
 import logging
 from multiprocessing import Process
 from multiprocessing import Queue
-import queue
+
 # -----------------------------------------------
 """ Modules """
 
@@ -57,7 +61,7 @@ def processed_frame(face_cascade, input_queue, output_queue):
                     input_queue.close()
                     output_queue.close()
                     break
-            except queue.Empty:
+            except Exception as _:
                 pass
 
             # grab the frame form the input queue
