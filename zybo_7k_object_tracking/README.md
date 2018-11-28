@@ -3,6 +3,6 @@
 
 This project will fininsh until january.
 In this project following tasks will be done, 
- 1. Zybo7000 board is setup with debian jessie, opencv 3.1 and PyQt5 
+ 1. Zybo7000 board is setup with debian jessie, opencv 3.4.2 and pygame (for simple GUI) 
  2. Object tracking using opencv 
  3. Gui will display via VGA port
