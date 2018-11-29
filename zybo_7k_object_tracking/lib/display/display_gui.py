@@ -94,8 +94,8 @@ class Menu:
         try:
             if not pygame.init():
                 # set up audio driver to avoid alisa lib errors
-                os.environ['SDL_AUDIODRIVER'] = "dsp"
-                os.putenv("SDL_FBDEV", framebuffer)
+                # os.environ['SDL_AUDIODRIVER'] = "dsp"
+                # os.putenv("SDL_FBDEV", framebuffer)
 
                 pygame.init()
 

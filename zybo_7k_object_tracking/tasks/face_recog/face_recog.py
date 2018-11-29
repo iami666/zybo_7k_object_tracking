@@ -14,7 +14,9 @@ The trainner file is trained from some hollywood actors (from game of thrones TV
    4. Peter Dinklage
 
 """
-import sys
+# import sys
+import time
+
 import cv2
 import pickle
 # import pygame
@@ -23,6 +25,7 @@ import logging
 from multiprocessing import Process
 from multiprocessing import Queue
 import queue
+from imutils.video import FPS
 # -----------------------------------------------
 """ Modules """
 
@@ -148,6 +151,8 @@ def face_recog_pygm(screen, disply_obj, fbs):
 
     log.info("frame reading starts ")
 
+    fps = FPS().start()
+    t = time.time()
     while vid.is_camera_connected():
 
         ret, frame = vid.get_video()
@@ -211,12 +216,25 @@ def face_recog_pygm(screen, disply_obj, fbs):
         if cv2.waitKey(fbs) & 0xff == ord('q'):
             break
 
+        # update the FPS  Counter
+        fps.update()
+        t2 = time.time()
+        if int(t2-t) > 60:
+            break
     if proc.is_alive():
         input_queue.put('exit')
         output_queue.put('exit')
         proc.terminate()  # terminate the process
         log.info("Queue is closed...")
 
+    # stop the time and display FPS Information
+    fps.stop()
+    # log.info("Elapsed Time: {: 2f}".format(fps.elapsed()))
+    print("Elapsed Time: {: 2f}".format(fps.elapsed()))
+    print("Approx FPS: {: 2f}".format(fps.fps()))
+    # log.info("Approx FPS: {: 2f}".format(fps.fps()))
+
+    # cleaning up the camera and destroying window
     vid.video_cleanUp()
     log.info("Face Recognition closing ")
 

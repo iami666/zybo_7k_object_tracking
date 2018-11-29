@@ -50,14 +50,14 @@ TASK_INDEX = 0
 # """ FUNCTION: Setting the environment variable for displaying GUI """
 # ------------------------------------------------------------------------------
 
-def env_setup(fbpath="/dev/fb0"):
+def env_setup(fbpath="/dev/fb1"):
     # os.putenv("SDL_FBDEV", fbpath)
-    os.environ["SDL_FBDEV"] = fbpath
+    # os.environ["SDL_FBDEV"] = fbpath
 
     # set up audio driver to avoid alisa lib erros
     os.environ['SDL_AUDIODRIVER'] = "dsp"
-    # os.environ['SDL_VIDEODRIVER'] = "svgalib"
-    # os.putenv['SDL_VIDEODRIVER'] = "fbcon"
+    os.environ['SDL_VIDEODRIVER'] = "svgalib"
+    #os.putenv('SDL_VIDEODRIVER', "fbcon")
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -67,7 +67,7 @@ def env_setup(fbpath="/dev/fb0"):
 def main():
     """
     """
-    env_setup()
+    # env_setup()
 
     log = _logging.logger_init(log_filepath="obj_track_img_recog.log", project_name="main")
     log.info("main script starts")
@@ -80,12 +80,15 @@ def main():
 
     log.info("calling  disply.display_init()")
     screen = disply.display_init()
+    screen.set_alpha(None) # do not need transparency
 
     log.info("calling  disply.display_color()")
     disply.display_color()
 
     log.info("calling  display.display_menu_init()")
     disply_obj = display.display_menu_init(screen)
+
+    all_sprites = pygame.sprite.RenderUpdates()
 
     while True:
             if not globals.CAM_START: # camera is off, picture will be displayed

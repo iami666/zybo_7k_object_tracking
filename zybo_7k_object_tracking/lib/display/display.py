@@ -266,11 +266,14 @@ def display_render(screen, frame, dsply_obj, task_info):
 
     frame = np.rot90(frame)
     frame = pygame.surfarray.make_surface(frame)
+    pygame.Surface.convert(frame)
     screen.blit(frame, VID_FRAME_POS)
 
     dsply_obj.title.Render(to=screen, pos=display_gui.TITLE_POSTION)
     # dsply_obj.image_title.Render(to=screen, pos=(define.VID_FRAME_CENTER, 100))
+
     pygame.display.flip()
+    # pygame.display.update()
 
 
 # ------------------------------------------------------------------------------
@@ -379,9 +382,9 @@ def test_loop():
 
 def main():
     fb3 = "/dev/fb0"
-    os.putenv("SDL_FBDEV", fb3)
+    #os.putenv("SDL_FBDEV", fb3)
     # set up audio driver to avoid alisa lib erros
-    os.environ['SDL_AUDIODRIVER'] = "dsp"
+    #os.environ['SDL_AUDIODRIVER'] = "dsp"
 
     # os.environ['SDL_VIDEODRIVER'] = fb3
     # os.environ["SDL_FBDEV"] = fb3

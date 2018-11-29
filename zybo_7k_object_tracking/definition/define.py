@@ -176,13 +176,13 @@ def platform_init():
     ptr_vdm_3 = ctypes.c_uint.from_buffer(vdma_buf_3)
 
     log.info("RTC_small window allocated virtual address : " + hex(ctypes.addressof(ptr_vdm_3)))
-
+    #(50, 100)
     # small windows adjustment
-    # # vdma_buf_3[6 * 4:7 * 4] = struct.pack("I", ((75 << 16) + (HORIZ_PIXELS_SMALL + 75)))
-    # vdma_buf_3[6 * 4:7 * 4] = struct.pack("I", ((50 << 16) + (HORIZ_PIXELS_SMALL + 50)))
-    # # vdma_buf_3[7 * 4:8 * 4] = struct.pack("I", ((150 << 16) + (VERT_LINES_SMALL + 150)))
+    # vdma_buf_3[6 * 4:7 * 4] = struct.pack("I", ((75 << 16) + (HORIZ_PIXELS_SMALL + 75)))
+    vdma_buf_3[6 * 4:7 * 4] = struct.pack("I", ((50 << 16) + (HORIZ_PIXELS_SMALL + 50)))
+    vdma_buf_3[7 * 4:8 * 4] = struct.pack("I", ((150 << 16) + (VERT_LINES_SMALL + 150)))
     # vdma_buf_3[7 * 4:8 * 4] = struct.pack("I", ((50 << 16) + (VERT_LINES_SMALL + 50)))
-    # vdma_buf_3[5 * 4:6 * 4] = struct.pack("I", 0x70B)
+    vdma_buf_3[5 * 4:6 * 4] = struct.pack("I", 0x70B)
 
     log.info("RTC_small window configuration end...")
 

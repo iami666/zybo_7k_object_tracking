@@ -223,7 +223,7 @@ def test_loop():
 
         obj_tracking_btn.Render(screen, pos=(280 + define.HORIZ_PIXELS_SMALL, 144 + 60))
 
-        screen.blit(frame, (50, 150))
+        # screen.blit(frame, (50, 150))
 
         title.Render(to=screen, pos=display_gui.TITLE_POSTION)
         image_title.Render(to=screen, pos=(frame_center , 100))
@@ -236,16 +236,16 @@ def main():
     fb3 = "/dev/fb0"
     os.putenv("SDL_FBDEV", fb3)
     # set up audio driver to avoid alisa lib erros
-    os.environ['SDL_AUDIODRIVER'] = "dsp"
+    #os.environ['SDL_AUDIODRIVER'] = "dsp"
 
-    # os.environ['SDL_VIDEODRIVER'] = fb3
-    # os.environ["SDL_FBDEV"] = fb3
+    #os.environ['SDL_VIDEODRIVER'] = fb3
+    os.environ["SDL_FBDEV"] = fb3
     define.platform_init()
 
 
     # pygame.init()
     # root = setup_tkinter()
-    # fps_clock = pygame.time.Clock()
+    fps_clock = pygame.time.Clock()
 
     # WIDTH =  define.VERTICAL_LINES
     # HEIGHT = define.HORIZONTAL_PIXELS
@@ -254,12 +254,12 @@ def main():
     #
     # print("Framebuffer size set {} x {}".format(size[0],size[1]))
     #
-    # screen = pygame.display.set_mode((1265, 1015), pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((1265, 1015), pygame.FULLSCREEN)
     # while True:
     #     screen.fill(BLACK)
 
-    # game_loop(screen, fps_clock)
-    test_loop()
+    game_loop(screen, fps_clock)
+    # test_loop()
 
 
 if __name__ == '__main__':
